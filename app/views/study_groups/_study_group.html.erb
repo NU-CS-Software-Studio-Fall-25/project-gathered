@@ -1,0 +1,74 @@
+<div id="study_group_<%= study_group.group_id %>" class="study-group-card status-<%= study_group.status %>">
+  <div class="study-group-header">
+    <h4 class="study-group-topic"><%= study_group.topic %></h4>
+    <span class="status-badge <%= study_group.status %>"><%= study_group.status.titleize %></span>
+  </div>
+
+  <div class="study-group-details">
+    <div class="detail-row">
+      <span class="icon">📅</span>
+      <span class="detail-text"><%= study_group.formatted_time_range %></span>
+    </div>
+
+    <% if study_group.location.present? %>
+      <div class="detail-row">
+        <span class="icon">📍</span>
+        <span class="detail-text"><%= study_group.location %></span>
+      </div>
+    <% end %>
+
+    <% if study_group.description.present? %>
+      <div class="detail-row">
+        <span class="icon">📝</span>
+        <span class="detail-text"><%= study_group.description %></span>
+      </div>
+    <% end %>
+
+    <div class="detail-row">
+      <span class="icon">👤</span>
+      <span class="detail-text">Created by <%= study_group.creator.name %></span>
+    </div>
+
+    <div class="detail-row">
+      <span class="icon">👥</span>
+      <span class="detail-text" id="member_count_<%= study_group.group_id %>">
+        <strong><%= study_group.member_count %></strong> 
+        <%= "member".pluralize(study_group.member_count) %>
+      </span>
+    </div>
+
+    <% if study_group.duration_minutes %>
+      <div class="detail-row">
+        <span class="icon">⏱️</span>
+        <span class="detail-text"><%= study_group.duration_minutes %> minutes</span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="study-group-actions" id="join_button_<%= study_group.group_id %>">
+    <% current_student_id ||= nil %>
+    <% if current_student_id && study_group.member_ids.include?(current_student_id) %>
+      <%= button_to "Leave Group", 
+                    leave_study_group_path(study_group, student_id: current_student_id),
+                    method: :delete,
+                    class: "btn btn-secondary btn-sm",
+                    data: { 
+                      turbo_stream: true,
+                      confirm: "Are you sure you want to leave this group?"
+                    } %>
+      <span class="joined-badge">✓ Joined</span>
+    <% else %>
+      <%= button_to "Join Group", 
+                    join_study_group_path(study_group, student_id: current_student_id || Student.first&.student_id),
+                    method: :post,
+                    class: "btn btn-primary btn-sm",
+                    data: { turbo_stream: true },
+                    disabled: study_group.status == "past" %>
+    <% end %>
+
+    <%= link_to "Details", 
+                study_group_path(study_group), 
+                class: "btn btn-text btn-sm" %>
+  </div>
+</div>
+

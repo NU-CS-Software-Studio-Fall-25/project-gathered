@@ -1,0 +1,6 @@
+<% type ||= "info" %>
+<div class="flash-message flash-<%= type %>" data-controller="flash" data-action="click->flash#dismiss">
+  <span class="flash-content"><%= message %></span>
+  <button class="flash-close" data-action="click->flash#dismiss">✕</button>
+</div>
+
