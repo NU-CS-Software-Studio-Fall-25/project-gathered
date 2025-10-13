@@ -136,8 +136,8 @@ class StudyGroupsController < ApplicationController
     student_id = params[:student_id] || Student.first&.student_id
 
     if student_id
-      membership = GroupMembership.find_by(student_id: student_id, group_id: @study_group.group_id)
-      membership&.destroy
+      
+      GroupMembership.where(student_id: student_id, group_id: @study_group.group_id).delete_all
       @study_group.reload
 
       respond_to do |format|
