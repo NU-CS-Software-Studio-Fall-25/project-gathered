@@ -56,6 +56,39 @@ body {
     min-height: 100vh;
 }
 
+.global-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.student-selector {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.student-selector label {
+    margin-right: 0.75rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.student-selector-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.student-selector-select {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    min-width: 200px;
+    background-color: #fff;
+}
+
 /* ============================================================
    TURBO PROGRESS BAR
    ============================================================ */

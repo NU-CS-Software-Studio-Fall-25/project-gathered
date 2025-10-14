@@ -1,0 +1,13 @@
+<div class="student-selector">
+  <%= form_with url: student_session_path, method: :post, class: "student-selector-form", data: { turbo: true } do %>
+    <label for="student_selector">Signed in as</label>
+    <div class="student-selector-controls">
+      <%= select_tag :student_id,
+                     options_from_collection_for_select(Student.order(:name), :student_id, :name, current_student_id),
+                     id: "student_selector",
+                     class: "student-selector-select" %>
+      <%= button_tag "Switch", class: "btn btn-secondary btn-sm" %>
+    </div>
+  <% end %>
+</div>
+

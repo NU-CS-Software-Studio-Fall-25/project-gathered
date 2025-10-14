@@ -1,0 +1,20 @@
+<div id="study_group_members">
+  <h3>Members (<%= members.count %>)</h3>
+
+  <div class="members-list">
+    <% members.each do |member| %>
+      <div class="member-card">
+        <span class="member-avatar"><%= member.name[0].upcase %></span>
+        <span class="member-name"><%= member.name %></span>
+        <% if member.student_id == study_group.creator_id %>
+          <span class="creator-badge">Creator</span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if members.empty? %>
+      <p class="empty-state">No members yet. Be the first to join!</p>
+    <% end %>
+  </div>
+</div>
+

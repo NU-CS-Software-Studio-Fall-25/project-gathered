@@ -93,9 +93,7 @@ class StudyGroupsController < ApplicationController
   end
 
   def join
-    # For demo purposes, we'll use a hardcoded student ID
-    # In a real app, you'd get this from current_user
-    student_id = params[:student_id] || Student.first&.student_id
+    student_id = determine_student_id
 
     if student_id && !@study_group.member_ids.include?(student_id)
       GroupMembership.create!(student_id: student_id, group_id: @study_group.group_id)
@@ -109,6 +107,16 @@ class StudyGroupsController < ApplicationController
               "study_group_#{@study_group.group_id}",
               partial: "study_groups/study_group",
               locals: { study_group: @study_group, current_student_id: student_id }
+            ),
+            turbo_stream.replace(
+              "study_group_actions",
+              partial: "study_groups/detail_actions",
+              locals: { study_group: @study_group }
+            ),
+            turbo_stream.replace(
+              "study_group_members",
+              partial: "study_groups/members_list",
+              locals: { study_group: @study_group, members: @study_group.members.order(:name) }
             ),
             turbo_stream.prepend(
               "flash_messages",
@@ -133,11 +141,10 @@ class StudyGroupsController < ApplicationController
   end
 
   def leave
-    student_id = params[:student_id] || Student.first&.student_id
+    student_id = determine_student_id
 
     if student_id
-      membership = GroupMembership.find_by(student_id: student_id, group_id: @study_group.group_id)
-      membership&.destroy
+      GroupMembership.where(student_id: student_id, group_id: @study_group.group_id).delete_all
       @study_group.reload
 
       respond_to do |format|
@@ -149,12 +156,33 @@ class StudyGroupsController < ApplicationController
               partial: "study_groups/study_group",
               locals: { study_group: @study_group, current_student_id: student_id }
             ),
+            turbo_stream.replace(
+              "study_group_actions",
+              partial: "study_groups/detail_actions",
+              locals: { study_group: @study_group }
+            ),
+            turbo_stream.replace(
+              "study_group_members",
+              partial: "study_groups/members_list",
+              locals: { study_group: @study_group, members: @study_group.members.order(:name) }
+            ),
             turbo_stream.prepend(
               "flash_messages",
               partial: "shared/flash",
               locals: { message: "You left the study group.", type: "info" }
             )
           ]
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to course_path(@study_group.course), alert: "Could not leave group." }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.prepend(
+            "flash_messages",
+            partial: "shared/flash",
+            locals: { message: "Could not leave group.", type: "error" }
+          )
         end
       end
     end
@@ -170,8 +198,11 @@ class StudyGroupsController < ApplicationController
     @course = Course.find(params[:course_id])
   end
 
+  def determine_student_id
+    normalize_student_id(params[:student_id]&.presence) || current_student_id
+  end
+
   def study_group_params
     params.require(:study_group).permit(:creator_id, :topic, :description, :location, :start_time, :end_time)
   end
 end
-

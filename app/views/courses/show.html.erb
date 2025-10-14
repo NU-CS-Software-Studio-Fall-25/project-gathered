@@ -18,7 +18,7 @@
 
       <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
         <% if @study_groups.any? %>
-          <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: Student.first&.student_id } %>
+          <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: current_student_id } %>
         <% else %>
           <p class="empty-state">No study groups yet. Be the first to create one!</p>
         <% end %>
@@ -53,7 +53,7 @@
 
     <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
       <% if @study_groups.any? %>
-        <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: Student.first&.student_id } %>
+        <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: current_student_id } %>
       <% else %>
         <p class="empty-state">No study groups yet. Be the first to create one!</p>
       <% end %>
