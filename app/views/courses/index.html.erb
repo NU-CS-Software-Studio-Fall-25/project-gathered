@@ -1,0 +1,49 @@
+<div class="container">
+  <header class="page-header">
+    <h1>GatherEd - Study Group Finder</h1>
+    <p class="subtitle">Find and join study groups for your courses</p>
+  </header>
+
+  <div id="flash_messages" class="flash-container"></div>
+
+  <div class="courses-grid">
+    <% @courses.each do |course| %>
+      <div class="course-card" 
+           data-controller="courses"
+           data-courses-expanded-value="false"
+           data-courses-course-id-value="<%= course.course_id %>">
+        <div class="course-header">
+          <h2><%= course.course_name %></h2>
+          <p class="course-professor"><%= course.professor %></p>
+          <p class="course-description"><%= course.description %></p>
+        </div>
+
+        <div class="course-stats">
+          <span class="stat">
+            <strong><%= course.study_group_count %></strong> study groups
+          </span>
+          <span class="stat">
+            <strong><%= course.enrolled_student_count %></strong> students
+          </span>
+        </div>
+
+        <%= link_to course_path(course), 
+                    class: "btn btn-primary toggle-btn",
+                    data: { 
+                      action: "click->courses#toggle",
+                      courses_target: "toggleButton",
+                      turbo_frame: "course_#{course.course_id}_details"
+                    } do %>
+          <span data-courses-target="buttonText">View Study Groups →</span>
+        <% end %>
+
+        <turbo-frame id="course_<%= course.course_id %>_details" 
+                     class="course-details"
+                     data-courses-target="frameContent">
+          <!-- Study groups will load here -->
+        </turbo-frame>
+      </div>
+    <% end %>
+  </div>
+</div>
+

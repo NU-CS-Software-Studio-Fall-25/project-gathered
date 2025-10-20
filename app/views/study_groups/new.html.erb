@@ -1,0 +1,76 @@
+<turbo-frame id="new_group_form">
+  <div class="form-container">
+    <div class="form-header">
+      <h3>Create New Study Group</h3>
+      <%= link_to "✕ Cancel", "#", 
+                  class: "close-form",
+                  data: { 
+                    action: "click->study-groups#closeForm"
+                  } %>
+    </div>
+
+    <%= form_with model: @study_group, 
+                  url: course_study_groups_path(@course),
+                  class: "study-group-form",
+                  data: { turbo_frame: "new_group_form" } do |f| %>
+      
+      <div class="form-group">
+        <%= f.label :topic, "Topic *" %>
+        <%= f.text_field :topic, 
+                        required: true, 
+                        placeholder: "e.g., Midterm Review, Problem Set 3",
+                        class: "form-control" %>
+        <% if @study_group.errors[:topic].any? %>
+          <span class="error"><%= @study_group.errors[:topic].first %></span>
+        <% end %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :description, "Description" %>
+        <%= f.text_area :description, 
+                       rows: 3,
+                       placeholder: "What will you be studying?",
+                       class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :location, "Location" %>
+        <%= f.text_field :location, 
+                        placeholder: "e.g., Main Library Room 201",
+                        class: "form-control" %>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :start_time, "Start Time *" %>
+          <%= f.datetime_field :start_time, 
+                              required: true,
+                              class: "form-control" %>
+          <% if @study_group.errors[:start_time].any? %>
+            <span class="error"><%= @study_group.errors[:start_time].first %></span>
+          <% end %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :end_time, "End Time *" %>
+          <%= f.datetime_field :end_time, 
+                              required: true,
+                              class: "form-control" %>
+          <% if @study_group.errors[:end_time].any? %>
+            <span class="error"><%= @study_group.errors[:end_time].first %></span>
+          <% end %>
+        </div>
+      </div>
+
+      <%= f.hidden_field :creator_id, value: Student.first&.student_id %>
+
+      <div class="form-actions">
+        <%= f.submit "Create Study Group", class: "btn btn-primary" %>
+        <%= link_to "Cancel", "#", 
+                    class: "btn btn-secondary",
+                    data: { action: "click->study-groups#closeForm" } %>
+      </div>
+    <% end %>
+  </div>
+</turbo-frame>
+

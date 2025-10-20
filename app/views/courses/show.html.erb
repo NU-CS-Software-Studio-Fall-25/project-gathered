@@ -1,0 +1,63 @@
+<% if turbo_frame_request? %>
+  <turbo-frame id="course_<%= @course.course_id %>_details">
+    <div class="study-groups-section">
+      <div class="section-header">
+        <h3>Study Groups for <%= @course.course_name %></h3>
+        <%= link_to "Create New Group", 
+                    new_course_study_group_path(@course), 
+                    class: "btn btn-secondary btn-sm",
+                    data: { 
+                      turbo_frame: "new_group_form",
+                      action: "click->study-groups#showForm"
+                    } %>
+      </div>
+
+      <turbo-frame id="new_group_form" class="new-group-form">
+        <!-- Form will load here -->
+      </turbo-frame>
+
+      <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
+        <% if @study_groups.any? %>
+          <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: Student.first&.student_id } %>
+        <% else %>
+          <p class="empty-state">No study groups yet. Be the first to create one!</p>
+        <% end %>
+      </div>
+    </div>
+  </turbo-frame>
+<% else %>
+  <div class="container">
+    <%= link_to "← Back to Courses", root_path, class: "back-link" %>
+    
+    <div id="flash_messages" class="flash-container"></div>
+
+    <div class="course-detail-header">
+      <h1><%= @course.course_name %></h1>
+      <p class="course-professor"><%= @course.professor %></p>
+      <p class="course-description"><%= @course.description %></p>
+    </div>
+
+    <div class="section-header">
+      <h2>Study Groups</h2>
+      <%= link_to "Create New Group", 
+                  new_course_study_group_path(@course), 
+                  class: "btn btn-primary",
+                  data: { 
+                    turbo_frame: "new_group_form"
+                  } %>
+    </div>
+
+    <turbo-frame id="new_group_form" class="new-group-form">
+      <!-- Form will load here -->
+    </turbo-frame>
+
+    <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
+      <% if @study_groups.any? %>
+        <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: Student.first&.student_id } %>
+      <% else %>
+        <p class="empty-state">No study groups yet. Be the first to create one!</p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
