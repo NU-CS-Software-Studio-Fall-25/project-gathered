@@ -24,4 +24,6 @@ Rails.application.routes.draw do
       delete :leave
     end
   end
+
+  resource :student_session, only: :create
 end

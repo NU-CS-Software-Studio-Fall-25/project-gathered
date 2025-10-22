@@ -1,0 +1,72 @@
+<div class="study-group-detail">
+  <div class="detail-header">
+    <h1><%= study_group.topic %></h1>
+    <span class="status-badge large <%= study_group.status %>"><%= study_group.status.titleize %></span>
+  </div>
+
+  <div class="detail-body">
+    <div class="info-section">
+      <h3>Details</h3>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="icon">📚</span>
+          <div>
+            <strong>Course</strong>
+            <p><%= study_group.course.course_name %></p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">📅</span>
+          <div>
+            <strong>Time</strong>
+            <p><%= study_group.formatted_time_range %></p>
+          </div>
+        </div>
+
+        <% if study_group.location.present? %>
+          <div class="info-item">
+            <span class="icon">📍</span>
+            <div>
+              <strong>Location</strong>
+              <p><%= study_group.location %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="info-item">
+          <span class="icon">👤</span>
+          <div>
+            <strong>Created by</strong>
+            <p><%= study_group.creator.name %></p>
+          </div>
+        </div>
+
+        <% if study_group.duration_minutes %>
+          <div class="info-item">
+            <span class="icon">⏱️</span>
+            <div>
+              <strong>Duration</strong>
+              <p><%= study_group.duration_minutes %> minutes</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <% if study_group.description.present? %>
+        <div class="description">
+          <strong>Description</strong>
+          <p><%= study_group.description %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="members-section">
+      <%= render "study_groups/members_list", study_group: study_group, members: members %>
+    </div>
+  </div>
+
+  <%= render "study_groups/detail_actions", study_group: study_group %>
+</div>
+

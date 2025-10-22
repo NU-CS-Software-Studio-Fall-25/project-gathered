@@ -46,10 +46,10 @@
   </div>
 
   <div class="study-group-actions" id="join_button_<%= study_group.group_id %>">
-    <% current_student_id ||= nil %>
-    <% if current_student_id && study_group.member_ids.include?(current_student_id) %>
+    <% active_student_id = local_assigns.fetch(:current_student_id, nil) %>
+    <% if active_student_id && study_group.member_ids.include?(active_student_id) %>
       <%= button_to "Leave Group", 
-                    leave_study_group_path(study_group, student_id: current_student_id),
+                    leave_study_group_path(study_group, student_id: active_student_id),
                     method: :delete,
                     class: "btn btn-secondary btn-sm",
                     data: { 
@@ -59,7 +59,7 @@
       <span class="joined-badge">✓ Joined</span>
     <% else %>
       <%= button_to "Join Group", 
-                    join_study_group_path(study_group, student_id: current_student_id || Student.first&.student_id),
+                    join_study_group_path(study_group, student_id: active_student_id || current_student_id),
                     method: :post,
                     class: "btn btn-primary btn-sm",
                     data: { turbo_stream: true },

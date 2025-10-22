@@ -1,0 +1,19 @@
+<div id="study_group_actions" class="detail-actions">
+  <% if current_student_id && study_group.member_ids.include?(current_student_id) %>
+    <%= button_to "Leave Group",
+                  leave_study_group_path(study_group, student_id: current_student_id),
+                  method: :delete,
+                  class: "btn btn-secondary",
+                  data: { turbo_stream: true, confirm: "Are you sure you want to leave this group?" } %>
+  <% else %>
+    <%= button_to "Join Group",
+                  join_study_group_path(study_group, student_id: current_student_id),
+                  method: :post,
+                  class: "btn btn-primary",
+                  data: { turbo_stream: true },
+                  disabled: study_group.status == "past" %>
+  <% end %>
+
+  <%= link_to "Back to Course", course_path(study_group.course), class: "btn btn-secondary" %>
+</div>
+
