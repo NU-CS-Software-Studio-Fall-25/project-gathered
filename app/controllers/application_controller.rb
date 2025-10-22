@@ -11,7 +11,9 @@ class ApplicationController < ActionController::Base
   def ensure_current_student
     return if session[:student_id].present?
 
-    session[:student_id] = Student.order(:name).first&.student_id
+    # Only set a student if there are students in the database
+    first_student = Student.order(:name).first
+    session[:student_id] = first_student&.student_id
   end
 
   def current_student_id

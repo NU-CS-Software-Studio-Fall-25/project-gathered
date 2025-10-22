@@ -1,4 +1,4 @@
-# GatherEd
+# GatherEd: https://gathered-b4a8186deca9.herokuapp.com
 
 Study Group Finder
 
