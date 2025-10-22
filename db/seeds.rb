@@ -9,7 +9,7 @@
 #   end
 
 # db/seeds.rb
-require "faker"
+# Simple seed data for production deployment
 
 ActiveRecord::Base.transaction do
   # 0) Clean slate (dev only)
@@ -17,46 +17,47 @@ ActiveRecord::Base.transaction do
   ApplicationRecord.connection.execute("TRUNCATE #{tables.join(', ')} RESTART IDENTITY CASCADE")
 
   # 1) Students
-  STUDENT_COUNT = 100
-  students = Array.new(STUDENT_COUNT) do
-    Student.create!(name: Faker::Name.name)
-  end
+  students = [
+    Student.create!(name: "Alice Johnson"),
+    Student.create!(name: "Bob Smith"),
+    Student.create!(name: "Carol Davis"),
+    Student.create!(name: "David Wilson"),
+    Student.create!(name: "Eve Brown"),
+    Student.create!(name: "Frank Miller"),
+    Student.create!(name: "Grace Lee"),
+    Student.create!(name: "Henry Taylor"),
+    Student.create!(name: "Ivy Chen"),
+    Student.create!(name: "Jack Anderson")
+  ]
 
   # 2) Courses
-  course_specs = [
-    ["COMP_SCI 110 – Intro to CS",    "Programming fundamentals",         "Prof. Lee"],
-    ["COMP_SCI 211 – Fund. II",       "Data structures & recursion",      "Prof. Chen"],
-    ["COMP_SCI 214 – Data Structures","Abstract data types & analysis",   "Prof. Patel"],
-    ["COMP_SCI 340 – Networking",     "Computer networks & Wireshark",    "Prof. Ghena"],
-    ["IEMS 341 – Social Networks",    "Network models & inference",       "Prof. Hammond"],
-    ["MATH 240 – Linear Algebra",     "Matrices, eigenvalues, eigvecs",   "Prof. Nguyen"],
-    ["STAT 350 – Regression",         "Applied linear models",            "Prof. Kim"]
+  courses = [
+    Course.create!(course_name: "COMP_SCI 110 – Intro to CS", description: "Programming fundamentals", professor: "Prof. Lee"),
+    Course.create!(course_name: "COMP_SCI 211 – Fund. II", description: "Data structures & recursion", professor: "Prof. Chen"),
+    Course.create!(course_name: "COMP_SCI 214 – Data Structures", description: "Abstract data types & analysis", professor: "Prof. Patel"),
+    Course.create!(course_name: "COMP_SCI 340 – Networking", description: "Computer networks & Wireshark", professor: "Prof. Ghena"),
+    Course.create!(course_name: "IEMS 341 – Social Networks", description: "Network models & inference", professor: "Prof. Hammond"),
+    Course.create!(course_name: "MATH 240 – Linear Algebra", description: "Matrices, eigenvalues, eigvecs", professor: "Prof. Nguyen"),
+    Course.create!(course_name: "STAT 350 – Regression", description: "Applied linear models", professor: "Prof. Kim")
   ]
-  courses = course_specs.map do |name, desc, prof|
-    Course.create!(course_name: name, description: desc, professor: prof)
-  end
 
   # 3) Study groups per course
-  topics = {
-    "COMP_SCI 340 – Networking" => ["DNS Proxy project", "TCP vs UDP review", "Wireshark lab prep"],
-    "IEMS 341 – Social Networks"=> ["ERGM practice", "RSiena walkthrough", "Modularity & community"],
-    "MATH 240 – Linear Algebra"  => ["SVD practice", "Eigenvalues jam", "Problem set review"]
-  }
   groups = []
   courses.each do |course|
-    rand(2..5).times do
+    2.times do |i|
       creator = students.sample
-      topic   = (topics[course.course_name] || ["Homework review", "Midterm prep", "Project kickoff"]).sample
+      topics = ["Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review"]
+      topic = topics.sample
 
-      start = Time.current + rand(1..30).days + rand(10..19).hours
-      finish = start + rand(60..150).minutes
+      start = Time.current + (i + 1).days + 14.hours
+      finish = start + 2.hours
 
       groups << StudyGroup.create!(
         course_id:   course.course_id,
         creator_id:  creator.student_id,
         topic:       topic,
-        description: Faker::Lorem.sentence(word_count: 14),
-        location:    "#{Faker::Educator.campus} Room #{rand(100..499)}",
+        description: "Join us for a collaborative study session to review course material and prepare for upcoming assignments.",
+        location:    "Tech Building Room #{100 + i * 50}",
         start_time:  start,
         end_time:    finish
       )
@@ -65,7 +66,7 @@ ActiveRecord::Base.transaction do
 
   # 4) Enroll students into courses (student_courses)
   courses.each do |course|
-    enrolled = students.sample(rand(30..60)) # unique by default
+    enrolled = students.sample(5) # 5 students per course
     enrolled.each do |stu|
       StudentCourse.create!(student_id: stu.student_id, course_id: course.course_id)
     end
@@ -76,7 +77,7 @@ ActiveRecord::Base.transaction do
     enrolled_ids = StudentCourse.where(course_id: grp.course_id).pluck(:student_id)
     next if enrolled_ids.empty?
 
-    member_ids = enrolled_ids.sample([rand(8..20), enrolled_ids.size].min)
+    member_ids = enrolled_ids.sample([3, enrolled_ids.size].min)
     member_ids.each do |sid|
       GroupMembership.create!(student_id: sid, group_id: grp.group_id)
     end
