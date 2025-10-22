@@ -144,6 +144,7 @@ class StudyGroupsController < ApplicationController
     student_id = determine_student_id
 
     if student_id
+
       GroupMembership.where(student_id: student_id, group_id: @study_group.group_id).delete_all
       @study_group.reload
 
