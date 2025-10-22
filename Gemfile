@@ -61,7 +61,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pg", "~> 1.6"
+gem "pg", "~> 1.6", group: :production
 
 group :development, :test do
   #library for generating contrived data

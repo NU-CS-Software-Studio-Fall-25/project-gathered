@@ -17,7 +17,7 @@ ActiveRecord::Base.transaction do
   ApplicationRecord.connection.execute("TRUNCATE #{tables.join(', ')} RESTART IDENTITY CASCADE")
 
   # 1) Students
-  STUDENT_COUNT = 150
+  STUDENT_COUNT = 100
   students = Array.new(STUDENT_COUNT) do
     Student.create!(name: Faker::Name.name)
   end
