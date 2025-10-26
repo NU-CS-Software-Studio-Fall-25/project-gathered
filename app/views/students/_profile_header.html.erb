@@ -1,0 +1,19 @@
+<div class="profile-header">
+  <div class="profile-avatar">
+    <%= student.name[0].upcase %>
+  </div>
+  <div class="profile-info">
+    <h1><%= student.name %></h1>
+    <p class="profile-subtitle">Student Profile</p>
+  </div>
+  <div class="profile-actions">
+    <%= link_to "Edit Profile", 
+                edit_student_path(student), 
+                class: "btn btn-secondary",
+                data: { turbo_frame: "edit_profile_form" } %>
+  </div>
+</div>
+
+<turbo-frame id="edit_profile_form">
+  <!-- Edit form will load here -->
+</turbo-frame>

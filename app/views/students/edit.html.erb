@@ -1,0 +1,48 @@
+<turbo-frame id="edit_profile_form">
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Edit Profile</h2>
+      <%= link_to "✕", 
+                  student_path(@student),
+                  class: "close-form",
+                  data: { turbo_frame: "_top" } %>
+    </div>
+
+    <%= form_with model: @student, 
+                  url: student_path(@student),
+                  method: :patch,
+                  data: { turbo: true } do |f| %>
+      
+      <% if @student.errors.any? %>
+        <div class="form-errors">
+          <h3><%= pluralize(@student.errors.count, "error") %> prevented this profile from being saved:</h3>
+          <ul>
+            <% @student.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :name, "Full Name" %>
+        <%= f.text_field :name, 
+                         class: "form-control",
+                         placeholder: "Enter your name",
+                         required: true,
+                         maxlength: 100 %>
+        <% if @student.errors[:name].any? %>
+          <span class="error"><%= @student.errors[:name].first %></span>
+        <% end %>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Save Changes", class: "btn btn-primary" %>
+        <%= link_to "Cancel", 
+                    student_path(@student), 
+                    class: "btn btn-secondary",
+                    data: { turbo_frame: "_top" } %>
+      </div>
+    <% end %>
+  </div>
+</turbo-frame>

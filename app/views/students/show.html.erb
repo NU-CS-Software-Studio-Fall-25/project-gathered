@@ -1,0 +1,117 @@
+<div class="container">
+  <%= link_to "← Back to Courses", root_path, class: "back-link" %>
+  
+  <div id="flash_messages" class="flash-container"></div>
+
+  <div class="student-profile">
+    <div id="student_profile_header">
+      <%= render "students/profile_header", student: @student %>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-header">
+        <h2>My Study Groups</h2>
+        <span class="section-count"><%= @study_groups.count %></span>
+      </div>
+
+      <% if @study_groups.any? %>
+        <div class="study-groups-list">
+          <% @study_groups.each do |study_group| %>
+            <div class="profile-study-group-card">
+              <div class="profile-group-header">
+                <h3><%= study_group.topic %></h3>
+                <span class="status-badge <%= study_group.status %>"><%= study_group.status.titleize %></span>
+              </div>
+              
+              <div class="profile-group-details">
+                <div class="detail-row">
+                  <span class="icon">📚</span>
+                  <span class="detail-text"><%= study_group.course.course_name %></span>
+                </div>
+                
+                <div class="detail-row">
+                  <span class="icon">📅</span>
+                  <span class="detail-text"><%= study_group.formatted_time_range %></span>
+                </div>
+                
+                <% if study_group.location.present? %>
+                  <div class="detail-row">
+                    <span class="icon">📍</span>
+                    <span class="detail-text"><%= study_group.location %></span>
+                  </div>
+                <% end %>
+                
+                <div class="detail-row">
+                  <span class="icon">👥</span>
+                  <span class="detail-text"><%= study_group.member_count %> members</span>
+                </div>
+              </div>
+              
+              <div class="profile-group-actions">
+                <%= link_to "View Details", study_group_path(study_group), class: "btn btn-primary btn-sm" %>
+                <%= button_to "Leave", 
+                              leave_study_group_path(study_group, student_id: @student.student_id),
+                              method: :delete,
+                              class: "btn btn-secondary btn-sm",
+                              data: { confirm: "Are you sure you want to leave this group?" } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state-card">
+          <p>You haven't joined any study groups yet.</p>
+          <%= link_to "Browse Courses", root_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="profile-section">
+      <div class="section-header">
+        <h2>Study Groups I Created</h2>
+        <span class="section-count"><%= @created_groups.count %></span>
+      </div>
+
+      <% if @created_groups.any? %>
+        <div class="study-groups-list">
+          <% @created_groups.each do |study_group| %>
+            <div class="profile-study-group-card creator-card">
+              <div class="profile-group-header">
+                <h3><%= study_group.topic %></h3>
+                <span class="status-badge <%= study_group.status %>"><%= study_group.status.titleize %></span>
+                <span class="creator-badge">Creator</span>
+              </div>
+              
+              <div class="profile-group-details">
+                <div class="detail-row">
+                  <span class="icon">📚</span>
+                  <span class="detail-text"><%= study_group.course.course_name %></span>
+                </div>
+                
+                <div class="detail-row">
+                  <span class="icon">📅</span>
+                  <span class="detail-text"><%= study_group.formatted_time_range %></span>
+                </div>
+                
+                <div class="detail-row">
+                  <span class="icon">👥</span>
+                  <span class="detail-text"><%= study_group.member_count %> members</span>
+                </div>
+              </div>
+              
+              <div class="profile-group-actions">
+                <%= link_to "View Details", study_group_path(study_group), class: "btn btn-primary btn-sm" %>
+                <%= link_to "Edit", edit_study_group_path(study_group), class: "btn btn-secondary btn-sm" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state-card">
+          <p>You haven't created any study groups yet.</p>
+          <%= link_to "Create a Study Group", root_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

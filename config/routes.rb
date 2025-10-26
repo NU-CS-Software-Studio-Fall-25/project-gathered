@@ -25,5 +25,8 @@ Rails.application.routes.draw do
     end
   end
 
+  # Student profiles
+  resources :students, only: [ :show, :edit, :update ]
+
   resource :student_session, only: :create
 end

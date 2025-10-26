@@ -1,4 +1,11 @@
 <div class="student-selector">
+  <div class="nav-links">
+    <%= link_to "Home", root_path, class: "nav-link" %>
+    <% if current_student %>
+      <%= link_to "My Profile", student_path(current_student), class: "nav-link" %>
+    <% end %>
+  </div>
+  
   <%= form_with url: student_session_path, method: :post, class: "student-selector-form", data: { turbo: true } do %>
     <label for="student_selector">Signed in as</label>
     <div class="student-selector-controls">
@@ -10,4 +17,5 @@
     </div>
   <% end %>
 </div>
+
 
