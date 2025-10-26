@@ -75,10 +75,18 @@ class StudyGroupsController < ApplicationController
 
   def destroy
     course = @study_group.course
+    creator_id = @study_group.creator_id
     @study_group.destroy
 
     respond_to do |format|
-      format.html { redirect_to course_path(course), notice: "Study group deleted." }
+      format.html do
+        # If the request came from the profile page, redirect back there
+        if request.referer&.include?("students/")
+          redirect_to student_path(creator_id), notice: "Study group deleted."
+        else
+          redirect_to course_path(course), notice: "Study group deleted."
+        end
+      end
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.remove("study_group_#{@study_group.group_id}"),

@@ -102,6 +102,11 @@
               <div class="profile-group-actions">
                 <%= link_to "View Details", study_group_path(study_group), class: "btn btn-primary btn-sm" %>
                 <%= link_to "Edit", edit_study_group_path(study_group), class: "btn btn-secondary btn-sm" %>
+                <%= button_to "Delete", 
+                              study_group_path(study_group),
+                              method: :delete,
+                              class: "btn btn-danger btn-sm",
+                              data: { confirm: "Are you sure? This will permanently delete the study group and remove all members." } %>
               </div>
             </div>
           <% end %>

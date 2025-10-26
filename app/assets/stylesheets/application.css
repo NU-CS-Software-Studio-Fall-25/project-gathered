@@ -176,6 +176,10 @@ body {
     cursor: pointer;
     transition: var(--transition-fast);
     text-align: center;
+    white-space: nowrap;
+    min-width: 120px;
+    height: 38px;
+    line-height: 1.2;
 }
 
 .btn-primary {
@@ -198,6 +202,17 @@ body {
     background-color: #4b5563;
 }
 
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
 .btn-text {
     background-color: transparent;
     color: var(--primary-color);
@@ -211,6 +226,9 @@ body {
 .btn-sm {
     padding: 0.5rem 1rem;
     font-size: 0.8125rem;
+    min-width: 110px;
+    height: 34px;
+    white-space: nowrap;
 }
 
 .btn:disabled {
