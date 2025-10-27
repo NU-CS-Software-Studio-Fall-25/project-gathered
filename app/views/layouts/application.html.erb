@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Project Gathered" %></title>
+    <title><%= content_for(:title) || "GatherEd - Study Group Finder" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,11 +23,14 @@
   </head>
 
   <body>
-    <header class="global-header">
-      <div class="container">
-        <%= render "shared/student_selector" %>
-      </div>
-    </header>
-    <%= yield %>
+    <% unless controller_name == 'sessions' && action_name == 'new' || controller_name == 'students' && action_name == 'new' %>
+      <%= render "shared/header" %>
+    <% end %>
+    
+    <main class="main-content">
+      <%= yield %>
+    </main>
+    
+    <%= render "shared/footer" %>
   </body>
 </html>

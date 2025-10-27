@@ -1,0 +1,114 @@
+<div class="container">
+  <div class="dashboard-header">
+    <h1>Welcome back, <%= current_student.name %>!</h1>
+    <p class="dashboard-subtitle">Here's what's happening with your study groups</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- My Courses Section -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>My Courses</h2>
+        <%= link_to "View All Courses", root_path, class: "btn btn-outline btn-sm" %>
+      </div>
+      
+      <% if @enrolled_courses.any? %>
+        <div class="courses-grid">
+          <% @enrolled_courses.each do |course| %>
+            <div class="course-card">
+              <div class="course-header">
+                <h3><%= course.course_name %></h3>
+                <p class="course-professor"><%= course.professor %></p>
+              </div>
+              
+              <div class="course-stats">
+                <div class="stat">
+                  <span class="stat-number"><%= course.study_group_count %></span>
+                  <span class="stat-label">Study Groups</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number"><%= course.enrolled_student_count %></span>
+                  <span class="stat-label">Students</span>
+                </div>
+              </div>
+              
+              <div class="course-actions">
+                <%= link_to "View Course", course_path(course), class: "btn btn-primary btn-sm" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-icon">📚</div>
+          <h3>No Courses Yet</h3>
+          <p>You haven't enrolled in any courses yet. Browse available courses to get started!</p>
+          <%= link_to "Browse Courses", root_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Upcoming Study Groups -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Upcoming Study Groups</h2>
+        <%= link_to "View All Groups", student_path, class: "btn btn-outline btn-sm" %>
+      </div>
+      
+      <% if @upcoming_study_groups.any? %>
+        <div class="study-groups-list">
+          <% @upcoming_study_groups.each do |study_group| %>
+            <div class="study-group-item">
+              <div class="group-info">
+                <h4><%= study_group.topic %></h4>
+                <p class="group-course"><%= study_group.course.course_name %></p>
+                <div class="group-meta">
+                  <span class="group-time">📅 <%= study_group.formatted_time_range %></span>
+                  <% if study_group.location.present? %>
+                    <span class="group-location">📍 <%= study_group.location %></span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="group-actions">
+                <%= link_to "View", study_group_path(study_group), class: "btn btn-sm btn-outline" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state-small">
+          <p>No upcoming study groups</p>
+          <%= link_to "Find Study Groups", root_path, class: "btn btn-outline btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Recent Study Groups -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Recent Activity</h2>
+      </div>
+      
+      <% if @recent_study_groups.any? %>
+        <div class="study-groups-list">
+          <% @recent_study_groups.each do |study_group| %>
+            <div class="study-group-item">
+              <div class="group-info">
+                <h4><%= study_group.topic %></h4>
+                <p class="group-course"><%= study_group.course.course_name %></p>
+                <div class="group-meta">
+                  <span class="group-time">📅 <%= study_group.formatted_time_range %></span>
+                  <span class="group-status status-<%= study_group.status %>"><%= study_group.status.capitalize %></span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state-small">
+          <p>No recent activity</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

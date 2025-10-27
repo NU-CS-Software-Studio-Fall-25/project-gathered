@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="page-header">
+    <h1>My Study Groups</h1>
+    <p class="page-subtitle">Manage your study group memberships and activities</p>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <span class="avatar-text"><%= current_student.name.first.upcase %></span>
+        </div>
+        <div class="profile-info">
+          <h2><%= current_student.name %></h2>
+          <p class="profile-email"><%= current_student.email %></p>
+        </div>
+        <div class="profile-actions">
+          <%= link_to "Edit Profile", edit_student_path, class: "btn btn-outline" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="study-groups-section">
+      <h3>My Study Groups</h3>
+      
+      <% if current_student.study_groups.any? %>
+        <div class="study-groups-grid">
+          <% current_student.study_groups.includes(:course, :creator).each do |study_group| %>
+            <div class="study-group-card">
+              <div class="group-header">
+                <h4><%= study_group.topic %></h4>
+                <span class="group-course"><%= study_group.course.course_name %></span>
+              </div>
+              
+              <div class="group-details">
+                <p class="group-description"><%= study_group.description %></p>
+                <div class="group-meta">
+                  <span class="group-time">📅 <%= study_group.formatted_time_range %></span>
+                  <span class="group-location">📍 <%= study_group.location %></span>
+                </div>
+              </div>
+              
+              <div class="group-actions">
+                <%= link_to "View Details", study_group_path(study_group), class: "btn btn-sm btn-outline" %>
+                <%= link_to "Leave Group", leave_study_group_path(study_group), method: :delete, 
+                            class: "btn btn-sm btn-danger", 
+                            data: { confirm: "Are you sure you want to leave this study group?" } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-icon">📚</div>
+          <h3>No Study Groups Yet</h3>
+          <p>You haven't joined any study groups. Browse courses to find study groups that interest you!</p>
+          <%= link_to "Browse Courses", root_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

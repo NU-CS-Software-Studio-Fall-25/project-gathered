@@ -18,16 +18,16 @@ ActiveRecord::Base.transaction do
 
   # 1) Students
   students = [
-    Student.create!(name: "Alice Johnson"),
-    Student.create!(name: "Bob Smith"),
-    Student.create!(name: "Carol Davis"),
-    Student.create!(name: "David Wilson"),
-    Student.create!(name: "Eve Brown"),
-    Student.create!(name: "Frank Miller"),
-    Student.create!(name: "Grace Lee"),
-    Student.create!(name: "Henry Taylor"),
-    Student.create!(name: "Ivy Chen"),
-    Student.create!(name: "Jack Anderson")
+    Student.create!(name: "Alice Johnson", email: "alice@example.com", password: "password123"),
+    Student.create!(name: "Bob Smith", email: "bob@example.com", password: "password123"),
+    Student.create!(name: "Carol Davis", email: "carol@example.com", password: "password123"),
+    Student.create!(name: "David Wilson", email: "david@example.com", password: "password123"),
+    Student.create!(name: "Eve Brown", email: "eve@example.com", password: "password123"),
+    Student.create!(name: "Frank Miller", email: "frank@example.com", password: "password123"),
+    Student.create!(name: "Grace Lee", email: "grace@example.com", password: "password123"),
+    Student.create!(name: "Henry Taylor", email: "henry@example.com", password: "password123"),
+    Student.create!(name: "Ivy Chen", email: "ivy@example.com", password: "password123"),
+    Student.create!(name: "Jack Anderson", email: "jack@example.com", password: "password123")
   ]
 
   # 2) Courses
