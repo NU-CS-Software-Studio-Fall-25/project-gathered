@@ -1,0 +1,34 @@
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="brand-icon">📚</div>
+        <span class="brand-text">GatherEd</span>
+      </div>
+      <p class="footer-description">Connect with fellow students and find study groups for your courses.</p>
+    </div>
+    
+    <div class="footer-links">
+      <div class="footer-section">
+        <h4>Platform</h4>
+        <ul>
+          <li><%= link_to "Courses", root_path, class: "footer-link" %></li>
+          <li><%= link_to "Study Groups", root_path, class: "footer-link" %></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h4>Account</h4>
+        <ul>
+          <li><%= link_to "Profile", edit_student_path, class: "footer-link" %></li>
+          <li><%= link_to "Logout", logout_path, method: :delete, class: "footer-link", 
+                          data: { turbo_method: :delete } %></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2024 GatherEd. Built with Rails & Hotwire.</p>
+  </div>
+</footer>

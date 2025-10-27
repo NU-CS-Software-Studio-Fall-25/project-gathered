@@ -9,8 +9,21 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # Authentication routes
+  get "login", to: "sessions#new"
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy"
+  get "signup", to: "students#new"
+  post "signup", to: "students#create"
+
+  # Dashboard route
+  get "dashboard", to: "dashboard#index"
+
   # Root path - courses listing
   root "courses#index"
+
+  # Student profile
+  resource :student, only: [:show, :edit, :update]
 
   # Courses and their study groups
   resources :courses, only: [ :index, :show ] do
@@ -25,5 +38,6 @@ Rails.application.routes.draw do
     end
   end
 
+  # Legacy route for backward compatibility
   resource :student_session, only: :create
 end

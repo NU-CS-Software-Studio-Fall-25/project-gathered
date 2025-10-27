@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_08_005015) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_164242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_005015) do
   create_table "students", primary_key: "student_id", force: :cascade do |t|
     t.string "name", limit: 100
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.index ["email"], name: "index_students_on_email", unique: true
   end
 
   create_table "study_groups", primary_key: "group_id", force: :cascade do |t|
