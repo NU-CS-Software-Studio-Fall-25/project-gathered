@@ -16,11 +16,9 @@ Rails.application.routes.draw do
   get "signup", to: "students#new"
   post "signup", to: "students#create"
 
-  # Dashboard route
+  # Dashboard route (root path)
+  root "dashboard#index"
   get "dashboard", to: "dashboard#index"
-
-  # Root path - courses listing
-  root "courses#index"
 
   # Student profile
   resource :student, only: [:show, :edit, :update]

@@ -9,7 +9,7 @@
     <div class="dashboard-section">
       <div class="section-header">
         <h2>My Courses</h2>
-        <%= link_to "View All Courses", root_path, class: "btn btn-outline btn-sm" %>
+        <%= link_to "View All Courses", courses_path, class: "btn btn-outline btn-sm" %>
       </div>
       
       <% if @enrolled_courses.any? %>
@@ -43,7 +43,7 @@
           <div class="empty-icon">📚</div>
           <h3>No Courses Yet</h3>
           <p>You haven't enrolled in any courses yet. Browse available courses to get started!</p>
-          <%= link_to "Browse Courses", root_path, class: "btn btn-primary" %>
+          <%= link_to "Browse Courses", courses_path, class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
@@ -78,7 +78,7 @@
       <% else %>
         <div class="empty-state-small">
           <p>No upcoming study groups</p>
-          <%= link_to "Find Study Groups", root_path, class: "btn btn-outline btn-sm" %>
+          <%= link_to "Find Study Groups", courses_path, class: "btn btn-outline btn-sm" %>
         </div>
       <% end %>
     </div>

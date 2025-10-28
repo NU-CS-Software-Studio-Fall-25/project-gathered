@@ -149,7 +149,9 @@ class StudyGroupsController < ApplicationController
       @study_group.reload
 
       respond_to do |format|
-        format.html { redirect_to course_path(@study_group.course), notice: "You left the study group." }
+        format.html { 
+          redirect_back fallback_location: course_path(@study_group.course), notice: "You left the study group." 
+        }
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace(
@@ -177,7 +179,9 @@ class StudyGroupsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { redirect_to course_path(@study_group.course), alert: "Could not leave group." }
+        format.html { 
+          redirect_back fallback_location: course_path(@study_group.course), alert: "Could not leave group." 
+        }
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend(
             "flash_messages",

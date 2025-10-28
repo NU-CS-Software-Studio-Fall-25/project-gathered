@@ -42,9 +42,11 @@
               
               <div class="group-actions">
                 <%= link_to "View Details", study_group_path(study_group), class: "btn btn-sm btn-outline" %>
-                <%= link_to "Leave Group", leave_study_group_path(study_group), method: :delete, 
-                            class: "btn btn-sm btn-danger", 
-                            data: { confirm: "Are you sure you want to leave this study group?" } %>
+                <%= button_to "Leave Group",
+                              leave_study_group_path(study_group, student_id: current_student.student_id),
+                              method: :delete,
+                              class: "btn btn-sm btn-danger",
+                              form: { style: "display: inline;", data: { turbo: false } } %>
               </div>
             </div>
           <% end %>
@@ -54,7 +56,7 @@
           <div class="empty-icon">📚</div>
           <h3>No Study Groups Yet</h3>
           <p>You haven't joined any study groups. Browse courses to find study groups that interest you!</p>
-          <%= link_to "Browse Courses", root_path, class: "btn btn-primary" %>
+          <%= link_to "Browse Courses", courses_path, class: "btn btn-primary" %>
         </div>
       <% end %>
     </div>
