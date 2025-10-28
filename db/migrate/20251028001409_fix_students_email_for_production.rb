@@ -11,13 +11,16 @@ class FixStudentsEmailForProduction < ActiveRecord::Migration[8.0]
     # Now make email column not null
     change_column_null :students, :email, false
     
-    # Add password_digest column if it doesn't exist
-    add_column :students, :password_digest, :string, null: false unless column_exists?(:students, :password_digest)
+    # Add password_digest column if it doesn't exist (nullable first)
+    add_column :students, :password_digest, :string, null: true unless column_exists?(:students, :password_digest)
     
     # Update existing students with default password
     Student.where(password_digest: nil).find_each do |student|
       student.update_column(:password_digest, BCrypt::Password.create("password123"))
     end
+    
+    # Now make password_digest column not null
+    change_column_null :students, :password_digest, false
     
     # Add unique index on email
     add_index :students, :email, unique: true unless index_exists?(:students, :email)
