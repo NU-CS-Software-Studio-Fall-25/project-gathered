@@ -12,7 +12,7 @@ WORKDIR /rails
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       build-essential git curl libyaml-dev pkg-config \
-      libvips sqlite3 dos2unix inotify-tools && \
+      libvips sqlite3 dos2unix inotify-tools watchman && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # --- Environment variables ---
@@ -39,4 +39,4 @@ RUN bundle add listen --version "~> 3.8" || true
 EXPOSE 3000
 
 # --- Default command: start Rails with live reload ---
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["bin/dev"]

@@ -68,3 +68,5 @@ group :development, :test do
   gem "faker", "~> 3.4"
 end
 
+
+gem "tailwindcss-rails", "~> 4.4"
