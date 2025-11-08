@@ -11,44 +11,23 @@ class StudyGroupsController < ApplicationController
   end
 
   def new
-    @study_group = @course.study_groups.build
+    if params[:restore_button]
+      render partial: "study_groups/create_button", locals: { course: @course }, layout: false
+    else
+      @study_group = @course.study_groups.build
+    end
   end
 
   def create
     @study_group = @course.study_groups.build(study_group_params)
 
-    if @study_group.save
-      respond_to do |format|
+    respond_to do |format|
+      if @study_group.save
         format.html { redirect_to course_path(@course), notice: "Study group created successfully!" }
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.prepend(
-              "study_groups_list",
-              partial: "study_groups/study_group",
-              locals: { study_group: @study_group }
-            ),
-            turbo_stream.update(
-              "new_group_form",
-              html: ""
-            ),
-            turbo_stream.prepend(
-              "flash_messages",
-              partial: "shared/flash",
-              locals: { message: "Study group created successfully!", type: "success" }
-            )
-          ]
-        end
-      end
-    else
-      respond_to do |format|
+        format.turbo_stream
+      else
         format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "new_group_form",
-            partial: "study_groups/form",
-            locals: { study_group: @study_group, course: @course }
-          )
-        end
+        format.turbo_stream { render :new, status: :unprocessable_entity }
       end
     end
   end
@@ -111,17 +90,12 @@ class StudyGroupsController < ApplicationController
             turbo_stream.replace(
               "study_group_actions",
               partial: "study_groups/detail_actions",
-              locals: { study_group: @study_group }
+              locals: { study_group: @study_group, current_student_id: student_id }
             ),
             turbo_stream.replace(
               "study_group_members",
               partial: "study_groups/members_list",
               locals: { study_group: @study_group, members: @study_group.members.order(:name) }
-            ),
-            turbo_stream.prepend(
-              "flash_messages",
-              partial: "shared/flash",
-              locals: { message: "You joined the study group!", type: "success" }
             )
           ]
         end
@@ -162,17 +136,12 @@ class StudyGroupsController < ApplicationController
             turbo_stream.replace(
               "study_group_actions",
               partial: "study_groups/detail_actions",
-              locals: { study_group: @study_group }
+              locals: { study_group: @study_group, current_student_id: student_id }
             ),
             turbo_stream.replace(
               "study_group_members",
               partial: "study_groups/members_list",
               locals: { study_group: @study_group, members: @study_group.members.order(:name) }
-            ),
-            turbo_stream.prepend(
-              "flash_messages",
-              partial: "shared/flash",
-              locals: { message: "You left the study group.", type: "info" }
             )
           ]
         end

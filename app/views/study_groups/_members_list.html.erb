@@ -1,19 +1,25 @@
-<div id="study_group_members">
-  <h3>Members (<%= members.count %>)</h3>
+<div id="study_group_members" class="bg-white/5 rounded-lg border border-white/10 p-4">
+  <h3 class="text-base font-semibold text-white mb-3">Members (<%= members.count %>)</h3>
 
-  <div class="members-list">
+  <div class="space-y-2">
     <% members.each do |member| %>
-      <div class="member-card">
-        <span class="member-avatar"><%= member.name[0].upcase %></span>
-        <span class="member-name"><%= member.name %></span>
+      <div class="flex items-center gap-2.5 p-2.5 rounded-md bg-white/5 border border-white/10">
+        <div class="flex-shrink-0 w-8 h-8 bg-violet-600/90 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+          <%= member.name[0].upcase %>
+        </div>
+        <div class="flex-1">
+          <span class="block text-white font-medium text-sm"><%= member.name %></span>
+        </div>
         <% if member.student_id == study_group.creator_id %>
-          <span class="creator-badge">Creator</span>
+          <span class="inline-flex items-center rounded-md bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-300 border border-amber-500/30">
+            Creator
+          </span>
         <% end %>
       </div>
     <% end %>
 
     <% if members.empty? %>
-      <p class="empty-state">No members yet. Be the first to join!</p>
+      <p class="text-center text-slate-400 text-sm py-3">No members yet. Be the first to join!</p>
     <% end %>
   </div>
 </div>

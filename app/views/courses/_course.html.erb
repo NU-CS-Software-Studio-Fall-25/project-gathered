@@ -1,0 +1,58 @@
+<%# Course card partial %>
+<div id="course_<%= course.course_id %>"
+     class="course-card" 
+     data-controller="courses"
+     data-courses-expanded-value="false"
+     data-courses-course-id-value="<%= course.course_id %>">
+  <div class="course-header">
+    <h2><%= course.course_name %></h2>
+    <p class="course-professor"><%= course.professor %></p>
+    <p class="course-description"><%= course.description %></p>
+  </div>
+
+  <div class="course-stats">
+    <span class="stat">
+      <strong><%= course.study_group_count %></strong> study groups
+    </span>
+    <span class="stat">
+      <strong><%= course.enrolled_student_count %></strong> students
+    </span>
+  </div>
+
+  <div class="course-actions flex gap-2">
+    <% if current_student.enrolled_in?(course) %>
+      <%= button_to student_course_path(course),
+                    method: :delete,
+                    class: "group/unenroll relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
+                    data: { 
+                      action: "click->courses#confirmUnenroll",
+                      course_name: course.course_name,
+                      turbo_stream: true
+                    } do %>
+        <svg class="w-4 h-4 transition-transform duration-150 ease-out group-hover/unenroll:-translate-x-0.5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+        Unenroll
+      <% end %>
+      <button data-courses-target="toggleButton"
+              data-action="courses#toggle"
+              class="btn btn-secondary"
+              data-turbo-frame="study_groups_<%= course.course_id %>">
+        <span data-courses-target="buttonText">View Study Groups →</span>
+      </button>
+    <% else %>
+      <%= button_to student_courses_path(student_course: { course_id: course.course_id }),
+                    class: "inline-flex items-center justify-center rounded-md bg-violet-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500/90 transition",
+                    data: { turbo_stream: true } do %>
+        Enroll Now
+      <% end %>
+    <% end %>
+  </div>
+
+  <turbo-frame id="study_groups_<%= course.course_id %>" 
+               src="<%= course_path(course, format: :html) %>"
+               data-courses-target="frameContent"
+               class="mt-4">
+  </turbo-frame>
+</div>

@@ -1,0 +1,114 @@
+<%= turbo_stream.update "enrolled-courses" do %>
+  <div class="space-y-3">
+    <% current_student.courses.each do |course| %>
+      <div class="course-item group select-none cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition duration-150 ring-violet-500/50 data-[selected=true]:bg-white/15 data-[selected=true]:ring-2"
+           data-controller="courses"
+           data-courses-course-id-value="<%= course.course_id %>"
+           data-action="click->courses#selectCourse"
+           data-course-id="<%= course.course_id %>"
+           style="">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="text-lg font-semibold text-white"><%= course.course_name %></h3>
+              <div class="flex items-center gap-2">
+                <span class="hidden group-data-[selected=true]:flex items-center gap-1 text-xs font-medium text-violet-300">
+                  <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                  Selected
+                </span>
+                <%= button_to student_course_path(course.course_id), 
+                              method: :delete,
+                              class: "opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-150 inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-500/20 text-slate-400 hover:text-red-300 cursor-pointer",
+                              data: { turbo_frame: "_top" },
+                              onclick: "event.stopPropagation();" do %>
+                  <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+            <p class="text-sm text-slate-300 mb-2">👨‍🏫 <%= course.professor %></p>
+            <p class="text-sm text-slate-400"><%= course.description %></p>
+
+            <div class="mt-3 flex gap-4 text-sm">
+              <div>
+                <div class="font-semibold text-violet-300"><%= course.study_group_count %></div>
+                <div class="text-xs text-slate-400">Groups</div>
+              </div>
+              <div>
+                <div class="font-semibold text-violet-300"><%= course.enrolled_student_count %></div>
+                <div class="text-xs text-slate-400">Students</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-3 border-t border-white/5">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400 group-data-[selected=true]:text-violet-300">
+              <span class="group-data-[selected=true]:hidden">Click to view study groups</span>
+              <span class="hidden group-data-[selected=true]:inline">Showing study groups</span>
+            </span>
+            <svg class="w-4 h-4 text-slate-400 group-data-[selected=true]:text-violet-300 transition-transform duration-200 group-data-[selected=true]:rotate-90" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if current_student.courses.empty? %>
+      <div class="text-center rounded-lg border border-white/10 bg-white/5 p-8">
+        <div class="text-4xl mb-2">📚</div>
+        <h3 class="text-lg font-semibold text-white mb-1">No Courses Yet</h3>
+        <p class="text-sm text-slate-300">Search and add courses from the left panel</p>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= turbo_stream.update "course-list" do %>
+  <% @course.reload %>
+  <% current_student.reload %>
+  <% Course.all.each do |course| %>
+    <% enrolled = current_student.courses.include?(course) %>
+    <div class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer hidden group"
+         data-courses-expanded-value="false"
+         data-courses-course-id-value="<%= course.course_id %>"
+         data-search-text="<%= "#{course.course_name} #{course.professor} #{course.description}".downcase %>"
+         data-course-name="<%= course.course_name %>">
+      <div class="flex items-start gap-2 p-2.5">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-medium text-white truncate"><%= course.course_name %></h3>
+          <p class="text-xs text-slate-400 truncate">👨‍🏫 <%= course.professor %></p>
+        </div>
+        <% if enrolled %>
+          <div class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md bg-green-500/20 text-green-300">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        <% else %>
+          <%= form_with model: StudentCourse.new(course_id: course.course_id), 
+                        url: student_courses_path, 
+                        class: "shrink-0" do |f| %>
+            <%= f.hidden_field :course_id, value: course.course_id %>
+            <%= f.button type: "submit",
+                        class: "group/btn relative inline-flex items-center justify-center w-7 h-7 rounded-md bg-white/5 hover:bg-violet-500/20 cursor-pointer transition-all duration-150",
+                        data: { turbo_frame: "_top" } do %>
+              <div class="icon-container transition-transform duration-150 ease-out group-hover/btn:scale-110 group-active/btn:scale-90">
+                <svg class="plus-icon w-5 h-5 text-violet-300 group-hover/btn:text-violet-200 transform transition-transform duration-150 ease-out group-hover/btn:rotate-180" 
+                     viewBox="0 0 20 20" 
+                     fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

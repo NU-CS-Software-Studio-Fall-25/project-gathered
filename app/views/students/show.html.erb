@@ -1,64 +1,53 @@
-<div class="container">
-  <div class="page-header">
-    <h1>My Study Groups</h1>
-    <p class="page-subtitle">Manage your study group memberships and activities</p>
-  </div>
+<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4 pt-20 pb-10">
+  <div class="relative w-full max-w-7xl">
+    <!-- Subtle glow background -->
+    <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-400/30 via-violet-500/20 to-indigo-400/30 blur-3xl opacity-60"></div>
 
-  <div class="profile-content">
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-avatar">
-          <span class="avatar-text"><%= current_student.name.first.upcase %></span>
-        </div>
-        <div class="profile-info">
-          <h2><%= current_student.name %></h2>
-          <p class="profile-email"><%= current_student.email %></p>
-        </div>
-        <div class="profile-actions">
-          <%= link_to "Edit Profile", edit_student_path, class: "btn btn-outline" %>
-        </div>
+    <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-semibold text-white mb-2">My Study Groups</h1>
+        <p class="text-sm text-slate-300">Your active study group memberships</p>
       </div>
-    </div>
 
-    <div class="study-groups-section">
-      <h3>My Study Groups</h3>
-      
-      <% if current_student.study_groups.any? %>
-        <div class="study-groups-grid">
-          <% current_student.study_groups.includes(:course, :creator).each do |study_group| %>
-            <div class="study-group-card">
-              <div class="group-header">
-                <h4><%= study_group.topic %></h4>
-                <span class="group-course"><%= study_group.course.course_name %></span>
-              </div>
-              
-              <div class="group-details">
-                <p class="group-description"><%= study_group.description %></p>
-                <div class="group-meta">
-                  <span class="group-time">📅 <%= study_group.formatted_time_range %></span>
-                  <span class="group-location">📍 <%= study_group.location %></span>
+      <!-- Study Groups Section -->
+      <div>
+        <% if current_student.study_groups.any? %>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <% current_student.study_groups.includes(:course, :creator).each do |study_group| %>
+              <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+                <div class="mb-3">
+                  <h4 class="text-md font-semibold text-white"><%= study_group.topic %></h4>
+                  <span class="text-xs text-slate-400"><%= study_group.course.course_name %></span>
+                </div>
+
+                <div class="mb-3 pb-3 border-b border-white/5">
+                  <p class="text-sm text-slate-300"><%= study_group.description %></p>
+                  <div class="text-xs text-slate-400 mt-2 space-y-1">
+                    <div>📅 <%= study_group.formatted_time_range %></div>
+                    <div>📍 <%= study_group.location %></div>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <%= link_to "View Details", study_group_path(study_group), class: "flex-1 inline-flex items-center justify-center rounded-md border border-white/20 px-3 py-1.5 text-sm text-slate-100 hover:bg-white/5 transition cursor-pointer" %>
+                  <%= button_to "Leave",
+                                leave_study_group_path(study_group, student_id: current_student.student_id),
+                                method: :delete,
+                                class: "flex-1 inline-flex items-center justify-center rounded-md bg-red-600/80 px-3 py-1.5 text-sm text-white hover:bg-red-500/80 transition cursor-pointer",
+                                form: { data: { turbo: false } } %>
                 </div>
               </div>
-              
-              <div class="group-actions">
-                <%= link_to "View Details", study_group_path(study_group), class: "btn btn-sm btn-outline" %>
-                <%= button_to "Leave Group",
-                              leave_study_group_path(study_group, student_id: current_student.student_id),
-                              method: :delete,
-                              class: "btn btn-sm btn-danger",
-                              form: { style: "display: inline;", data: { turbo: false } } %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="empty-state">
-          <div class="empty-icon">📚</div>
-          <h3>No Study Groups Yet</h3>
-          <p>You haven't joined any study groups. Browse courses to find study groups that interest you!</p>
-          <%= link_to "Browse Courses", courses_path, class: "btn btn-primary" %>
-        </div>
-      <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="bg-white/5 rounded-lg border border-white/10 p-8 text-center">
+            <div class="text-4xl mb-2">📚</div>
+            <h3 class="text-lg font-semibold text-white mb-1">No Study Groups Yet</h3>
+            <p class="text-sm text-slate-300 mb-4">You haven't joined any study groups. Browse courses to find study groups that interest you!</p>
+            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-violet-600/90 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-violet-500/90 transition cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>

@@ -8,7 +8,9 @@ class CoursesController < ApplicationController
     @study_groups = @course.study_groups.includes(:creator, :group_memberships).order(start_time: :asc)
 
     respond_to do |format|
-      format.html
+      format.html do
+        render layout: !params[:partial]
+      end
       format.turbo_stream
     end
   end

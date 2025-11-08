@@ -1,4 +1,4 @@
-<header class="absolute w-full z-10">
+<header class="absolute w-full z-10 select-none">
   <div class="w-full mx-auto">
     <div class="relative backdrop-blur-sm shadow p-4 flex items-center justify-between h-16">
       <div class="flex items-center gap-3">
@@ -24,15 +24,14 @@
 
       <div class="flex items-center gap-3">
         <!-- Profile dropdown: opens on hover or focus -->
-        <div class="relative inline-block text-left group w-35">
-          <button type="button" class="flex justify-center items-center gap-2 rounded-md bg-violet-600/40 w-auto px-4 py-2 text-base font-semibold text-white shadow-sm hover:bg-violet-600/70 focus:outline-none cursor-pointer transition">
-            <span>Hi, <%= current_student&.name || "Student" %></span>
-            <span class="text-sm">▾</span>
+        <div class="relative inline-block text-left group">
+          <button type="button" class="flex justify-center items-center rounded-md bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none cursor-pointer transition">
+            <span><%= current_student&.name || "Student" %></span>
           </button>
 
           <div class="absolute right-0 mt-1 w-44 bg-violet-700/20 backdrop-blur-lg rounded-md border border-white/10 shadow-md py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible transform translate-y-1 group-hover:translate-y-0 transition-all duration-150 ease-out z-20 pointer-events-auto">
             <%= link_to "Profile", edit_student_path, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
-            <%= link_to "Logout", logout_path, method: :delete, data: { confirm: "Are you sure you want to logout?", turbo_method: :delete }, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
+            <%= link_to "Logout", logout_path, method: :delete, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
           </div>
         </div>
       </div>
