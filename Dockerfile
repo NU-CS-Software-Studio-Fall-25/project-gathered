@@ -47,8 +47,13 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Fix Windows CRLF line endings before running Rails commands
 RUN find ./bin -type f -exec dos2unix {} + && \
-    find ./ -type f -name "*.sh" -exec dos2unix {} + && \
-    SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+    find ./ -type f -name "*.sh" -exec dos2unix {} +
+
+# Build Tailwind CSS for production
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails tailwindcss:build
+
+# Precompile Rails assets (which will include the built Tailwind CSS)
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
