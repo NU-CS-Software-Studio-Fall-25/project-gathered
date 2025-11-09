@@ -7,7 +7,7 @@
 
   <div id="study_groups_list" class="space-y-3">
     <% study_groups.each do |study_group| %>
-      <%= render partial: "study_groups/study_group", locals: { study_group: study_group } %>
+      <%= render partial: "study_groups/study_group", locals: { study_group: study_group, current_student_id: local_assigns[:current_student_id] } %>
     <% end %>
     
     <% if study_groups.empty? %>

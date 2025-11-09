@@ -1,6 +1,6 @@
 <%# Prepend the new study group %>
 <%= turbo_stream.prepend "study_groups_list" do %>
-  <%= render partial: "study_groups/study_group", locals: { study_group: @study_group } %>
+  <%= render partial: "study_groups/study_group", locals: { study_group: @study_group, current_student_id: current_student_id } %>
 <% end %>
 
 <%# Remove empty state if it exists %>
