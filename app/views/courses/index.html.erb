@@ -1,15 +1,16 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
-  <div class="mx-auto max-w-[90rem] px-6 pt-16">
-    <div class="relative">
+  <div class="mx-auto max-w-[90rem] px-6 pt-16 pb-6 flex flex-col">
+    <div class="relative flex-shrink-0">
       <div id="flash_messages" class="mb-4"></div>
+    </div>
 
       <!-- Three Column Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div class="flex flex-col lg:flex-row gap-4">
         
         <!-- Left Column: Course Search -->
-        <div class="lg:col-span-3">
-          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 overflow-hidden" style="max-height: calc(100vh - 3rem);">
-            <h2 class="text-lg font-semibold text-white mb-3">Find Courses</h2>
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/4">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+            <h2 class="text-xl font-semibold text-white mb-4">Find Courses</h2>
             <!-- Search Input -->
             <div class="relative mb-3">
               <input type="text" 
@@ -22,11 +23,11 @@
             </div>
 
             <!-- Search Results with gradient -->
-            <div class="relative">
-              <div class="space-y-2 overflow-y-auto scrollbar-hide" id="course-list" style="max-height: calc(100vh - 13rem);">
+            <div class="relative flex-1 min-h-0">
+              <div class="space-y-2 overflow-y-auto scrollbar-hide h-full" id="course-list">
                 <% @courses.each do |course| %>
                 <% enrolled = current_student.courses.include?(course) %>
-                <div class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer group hidden"
+                <div class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer group"
                      data-courses-expanded-value="false"
                      data-courses-course-id-value="<%= course.course_id %>"
                      data-search-text="<%= "#{course.course_name} #{course.professor} #{course.description}".downcase %>"
@@ -69,11 +70,11 @@
         </div>
 
         <!-- Middle Column: My Courses -->
-        <div class="lg:col-span-5">
-          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4">
+        <div class="flex flex-col min-h-[400px] lg:min-h-0 lg:w-5/12">
+          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 pb-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
             <h2 class="text-xl font-semibold text-white mb-4">My Courses</h2>
             
-            <div class="space-y-3" id="enrolled-courses">
+            <div class="space-y-3 overflow-y-auto flex-1 scrollbar-hide" id="enrolled-courses">
               <% current_student.courses.each do |course| %>
                 <div class="course-item group select-none cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition duration-150 ring-violet-500/50 data-[selected=true]:bg-white/15 data-[selected=true]:ring-2"
                      data-controller="courses"
@@ -144,22 +145,18 @@
         </div>
 
         <!-- Right Column: Study Groups -->
-        <div class="lg:col-span-4">
-          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 overflow-hidden" style="max-height: calc(100vh - 3rem);">
-            <h2 class="text-lg font-semibold text-white mb-3">Study Groups</h2>
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/3">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+            <h2 class="text-xl font-semibold text-white mb-4">Study Groups</h2>
             
-            <div class="relative">
-              <div id="study-groups-container" 
-                   class="select-none transition-all duration-300 ease-out overflow-y-auto scrollbar-hide" 
-                   style="max-height: calc(100vh - 10rem);"
+            <div id="study-groups-container" 
+                 class="select-none transition-all duration-300 ease-out overflow-y-auto scrollbar-hide flex-1 min-h-0" 
                    data-empty-state='<div class="text-center rounded-lg border border-white/10 bg-white/5 p-8"><div class="text-4xl mb-2">👥</div><h3 class="text-lg font-semibold text-white mb-1">Study Groups</h3><p class="text-sm text-slate-300">Click on a course to view its study groups</p></div>'>
                 <%= render "courses/empty_study_groups" %>
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   </div>
 </div>
 
@@ -172,9 +169,10 @@ function applySearchFilter() {
   
   const query = searchInput.value.toLowerCase().trim();
   
-  // Only re-apply if there's an actual search query
+  // Show all courses if there's no search query
   if (query.length === 0) {
-    console.log('No search query, skipping filter');
+    const courseItems = courseList.querySelectorAll('.course-item');
+    courseItems.forEach(item => item.classList.remove('hidden'));
     return;
   }
   
@@ -207,8 +205,8 @@ function handleSearchInput() {
   console.log('Search query:', query);
   
   if (query.length === 0) {
-    // Hide all courses when search is empty
-    courseItems.forEach(item => item.classList.add('hidden'));
+    // Show all courses when search is empty
+    courseItems.forEach(item => item.classList.remove('hidden'));
   } else {
     // Filter courses based on search query
     courseItems.forEach(item => {
