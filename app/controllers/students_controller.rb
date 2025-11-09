@@ -9,6 +9,12 @@ class StudentsController < ApplicationController
   end
 
   def create
+    # Check if email already exists before attempting to save
+    if Student.exists?(email: student_params[:email])
+      redirect_to login_path(email: student_params[:email])
+      return
+    end
+    
     @student = Student.new(student_params)
     
     if @student.save

@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
 
   def new
     @student = Student.new
+    # Pre-fill email if provided via params (from signup page)
+    @student.email = params[:email] if params[:email].present?
   end
 
   def create
