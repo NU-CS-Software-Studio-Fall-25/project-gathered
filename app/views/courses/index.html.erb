@@ -1,49 +1,293 @@
-<div class="container">
-  <header class="page-header">
-    <h1>GatherEd - Study Group Finder</h1>
-    <p class="subtitle">Find and join study groups for your courses</p>
-  </header>
+<div class="h-screen overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
+  <div class="mx-auto max-w-[90rem] px-6 pt-16 pb-6 flex flex-col h-full">
+    <div class="relative flex-shrink-0">
+      <div id="flash_messages" class="mb-4"></div>
+    </div>
 
-  <div id="flash_messages" class="flash-container"></div>
+      <!-- Three Column Layout -->
+      <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+        
+        <!-- Left Column: Course Search -->
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/4">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+            <h2 class="text-xl font-semibold text-white mb-4">Find Courses</h2>
+            <!-- Search Input -->
+            <div class="relative mb-3">
+              <input type="text" 
+                     id="course-search" 
+                     placeholder="Search courses..." 
+                     class="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm" />
+              <svg class="absolute right-3 top-2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+              </svg>
+            </div>
 
-  <div class="courses-grid">
-    <% @courses.each do |course| %>
-      <div class="course-card" 
-           data-controller="courses"
-           data-courses-expanded-value="false"
-           data-courses-course-id-value="<%= course.course_id %>">
-        <div class="course-header">
-          <h2><%= course.course_name %></h2>
-          <p class="course-professor"><%= course.professor %></p>
-          <p class="course-description"><%= course.description %></p>
+            <!-- Search Results with gradient -->
+            <div class="relative flex-1 min-h-0">
+              <div class="space-y-2 overflow-y-auto scrollbar-hide h-full" id="course-list">
+                <% @courses.each do |course| %>
+                <% enrolled = current_student.courses.include?(course) %>
+                <div class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer group"
+                     data-courses-expanded-value="false"
+                     data-courses-course-id-value="<%= course.course_id %>"
+                     data-search-text="<%= "#{course.course_name} #{course.professor} #{course.description}".downcase %>"
+                     data-course-name="<%= course.course_name %>">
+                  <div class="flex items-start gap-2 p-2.5">
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-medium text-white truncate"><%= course.course_name %></h3>
+                      <p class="text-xs text-slate-400 truncate">👨‍🏫 <%= course.professor %></p>
+                    </div>
+                    <% if enrolled %>
+                      <div class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md bg-green-500/20 text-green-300">
+                        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                      </div>
+                    <% else %>
+                      <%= form_with model: StudentCourse.new(course_id: course.course_id), 
+                                    url: student_courses_path, 
+                                    class: "shrink-0" do |f| %>
+                        <%= f.hidden_field :course_id, value: course.course_id %>
+                        <%= f.button type: "submit",
+                                    class: "group/btn relative inline-flex items-center justify-center w-7 h-7 rounded-md bg-white/5 hover:bg-violet-500/20 cursor-pointer transition-all duration-150",
+                                    data: { turbo_frame: "_top" } do %>
+                          <div class="icon-container transition-transform duration-150 ease-out group-hover/btn:scale-110 group-active/btn:scale-90">
+                            <svg class="plus-icon w-5 h-5 text-violet-300 group-hover/btn:text-violet-200 transform transition-transform duration-150 ease-out group-hover/btn:rotate-180" 
+                                 viewBox="0 0 20 20" 
+                                 fill="currentColor">
+                              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                            </svg>
+                          </div>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="course-stats">
-          <span class="stat">
-            <strong><%= course.study_group_count %></strong> study groups
-          </span>
-          <span class="stat">
-            <strong><%= course.enrolled_student_count %></strong> students
-          </span>
+        <!-- Middle Column: My Courses -->
+        <div class="flex flex-col min-h-[400px] lg:min-h-0 lg:w-5/12">
+          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 pb-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+            <h2 class="text-xl font-semibold text-white mb-4">My Courses</h2>
+            
+            <div class="space-y-3 overflow-y-auto flex-1 scrollbar-hide" id="enrolled-courses">
+              <% current_student.courses.each do |course| %>
+                <div class="course-item group select-none cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition duration-150 ring-violet-500/50 data-[selected=true]:bg-white/15 data-[selected=true]:ring-2"
+                     data-controller="courses"
+                     data-courses-course-id-value="<%= course.course_id %>"
+                     data-action="click->courses#selectCourse"
+                     data-course-id="<%= course.course_id %>">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                      <div class="flex items-center justify-between mb-1">
+                        <h3 class="text-lg font-semibold text-white"><%= course.course_name %></h3>
+                        <div class="flex items-center gap-2">
+                          <span class="hidden group-data-[selected=true]:flex items-center gap-1 text-xs font-medium text-violet-300">
+                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Selected
+                          </span>
+                          <%= button_to student_course_path(course.course_id), 
+                                        method: :delete,
+                                        class: "opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-150 inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-500/20 text-slate-400 hover:text-red-300 cursor-pointer",
+                                        data: { turbo_frame: "_top" },
+                                        onclick: "event.stopPropagation();" do %>
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                          <% end %>
+                        </div>
+                      </div>
+                      <p class="text-sm text-slate-300 mb-2">👨‍🏫 <%= course.professor %></p>
+                      <p class="text-sm text-slate-400"><%= course.description %></p>
+
+                      <div class="mt-3 flex gap-4 text-sm">
+                        <div>
+                          <div class="font-semibold text-violet-300"><%= course.study_group_count %></div>
+                          <div class="text-xs text-slate-400">Groups</div>
+                        </div>
+                        <div>
+                          <div class="font-semibold text-violet-300"><%= course.enrolled_student_count %></div>
+                          <div class="text-xs text-slate-400">Students</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 pt-3 border-t border-white/5">
+                    <div class="flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400 group-data-[selected=true]:text-violet-300">
+                          <span class="group-data-[selected=true]:hidden">Click to view study groups</span>
+                          <span class="hidden group-data-[selected=true]:inline">Showing study groups</span>
+                        </span>
+                        <svg class="w-4 h-4 text-slate-400 group-data-[selected=true]:text-violet-300 transition-transform duration-200 group-data-[selected=true]:rotate-90" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                      </div>
+                      <%= link_to course_path(course), 
+                                  class: "inline-flex items-center gap-1 rounded-md border border-white/20 px-3 py-1 text-xs text-slate-200 hover:bg-white/5 transition",
+                                  onclick: "event.stopPropagation();" do %>
+                        <span>More</span>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+
+              <% if current_student.courses.empty? %>
+                <div class="text-center rounded-lg border border-white/10 bg-white/5 p-8">
+                  <div class="text-4xl mb-2">📚</div>
+                  <h3 class="text-lg font-semibold text-white mb-1">No Courses Yet</h3>
+                  <p class="text-sm text-slate-300">Search and add courses from the left panel</p>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </div>
 
-        <%= link_to course_path(course), 
-                    class: "btn btn-primary toggle-btn",
-                    data: { 
-                      action: "click->courses#toggle",
-                      courses_target: "toggleButton",
-                      turbo_frame: "course_#{course.course_id}_details"
-                    } do %>
-          <span data-courses-target="buttonText">View Study Groups →</span>
-        <% end %>
-
-        <turbo-frame id="course_<%= course.course_id %>_details" 
-                     class="course-details"
-                     data-courses-target="frameContent">
-          <!-- Study groups will load here -->
-        </turbo-frame>
+        <!-- Right Column: Study Groups -->
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/3">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+            <h2 class="text-xl font-semibold text-white mb-4">Study Groups</h2>
+            
+            <div id="study-groups-container" 
+                 class="select-none transition-all duration-300 ease-out overflow-y-auto scrollbar-hide flex-1 min-h-0" 
+                   data-empty-state='<div class="text-center rounded-lg border border-white/10 bg-white/5 p-8"><div class="text-4xl mb-2">👥</div><h3 class="text-lg font-semibold text-white mb-1">Study Groups</h3><p class="text-sm text-slate-300">Click on a course to view its study groups</p></div>'>
+                <%= render "courses/empty_study_groups" %>
+            </div>
+          </div>
+        </div>
       </div>
-    <% end %>
   </div>
 </div>
+
+<script>
+function applySearchFilter() {
+  const searchInput = document.getElementById('course-search');
+  const courseList = document.getElementById('course-list');
+  
+  if (!searchInput || !courseList) return;
+  
+  const query = searchInput.value.toLowerCase().trim();
+  
+  // Show all courses if there's no search query
+  if (query.length === 0) {
+    const courseItems = courseList.querySelectorAll('.course-item');
+    courseItems.forEach(item => item.classList.remove('hidden'));
+    return;
+  }
+  
+  const courseItems = courseList.querySelectorAll('.course-item');
+  
+  console.log('Applying search filter:', query, 'to', courseItems.length, 'courses');
+  
+  // Filter courses based on search query
+  courseItems.forEach(item => {
+    const searchText = item.getAttribute('data-search-text');
+    if (!searchText) return;
+    
+    if (searchText.includes(query)) {
+      item.classList.remove('hidden');
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+}
+
+function handleSearchInput() {
+  const searchInput = document.getElementById('course-search');
+  const courseList = document.getElementById('course-list');
+  
+  if (!searchInput || !courseList) return;
+  
+  const query = searchInput.value.toLowerCase().trim();
+  const courseItems = courseList.querySelectorAll('.course-item');
+  
+  console.log('Search query:', query);
+  
+  if (query.length === 0) {
+    // Show all courses when search is empty
+    courseItems.forEach(item => item.classList.remove('hidden'));
+  } else {
+    // Filter courses based on search query
+    courseItems.forEach(item => {
+      const searchText = item.getAttribute('data-search-text');
+      if (!searchText) return;
+      
+      if (searchText.includes(query)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  }
+}
+
+function initializeSearch() {
+  const searchInput = document.getElementById('course-search');
+  
+  console.log('Search initialized');
+  
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+  }
+}
+
+// Re-apply search filter after turbo stream updates
+document.addEventListener('turbo:frame-render', function(event) {
+  if (event.target.id === 'course-list' || document.getElementById('course-list')) {
+    applySearchFilter();
+  }
+});
+
+// Re-apply search after any turbo stream action that updates course-list or enrolled-courses
+document.addEventListener('turbo:before-stream-render', function(event) {
+  const target = event.target;
+  if (target) {
+    const streamTarget = target.getAttribute('target') || target.getAttribute('targets');
+    if (streamTarget === 'course-list' || streamTarget === 'enrolled-courses') {
+      // Will apply filter after the stream renders
+      setTimeout(applySearchFilter, 50);
+    }
+  }
+});
+
+// Also listen for updates on enrolled-courses that might affect course-list
+const enrolledCoursesObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.target.id === 'enrolled-courses' || mutation.target.closest('#enrolled-courses')) {
+      setTimeout(applySearchFilter, 50);
+    }
+  });
+});
+
+// Start observing when the page loads
+document.addEventListener('turbo:load', function() {
+  const enrolledCourses = document.getElementById('enrolled-courses');
+  if (enrolledCourses) {
+    enrolledCoursesObserver.observe(enrolledCourses, {
+      childList: true,
+      subtree: true
+    });
+  }
+});
+
+// Initialize on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSearch);
+} else {
+  initializeSearch();
+}
+
+// Initialize on Turbo navigation
+document.addEventListener('turbo:load', initializeSearch);
+</script>
+
+
 

@@ -1,192 +1,303 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 const REQUIREMENTS = {
-  length: (value) => value.length >= 8,
-  lowercase: (value) => /[a-z]/.test(value),
-  uppercase: (value) => /[A-Z]/.test(value),
-  nonAlpha: (value) => /[^A-Za-z]/.test(value)
-}
+	length: (value) => value.length >= 8,
+	lowercase: (value) => /[a-z]/.test(value),
+	uppercase: (value) => /[A-Z]/.test(value),
+	nonAlpha: (value) => /[^A-Za-z]/.test(value),
+};
 
 export default class extends Controller {
-  static targets = [
-    "form",
-    "password",
-    "confirmation",
-    "passwordMessage",
-    "confirmationMessage",
-    "formMessage",
-    "capsLockIndicator",
-    "submit",
-    "requirements"
-  ]
+	static targets = [
+		"form",
+		"email",
+		"password",
+		"confirmation",
+		"passwordMessage",
+		"confirmationMessage",
+		"formMessage",
+		"capsLockIndicator",
+		"submit",
+		"requirements",
+		"requirementsList",
+		"requirementsCheck",
+	];
 
-  connect() {
-    this.passwordValid = false
-    this.confirmationValid = false
-    this.formTarget.setAttribute("novalidate", "novalidate")
-    this.requirementItems = this.requirementsTarget.querySelectorAll("[data-signup-requirement]")
-    this.resetRequirements()
-    this.setSubmitState()
-  }
+	connect() {
+		this.emailValid = false;
+		this.passwordValid = false;
+		this.confirmationValid = false;
+		this.passwordCheckShown = false; // Track if checkmark is already showing
+		this.formTarget.setAttribute("novalidate", "novalidate");
+		this.requirementItems = this.requirementsTarget.querySelectorAll(
+			"[data-signup-requirement]"
+		);
+		this.resetRequirements();
+		this.setSubmitState();
+	}
 
-  validatePassword(event = null) {
-    const value = this.passwordTarget.value
-    const isInputEvent = event?.type === "input"
+	validateEmail(event = null) {
+		if (!this.hasEmailTarget) return;
+		const value = this.emailTarget.value;
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		
+		if (!value) {
+			this.emailValid = false;
+			this.setFieldBorder(this.emailTarget, null);
+			this.setSubmitState();
+			return;
+		}
 
-    if (!value) {
-      this.resetRequirements()
-      this.setPasswordFeedback(isInputEvent ? "" : "Create a password that meets the rules above.", isInputEvent ? null : false)
-      this.passwordValid = false
-      this.setSubmitState()
-      return
-    }
+		const isValid = emailRegex.test(value);
+		this.emailValid = isValid;
+		this.setFieldBorder(this.emailTarget, isValid ? null : false);
+		this.setSubmitState();
+	}
 
-    let allValid = true
-    for (const [key, check] of Object.entries(REQUIREMENTS)) {
-      const satisfied = check(value)
-      allValid = allValid && satisfied
-      this.updateRequirementState(key, satisfied)
-    }
+	validatePassword(event = null) {
+		const value = this.passwordTarget.value;
+		const isInputEvent = event?.type === "input";
 
-    if (!allValid) {
-      this.setPasswordFeedback("Almost there — meet each rule to continue.", false)
-      this.passwordValid = false
-      this.setSubmitState()
-      return
-    }
+		if (!value) {
+			this.resetRequirements();
+			this.passwordValid = false;
+			this.setFieldBorder(this.passwordTarget, null);
+			this.showRequirementsList();
+			this.setSubmitState();
+			return;
+		}
 
-    this.setPasswordFeedback("Great! Your password checks every box.", true)
-    this.passwordValid = true
-    this.validateConfirmation()
-    this.setSubmitState()
-  }
+		let allValid = true;
+		for (const [key, check] of Object.entries(REQUIREMENTS)) {
+			const satisfied = check(value);
+			allValid = allValid && satisfied;
+			this.updateRequirementState(key, satisfied);
+		}
 
-  validateConfirmation(event = null) {
-    if (!this.hasConfirmationTarget) return
-    const value = this.confirmationTarget.value
-    const isInputEvent = event?.type === "input"
+		if (!allValid) {
+			this.passwordValid = false;
+			this.setFieldBorder(this.passwordTarget, false);
+			this.showRequirementsList();
+			this.setSubmitState();
+			return;
+		}
 
-    if (!value) {
-      this.setConfirmationFeedback(isInputEvent ? "" : "Confirm your password so we know it matches.", isInputEvent ? null : false)
-      this.confirmationValid = false
-      this.setSubmitState()
-      return
-    }
+		this.passwordValid = true;
+		this.setFieldBorder(this.passwordTarget, true);
+		
+		// Only show animation if transitioning from invalid to valid
+		if (!this.passwordCheckShown) {
+			this.showRequirementsCheck();
+		}
+		
+		this.validateConfirmation();
+		this.setSubmitState();
+	}
 
-    if (value !== this.passwordTarget.value) {
-      this.setConfirmationFeedback("Passwords need to match exactly.", false)
-      this.confirmationValid = false
-      this.setSubmitState()
-      return
-    }
+	validateConfirmation(event = null) {
+		if (!this.hasConfirmationTarget) return;
+		const value = this.confirmationTarget.value;
+		const isInputEvent = event?.type === "input";
 
-    this.setConfirmationFeedback("Passwords match — nice!", true)
-    this.confirmationValid = true
-    this.setSubmitState()
-  }
+		if (!value) {
+			this.confirmationValid = false;
+			this.setFieldBorder(this.confirmationTarget, null);
+			this.setSubmitState();
+			return;
+		}
 
-  detectCapsLock(event) {
-    if (!this.hasCapsLockIndicatorTarget) return
-    const isOn = event.getModifierState && event.getModifierState("CapsLock")
-    this.capsLockIndicatorTarget.textContent = isOn ? "Caps Lock is on" : ""
-  }
+		if (value !== this.passwordTarget.value) {
+			this.confirmationValid = false;
+			this.setFieldBorder(this.confirmationTarget, false);
+			this.setSubmitState();
+			return;
+		}
 
-  handleSubmit(event) {
-    this.validatePassword()
-    this.validateConfirmation()
+		this.confirmationValid = true;
+		this.setFieldBorder(this.confirmationTarget, true);
+		this.setSubmitState();
+	}
 
-    if (!this.passwordValid || !this.confirmationValid) {
-      event.preventDefault()
-      this.setFormFeedback("Take another look — your password needs to meet every rule.", false)
-      return
-    }
+	detectCapsLock(event) {
+		if (!this.hasCapsLockIndicatorTarget) return;
+		const isOn =
+			event.getModifierState && event.getModifierState("CapsLock");
+		this.capsLockIndicatorTarget.textContent = isOn
+			? "Caps Lock is on"
+			: "";
+	}
 
-    this.setFormFeedback("Creating your account…", true)
-    if (this.hasSubmitTarget) {
-      this.submitTarget.disabled = true
-      this.submitTarget.setAttribute("aria-disabled", "true")
-    }
-  }
+	handleSubmit(event) {
+		this.validateEmail();
+		this.validatePassword();
+		this.validateConfirmation();
 
-  setPasswordFeedback(message, state) {
-    this.updateFeedback(this.passwordMessageTarget, message, state)
-  }
+		if (!this.emailValid || !this.passwordValid || !this.confirmationValid) {
+			event.preventDefault();
+			this.setFormFeedback(
+				"Take another look — fix the errors above to continue.",
+				false
+			);
+			return;
+		}
 
-  setConfirmationFeedback(message, state) {
-    this.updateFeedback(this.confirmationMessageTarget, message, state)
-  }
+		this.setFormFeedback("Creating your account…", true);
+		if (this.hasSubmitTarget) {
+			this.submitTarget.disabled = true;
+			this.submitTarget.setAttribute("aria-disabled", "true");
+		}
+	}
 
-  setFormFeedback(message, state) {
-    if (!this.hasFormMessageTarget) return
-    this.updateFeedback(this.formMessageTarget, message, state)
-  }
+	setPasswordFeedback(message, state) {
+		this.updateFeedback(this.passwordMessageTarget, message, state);
+	}
 
-  setSubmitState() {
-    if (!this.hasSubmitTarget) return
-    const ready = this.passwordValid && this.confirmationValid
-    this.submitTarget.disabled = !ready
-    this.submitTarget.setAttribute("aria-disabled", String(!ready))
-  }
+	setConfirmationFeedback(message, state) {
+		this.updateFeedback(this.confirmationMessageTarget, message, state);
+	}
 
-  resetRequirements() {
-    this.requirementItems?.forEach((item) => {
-      this.applyRequirementState(item, "neutral")
-    })
-  }
+	setFormFeedback(message, state) {
+		if (!this.hasFormMessageTarget) return;
+		this.updateFeedback(this.formMessageTarget, message, state);
+	}
 
-  updateRequirementState(name, satisfied) {
-    if (!this.requirementItems) return
-    this.requirementItems.forEach((item) => {
-      if (item.dataset.signupRequirement !== name) return
-      this.applyRequirementState(item, satisfied ? "valid" : "invalid")
-    })
-  }
+	setSubmitState() {
+		if (!this.hasSubmitTarget) return;
+		const ready = this.emailValid && this.passwordValid && this.confirmationValid;
+		this.submitTarget.disabled = !ready;
+		this.submitTarget.setAttribute("aria-disabled", String(!ready));
+	}
 
-  applyRequirementState(item, state) {
-    const dot = item.querySelector("span")
-    item.classList.remove("text-emerald-200", "text-rose-200", "text-violet-100", "text-slate-300", "text-emerald-300", "text-rose-300")
+	setFieldBorder(field, isValid) {
+		if (!field) return;
+		
+		// Remove all border classes
+		field.classList.remove(
+			"border-white/20",
+			"border-red-500/50",
+			"border-emerald-500/50"
+		);
+		
+		// Add appropriate border class
+		if (isValid === true) {
+			field.classList.add("border-emerald-500/50");
+		} else if (isValid === false) {
+			field.classList.add("border-red-500/50");
+		} else {
+			field.classList.add("border-white/20");
+		}
+	}
 
-    let textClass = "text-violet-100"
-    let dotClass = "bg-violet-300"
+	resetRequirements() {
+		this.requirementItems?.forEach((item) => {
+			this.applyRequirementState(item, "neutral");
+		});
+	}
 
-    if (state === "valid") {
-      textClass = "text-emerald-200"
-      dotClass = "bg-emerald-300"
-    } else if (state === "invalid") {
-      textClass = "text-rose-200"
-      dotClass = "bg-rose-300"
-    }
+	updateRequirementState(name, satisfied) {
+		if (!this.requirementItems) return;
+		this.requirementItems.forEach((item) => {
+			if (item.dataset.signupRequirement !== name) return;
+			this.applyRequirementState(item, satisfied ? "valid" : "invalid");
+		});
+	}
 
-    item.classList.add(textClass)
-    if (dot) {
-      dot.classList.remove("bg-emerald-300", "bg-rose-300", "bg-violet-300", "bg-slate-300")
-      dot.classList.add(dotClass)
-    }
-  }
+	applyRequirementState(item, state) {
+		const requirementName = item.dataset.signupRequirement;
+		const checkmark = item.querySelector(`[data-signup-checkmark="${requirementName}"]`);
+		const xmark = item.querySelector(`[data-signup-xmark="${requirementName}"]`);
+		const text = item.querySelector(`[data-signup-text="${requirementName}"]`);
+		
+		if (!checkmark || !xmark || !text) return;
 
-  updateFeedback(target, message, state) {
-    if (!target) return
-    const neutralClass = "text-violet-100"
+		// Apply classes based on state
+		if (state === "valid") {
+			// Show checkmark, hide X mark
+			checkmark.classList.remove("opacity-0");
+			checkmark.classList.add("opacity-100");
+			xmark.classList.remove("opacity-100");
+			xmark.classList.add("opacity-0");
+			// Add strikethrough and dim text
+			text.classList.add("line-through", "opacity-60");
+		} else {
+			// Hide checkmark, show X mark
+			checkmark.classList.remove("opacity-100");
+			checkmark.classList.add("opacity-0");
+			xmark.classList.remove("opacity-0");
+			xmark.classList.add("opacity-100");
+			// Remove strikethrough and dim
+			text.classList.remove("line-through", "opacity-60");
+		}
+	}
 
-    if (!message) {
-      target.textContent = ""
-      target.classList.remove("text-emerald-200", "text-rose-200", "text-emerald-300", "text-rose-300", "text-slate-300")
-      if (!target.classList.contains(neutralClass)) target.classList.add(neutralClass)
-      return
-    }
+	showRequirementsList() {
+		if (!this.hasRequirementsListTarget || !this.hasRequirementsCheckTarget) return;
+		
+		this.passwordCheckShown = false; // Reset flag when showing list
+		this.requirementsListTarget.classList.remove("opacity-0");
+		this.requirementsListTarget.classList.add("opacity-100");
+		this.requirementsCheckTarget.classList.remove("opacity-100");
+		this.requirementsCheckTarget.classList.add("opacity-0");
+	}
 
-    const isPositive = state === true
-    const isNegative = state === false
+	showRequirementsCheck() {
+		if (!this.hasRequirementsListTarget || !this.hasRequirementsCheckTarget) return;
+		
+		this.passwordCheckShown = true; // Mark that checkmark is now shown
+		this.requirementsListTarget.classList.remove("opacity-100");
+		this.requirementsListTarget.classList.add("opacity-0");
+		this.requirementsCheckTarget.classList.remove("opacity-0");
+		this.requirementsCheckTarget.classList.add("opacity-100", "checkmark-animate");
+		
+		// Trigger shine animation after fade completes
+		setTimeout(() => {
+			this.requirementsTarget.classList.add("shine-once");
+			// Remove the class after animation completes so it can be triggered again
+			setTimeout(() => {
+				this.requirementsTarget.classList.remove("shine-once");
+			}, 1500);
+		}, 500);
+		
+		// Remove checkmark animation class after it completes
+		setTimeout(() => {
+			this.requirementsCheckTarget.classList.remove("checkmark-animate");
+		}, 500);
+	}
 
-    target.textContent = message
-    target.classList.remove("text-emerald-300", "text-rose-300", "text-slate-300")
-    target.classList.toggle("text-emerald-200", isPositive)
-    target.classList.toggle("text-rose-200", isNegative)
+	updateFeedback(target, message, state) {
+		if (!target) return;
+		const neutralClass = "text-violet-100";
 
-    if (!isPositive && !isNegative) {
-      target.classList.add(neutralClass)
-    } else {
-      target.classList.remove(neutralClass)
-    }
-  }
+		if (!message) {
+			target.textContent = "";
+			target.classList.remove(
+				"text-emerald-200",
+				"text-rose-200",
+				"text-emerald-300",
+				"text-rose-300",
+				"text-slate-300"
+			);
+			if (!target.classList.contains(neutralClass))
+				target.classList.add(neutralClass);
+			return;
+		}
+
+		const isPositive = state === true;
+		const isNegative = state === false;
+
+		target.textContent = message;
+		target.classList.remove(
+			"text-emerald-300",
+			"text-rose-300",
+			"text-slate-300"
+		);
+		target.classList.toggle("text-emerald-200", isPositive);
+		target.classList.toggle("text-rose-200", isNegative);
+
+		if (!isPositive && !isNegative) {
+			target.classList.add(neutralClass);
+		} else {
+			target.classList.remove(neutralClass);
+		}
+	}
 }

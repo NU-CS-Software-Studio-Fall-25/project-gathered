@@ -1,74 +1,83 @@
-<div id="study_group_<%= study_group.group_id %>" class="study-group-card status-<%= study_group.status %>">
-  <div class="study-group-header">
-    <h4 class="study-group-topic"><%= study_group.topic %></h4>
-    <span class="status-badge <%= study_group.status %>"><%= study_group.status.titleize %></span>
-  </div>
-
-  <div class="study-group-details">
-    <div class="detail-row">
-      <span class="icon">📅</span>
-      <span class="detail-text"><%= study_group.formatted_time_range %></span>
-    </div>
-
-    <% if study_group.location.present? %>
-      <div class="detail-row">
-        <span class="icon">📍</span>
-        <span class="detail-text"><%= study_group.location %></span>
+<div id="study_group_<%= study_group.group_id %>" 
+     class="rounded-lg border border-white/10 bg-white/5 p-4 transition hover:bg-white/8">
+  <div class="flex items-start justify-between gap-4">
+    <div class="flex-1">
+      <div class="mb-2 flex items-center justify-between">
+        <h4 class="text-lg font-semibold text-white"><%= study_group.topic %></h4>
+        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'active' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
+          <%= study_group.status.titleize %>
+        </span>
       </div>
-    <% end %>
 
-    <% if study_group.description.present? %>
-      <div class="detail-row">
-        <span class="icon">📝</span>
-        <span class="detail-text"><%= study_group.description %></span>
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 text-sm text-slate-300">
+          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📅</span>
+          <span><%= study_group.formatted_time_range %></span>
+        </div>
+
+        <% if study_group.location.present? %>
+          <div class="flex items-center gap-2 text-sm text-slate-300">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📍</span>
+            <span><%= study_group.location %></span>
+          </div>
+        <% end %>
+
+        <% if study_group.description.present? %>
+          <div class="flex items-start gap-2 text-sm text-slate-300">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📝</span>
+            <span><%= study_group.description %></span>
+          </div>
+        <% end %>
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 text-sm text-slate-400">
+          <div class="flex items-center gap-1.5">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">👤</span>
+            <span>Created by <%= study_group.creator.name %></span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">👥</span>
+            <span id="member_count_<%= study_group.group_id %>">
+              <strong class="font-medium text-violet-300"><%= study_group.member_count %></strong> 
+              <%= "member".pluralize(study_group.member_count) %>
+            </span>
+          </div>
+
+          <% if study_group.duration_minutes %>
+            <div class="flex items-center gap-1.5">
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">⏱️</span>
+              <span><%= study_group.duration_minutes %> minutes</span>
+            </div>
+          <% end %>
+        </div>
       </div>
-    <% end %>
 
-    <div class="detail-row">
-      <span class="icon">👤</span>
-      <span class="detail-text">Created by <%= study_group.creator.name %></span>
-    </div>
+      <div class="mt-4 flex items-center gap-2" id="join_button_<%= study_group.group_id %>">
+        <% active_student_id = local_assigns.fetch(:current_student_id, nil) %>
+        <% if active_student_id && study_group.member_ids.include?(active_student_id) %>
+          <%= button_to leave_study_group_path(study_group, student_id: active_student_id),
+                      method: :delete,
+                      class: "cursor-pointer group/leave relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
+                      data: { turbo_stream: true } do %>
+            <svg class="w-4 h-4 transition-transform duration-150 ease-out group-hover/leave:scale-110" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+            Leave
+          <% end %>
+        <% else %>
+          <%= button_to "Join Group", 
+                      join_study_group_path(study_group, student_id: active_student_id || current_student_id),
+                      method: :post,
+                      class: "cursor-pointer inline-flex items-center justify-center rounded-md bg-violet-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500/90 transition #{study_group.status == 'past' ? 'opacity-50 cursor-not-allowed' : ''}",
+                      data: { turbo_stream: true },
+                      disabled: study_group.status == "past" %>
+        <% end %>
 
-    <div class="detail-row">
-      <span class="icon">👥</span>
-      <span class="detail-text" id="member_count_<%= study_group.group_id %>">
-        <strong><%= study_group.member_count %></strong> 
-        <%= "member".pluralize(study_group.member_count) %>
-      </span>
-    </div>
-
-    <% if study_group.duration_minutes %>
-      <div class="detail-row">
-        <span class="icon">⏱️</span>
-        <span class="detail-text"><%= study_group.duration_minutes %> minutes</span>
+        <%= link_to "View Details →", 
+                  study_group_path(study_group), 
+                  class: "inline-flex items-center justify-center rounded-md border border-white/20 px-3 py-1.5 text-sm font-medium text-slate-300 hover:bg-white/5 transition" %>
       </div>
-    <% end %>
-  </div>
-
-  <div class="study-group-actions" id="join_button_<%= study_group.group_id %>">
-    <% active_student_id = local_assigns.fetch(:current_student_id, nil) %>
-    <% if active_student_id && study_group.member_ids.include?(active_student_id) %>
-      <%= button_to "Leave Group", 
-                    leave_study_group_path(study_group, student_id: active_student_id),
-                    method: :delete,
-                    class: "btn btn-secondary btn-sm",
-                    data: { 
-                      turbo_stream: true,
-                      confirm: "Are you sure you want to leave this group?"
-                    } %>
-      <span class="joined-badge">✓ Joined</span>
-    <% else %>
-      <%= button_to "Join Group", 
-                    join_study_group_path(study_group, student_id: active_student_id || current_student_id),
-                    method: :post,
-                    class: "btn btn-primary btn-sm",
-                    data: { turbo_stream: true },
-                    disabled: study_group.status == "past" %>
-    <% end %>
-
-    <%= link_to "Details", 
-                study_group_path(study_group), 
-                class: "btn btn-text btn-sm" %>
+    </div>
   </div>
 </div>
 

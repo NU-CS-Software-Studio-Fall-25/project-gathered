@@ -22,12 +22,12 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <% unless controller_name == 'sessions' && action_name == 'new' || controller_name == 'students' && action_name == 'new' %>
+  <body class="transition-opacity duration-300 bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800">
+    <% if controller_name != 'sessions' && controller_name != 'students' || (controller_name == 'students' && !['new', 'create'].include?(action_name)) %>
       <%= render "shared/header" %>
     <% end %>
     
-    <main class="main-content">
+    <main class="main-content" data-turbo-transition>
       <%= yield %>
     </main>
     

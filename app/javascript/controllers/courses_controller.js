@@ -2,49 +2,239 @@ import { Controller } from "@hotwired/stimulus";
 
 // Handles course card interactions and expanding/collapsing details
 export default class extends Controller {
-    static targets = ["toggleButton", "buttonText", "frameContent"];
-    static values = { expanded: Boolean, courseId: Number };
+    static values = { 
+        expanded: Boolean, 
+        courseId: Number,
+        selected: { type: Boolean, default: false }
+    };
 
     connect() {
         console.log("Courses controller connected");
 
-        // Listen for Turbo Frame load completion
-        this.frameContentTarget.addEventListener("turbo:frame-load", () => {
-            // Check if content was actually loaded
-            if (
-                this.frameContentTarget.innerHTML.trim() &&
-                !this.frameContentTarget.querySelector(".empty-state")
-            ) {
-                this.expand();
-            }
-        });
-    }
+        // Handle initial state on page load
+        const selectedCourseId = sessionStorage.getItem('selectedCourseId');
+        
+        // Check if this course ID still exists in the DOM
+        const enrolledCourses = document.getElementById('enrolled-courses');
+        if (!enrolledCourses) return;
+        
+        const courseItems = enrolledCourses.querySelectorAll('.course-item');
+        const selectedCourseExists = Array.from(courseItems).some(
+            item => item.getAttribute('data-course-id') === selectedCourseId
+        );
+        
+        // If selected course doesn't exist anymore, clear sessionStorage
+        if (selectedCourseId && !selectedCourseExists) {
+            sessionStorage.removeItem('selectedCourseId');
+            sessionStorage.removeItem('courseOrder');
+            // Make sure all courses are visible
+            this.element.style.display = '';
+            this.element.style.opacity = '1';
+            this.element.style.transform = 'translateX(0)';
+            return;
+        }
+        
+        if (selectedCourseId === this.courseIdValue?.toString()) {
+            // This is the selected course
+            this.element.setAttribute('data-selected', 'true');
+            this.loadStudyGroups();
+            
+            // Scroll to top immediately on page load (no smooth animation)
+            window.scrollTo(0, 0);
 
-    toggle(event) {
-        if (this.expandedValue) {
-            // If already expanded, prevent navigation and collapse
-            event.preventDefault();
-            this.collapse();
+            // Hide all other courses immediately (no animation needed on initial load)
+            courseItems.forEach(item => {
+                if (item !== this.element) {
+                    item.style.display = 'none';
+                }
+            });
+        } else if (selectedCourseId) {
+            // Another course is selected, hide this one immediately
+            this.element.style.display = 'none';
         } else {
-            // If collapsed, let Turbo Frame handle the request
-            // The turbo:frame-load event will trigger expand()
+            // No course is selected, make sure this one is visible
+            this.element.style.display = '';
+            this.element.style.opacity = '1';
+            this.element.style.transform = 'translateX(0)';
         }
     }
 
-    expand() {
-        this.expandedValue = true;
-        this.element.classList.add("expanded");
-        this.buttonTextTarget.textContent = "Hide Study Groups ↑";
-        this.toggleButtonTarget.classList.remove("btn-primary");
-        this.toggleButtonTarget.classList.add("btn-secondary");
+    selectCourse(event) {
+        // Don't handle clicks on buttons inside the course item (like unenroll)
+        if (event.target.closest('button[type="submit"]')) {
+            return;
+        }
+
+        // Toggle selection state of this course
+        const wasSelected = this.element.getAttribute('data-selected') === 'true';
+        const enrolledCourses = document.getElementById('enrolled-courses');
+        const courseItems = Array.from(enrolledCourses.querySelectorAll('.course-item'));
+        
+        if (!wasSelected) {
+            // Store the current order of courses for later
+            const courseOrder = courseItems.map(item => item.getAttribute('data-course-id'));
+            sessionStorage.setItem('courseOrder', JSON.stringify(courseOrder));
+            
+            // Hide all other courses with a fade out animation
+            courseItems.forEach(item => {
+                if (item !== this.element) {
+                    item.style.transition = 'opacity 150ms ease-out, transform 150ms ease-out';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-1rem)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 150);
+                }
+            });
+
+            // Add selected state to this course
+            this.element.setAttribute('data-selected', 'true');
+            
+            // Save selected course ID
+            sessionStorage.setItem('selectedCourseId', this.courseIdValue);
+            this.loadStudyGroups();
+            
+            // Scroll to top of the page smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Remove selected state
+            this.element.setAttribute('data-selected', 'false');
+            sessionStorage.removeItem('selectedCourseId');
+            
+            // Get the stored course order
+            const courseOrder = JSON.parse(sessionStorage.getItem('courseOrder') || '[]');
+            
+            // Show all courses with a fade in animation
+            courseItems.forEach(item => {
+                item.style.display = ''; // Reset display first
+                // Use setTimeout to ensure display change has taken effect
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 0);
+            });
+
+            // Restore the original order
+            if (courseOrder.length > 0) {
+                const fragment = document.createDocumentFragment();
+                courseOrder.forEach(courseId => {
+                    const item = courseItems.find(item => item.getAttribute('data-course-id') === courseId);
+                    if (item) fragment.appendChild(item);
+                });
+                enrolledCourses.appendChild(fragment);
+            }
+
+            // Clear study groups panel
+            const container = document.getElementById('study-groups-container');
+            if (container) {
+                const emptyState = container.getAttribute('data-empty-state');
+                container.innerHTML = emptyState || `
+                    <div class="text-center rounded-lg border border-white/10 bg-white/5 p-8">
+                        <div class="text-4xl mb-2">👥</div>
+                        <h3 class="text-lg font-semibold text-white mb-1">Study Groups</h3>
+                        <p class="text-sm text-slate-300">Click on a course to view its study groups</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Prevent default link behavior
+        event.preventDefault();
     }
 
-    collapse() {
-        this.expandedValue = false;
-        this.frameContentTarget.innerHTML = "";
-        this.element.classList.remove("expanded");
-        this.buttonTextTarget.textContent = "View Study Groups →";
-        this.toggleButtonTarget.classList.remove("btn-secondary");
-        this.toggleButtonTarget.classList.add("btn-primary");
+    loadStudyGroups() {
+        const container = document.getElementById('study-groups-container');
+        if (!container) return;
+
+        // Store current height for smooth transition
+        const currentHeight = container.offsetHeight;
+        container.style.height = `${currentHeight}px`;
+        
+        // Add transitions for both opacity and height
+        container.classList.add('transition-all', 'duration-300', 'ease-out');
+        
+        // Fade out current content
+        container.style.opacity = '0';
+        
+        // Wait for fade out
+        setTimeout(() => {
+            // Show loading state
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="animate-spin h-6 w-6 border-2 border-violet-500 rounded-full border-t-transparent mx-auto"></div>
+                </div>
+            `;
+            
+            // Allow container to animate to loading spinner height
+            container.style.height = 'auto';
+            const loadingHeight = container.offsetHeight;
+            container.style.height = `${currentHeight}px`;
+            
+            // Trigger reflow
+            container.offsetHeight;
+            
+            // Animate to new height and fade in
+            container.style.height = `${loadingHeight}px`;
+            container.style.opacity = '1';
+        }, 150);
+        
+        // Load study groups
+        fetch(`/courses/${this.courseIdValue}?partial=true`)
+            .then(response => response.text())
+            .then(html => {
+                // Fade out loading spinner
+                container.style.opacity = '0';
+                
+                setTimeout(() => {
+                    const contentOnly = html.replace(/.*<body[^>]*>|<\/body>.*/g, '');
+                    container.innerHTML = contentOnly;
+                    
+                    // Get the new content height
+                    const newHeight = container.scrollHeight;
+                    container.style.height = `${container.offsetHeight}px`;
+                    
+                    // Trigger reflow
+                    container.offsetHeight;
+                    
+                    // Animate to new height and fade in
+                    container.style.height = `${newHeight}px`;
+                    container.style.opacity = '1';
+                    
+                    // Remove fixed height after animation
+                    setTimeout(() => {
+                        container.style.height = '';
+                    }, 300);
+                }, 150);
+            })
+            .catch(error => {
+                console.error('Error loading study groups:', error);
+                container.style.opacity = '0';
+                
+                setTimeout(() => {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <div class="text-4xl mb-2">❌</div>
+                            <h3 class="text-lg font-semibold text-white mb-1">Error Loading Study Groups</h3>
+                            <p class="text-sm text-slate-300">Please try again</p>
+                        </div>
+                    `;
+                    
+                    // Get error state height
+                    const errorHeight = container.scrollHeight;
+                    container.style.height = `${container.offsetHeight}px`;
+                    
+                    // Trigger reflow
+                    container.offsetHeight;
+                    
+                    // Animate to new height and fade in
+                    container.style.height = `${errorHeight}px`;
+                    container.style.opacity = '1';
+                    
+                    // Remove fixed height after animation
+                    setTimeout(() => {
+                        container.style.height = '';
+                    }, 300);
+                }, 150);
+            });
     }
 }

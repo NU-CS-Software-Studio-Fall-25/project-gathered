@@ -36,6 +36,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Student course enrollment
+  resources :student_courses, only: [:create, :destroy]
+
   # Legacy route for backward compatibility
   resource :student_session, only: :create
 end

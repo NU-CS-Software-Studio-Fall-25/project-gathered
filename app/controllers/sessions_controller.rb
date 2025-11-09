@@ -4,6 +4,8 @@ class SessionsController < ApplicationController
 
   def new
     @student = Student.new
+    # Pre-fill email if provided via params (from signup page)
+    @student.email = params[:email] if params[:email].present?
   end
 
   def create
@@ -21,9 +23,10 @@ class SessionsController < ApplicationController
         flash.now[:alert] = "Invalid password for this email"
         render :new, status: :unprocessable_entity
       else
-        # Email doesn't exist, redirect to signup with pre-filled email
-        redirect_to signup_path(email: session_params[:email]), 
-                    alert: "No account found with this email. Please create an account."
+        # Email doesn't exist, show message on login page instead of redirecting
+        @student = Student.new(email: session_params[:email])
+        flash.now[:alert] = "No account found with this email"
+        render :new, status: :unprocessable_entity
       end
     end
   end

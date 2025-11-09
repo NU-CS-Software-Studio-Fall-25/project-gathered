@@ -1,4 +1,4 @@
-<header class="absolute w-full z-10">
+<header class="fixed top-0 w-full z-10 select-none">
   <div class="w-full mx-auto">
     <div class="relative backdrop-blur-sm shadow p-4 flex items-center justify-between h-16">
       <div class="flex items-center gap-3">
@@ -14,7 +14,7 @@
             <%= link_to "Dashboard", dashboard_path, class: "text-base transform transition-all duration-150 #{(current_page?(dashboard_path) || current_page?(root_path)) ? 'bg-violet-600/40 hover:bg-violet-600/50 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
           </li>
           <li>
-            <%= link_to "Courses", courses_path, class: "text-base transform transition-all duration-150 #{current_page?(courses_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
+            <%= link_to "Search", courses_path, class: "text-base transform transition-all duration-150 #{current_page?(courses_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
           </li>
           <li>
             <%= link_to "My Groups", student_path, class: "text-base transform transition-all duration-150 #{current_page?(student_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
@@ -24,15 +24,17 @@
 
       <div class="flex items-center gap-3">
         <!-- Profile dropdown: opens on hover or focus -->
-        <div class="relative inline-block text-left group w-35">
-          <button type="button" class="flex justify-center items-center gap-2 rounded-md bg-violet-600/40 w-auto px-4 py-2 text-base font-semibold text-white shadow-sm hover:bg-violet-600/70 focus:outline-none cursor-pointer transition">
-            <span>Hi, <%= current_student&.name || "Student" %></span>
-            <span class="text-sm">▾</span>
+        <div class="relative inline-block text-left group">
+          <button type="button" class="flex justify-center items-center gap-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none cursor-pointer transition">
+            <span><%= current_student&.name&.split&.first || "Student" %></span>
+            <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background-color: <%= current_student&.avatar_color || '#9333ea' %>;">
+              <%= (current_student&.name || "S")[0].upcase %>
+            </div>
           </button>
 
           <div class="absolute right-0 mt-1 w-44 bg-violet-700/20 backdrop-blur-lg rounded-md border border-white/10 shadow-md py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible transform translate-y-1 group-hover:translate-y-0 transition-all duration-150 ease-out z-20 pointer-events-auto">
             <%= link_to "Profile", edit_student_path, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
-            <%= link_to "Logout", logout_path, method: :delete, data: { confirm: "Are you sure you want to logout?", turbo_method: :delete }, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
+            <%= link_to "Logout", logout_path, method: :delete, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
           </div>
         </div>
       </div>

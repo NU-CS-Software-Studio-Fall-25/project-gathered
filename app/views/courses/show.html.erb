@@ -1,62 +1,50 @@
-<% if turbo_frame_request? %>
-  <turbo-frame id="course_<%= @course.course_id %>_details">
-    <div class="study-groups-section">
-      <div class="section-header">
-        <h3>Study Groups for <%= @course.course_name %></h3>
-        <%= link_to "Create New Group", 
-                    new_course_study_group_path(@course), 
-                    class: "btn btn-secondary btn-sm",
-                    data: { 
-                      turbo_frame: "new_group_form",
-                      action: "click->study-groups#showForm"
-                    } %>
+<% if params[:partial] %>
+  <%= render partial: "study_groups/list", locals: { course: @course, study_groups: @study_groups, current_student_id: current_student_id } %>
+<% else %>
+  <div class="min-h-screen flex items-start bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
+    <div class="container mx-auto px-4 pt-20 mb-10">
+      <div id="flash_messages" class="flash-container"></div>
+
+      <div class="mb-8 text-center">
+        <h1 class="text-2xl font-bold text-white mb-2"><%= @course.course_name %></h1>
+        <p class="text-lg text-slate-300 mb-1">👨‍🏫 <%= @course.professor %></p>
+        <p class="text-slate-400 mb-4"><%= @course.description %></p>
+        
+        <% if current_student.courses.include?(@course) %>
+          <div class="flex items-center justify-center gap-3">
+            <%= link_to "javascript:history.back()", class: "inline-flex items-center gap-2 rounded-md border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/5 transition" do %>
+              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+              </svg>
+              <span>Back</span>
+            <% end %>
+            <%= button_to student_course_path(@course.course_id), 
+                          method: :delete,
+                          class: "cursor-pointer inline-flex items-center gap-2 rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 hover:bg-red-500/20 hover:border-red-400/30 transition",
+                          data: { turbo: false } do %>
+              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+              <span>Leave Course</span>
+            <% end %>
+          </div>
+        <% else %>
+          <%= link_to "javascript:history.back()", class: "inline-flex items-center gap-2 rounded-md border border-white/20 px-4 py-2 text-sm text-slate-200 hover:bg-white/5 transition" do %>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+            </svg>
+            <span>Back</span>
+          <% end %>
+        <% end %>
       </div>
 
       <turbo-frame id="new_group_form" class="new-group-form">
         <!-- Form will load here -->
       </turbo-frame>
 
-      <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
-        <% if @study_groups.any? %>
-          <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: current_student_id } %>
-        <% else %>
-          <p class="empty-state">No study groups yet. Be the first to create one!</p>
-        <% end %>
+      <div id="study_groups_list" class="study-groups-list overflow-y-auto scrollbar-hide" data-controller="study-groups" style="max-height: calc(100vh - 20rem);">
+        <%= render partial: "study_groups/list", locals: { course: @course, study_groups: @study_groups, current_student_id: current_student_id } %>
       </div>
-    </div>
-  </turbo-frame>
-<% else %>
-  <div class="container">
-    <%= link_to "← Back to Courses", courses_path, class: "back-link" %>
-    
-    <div id="flash_messages" class="flash-container"></div>
-
-    <div class="course-detail-header">
-      <h1><%= @course.course_name %></h1>
-      <p class="course-professor"><%= @course.professor %></p>
-      <p class="course-description"><%= @course.description %></p>
-    </div>
-
-    <div class="section-header">
-      <h2>Study Groups</h2>
-      <%= link_to "Create New Group", 
-                  new_course_study_group_path(@course), 
-                  class: "btn btn-primary",
-                  data: { 
-                    turbo_frame: "new_group_form"
-                  } %>
-    </div>
-
-    <turbo-frame id="new_group_form" class="new-group-form">
-      <!-- Form will load here -->
-    </turbo-frame>
-
-    <div id="study_groups_list" class="study-groups-list" data-controller="study-groups">
-      <% if @study_groups.any? %>
-        <%= render partial: "study_groups/study_group", collection: @study_groups, locals: { current_student_id: current_student_id } %>
-      <% else %>
-        <p class="empty-state">No study groups yet. Be the first to create one!</p>
-      <% end %>
     </div>
   </div>
 <% end %>

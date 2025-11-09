@@ -28,4 +28,20 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        student:
+          attributes:
+            email:
+              blank: "Please enter your email address"
+              invalid: "Please enter a valid email address"
+              taken: "This email is already registered"
+            password:
+              blank: "Please enter a password"
+              too_short: "Password must be at least 6 characters"
+            password_confirmation:
+              confirmation: "Passwords don't match"
+            name:
+              blank: "Please enter your name"
+              too_long: "Name is too long (maximum is 100 characters)"

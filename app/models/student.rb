@@ -2,6 +2,9 @@ class Student < ApplicationRecord
   # Authentication
   has_secure_password
 
+  # Callbacks
+  before_create :set_random_avatar_color
+
   # Associations
   has_many :student_courses, primary_key: :student_id, foreign_key: :student_id, dependent: :destroy
   has_many :courses, through: :student_courses
@@ -25,5 +28,33 @@ class Student < ApplicationRecord
 
   def self.authenticate(email, password)
     find_by(email: email)&.authenticate(password)
+  end
+
+  def self.random_avatar_color
+    # Google-style avatar colors: vibrant and distinct
+    colors = [
+      '#F44336', # Red
+      '#E91E63', # Pink
+      '#9C27B0', # Purple
+      '#673AB7', # Deep Purple
+      '#3F51B5', # Indigo
+      '#2196F3', # Blue
+      '#03A9F4', # Light Blue
+      '#00BCD4', # Cyan
+      '#009688', # Teal
+      '#4CAF50', # Green
+      '#8BC34A', # Light Green
+      '#FF9800', # Orange
+      '#FF5722', # Deep Orange
+      '#795548', # Brown
+      '#607D8B'  # Blue Grey
+    ]
+    colors.sample
+  end
+
+  private
+
+  def set_random_avatar_color
+    self.avatar_color ||= Student.random_avatar_color
   end
 end
