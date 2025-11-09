@@ -16,7 +16,7 @@ ActiveRecord::Base.transaction do
   tables = %w[group_memberships student_courses study_groups courses students]
   ApplicationRecord.connection.execute("TRUNCATE #{tables.join(', ')} RESTART IDENTITY CASCADE")
 
-  # 1) Students
+  # 1) Students (avatar_color will be automatically set by the before_create callback)
   students = [
     Student.create!(name: "Alice Johnson", email: "alice@example.com", password: "password123"),
     Student.create!(name: "Bob Smith", email: "bob@example.com", password: "password123"),

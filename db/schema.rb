@@ -40,7 +40,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_09_220134) do
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "email", null: false
     t.string "password_digest", null: false
-    t.string "avatar_color", default: "#9333ea"
+    t.string "avatar_color"
     t.index ["email"], name: "index_students_on_email", unique: true
   end
 
