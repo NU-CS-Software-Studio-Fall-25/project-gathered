@@ -203,30 +203,30 @@ export default class extends Controller {
 	}
 
 	applyRequirementState(item, state) {
-		const box = item.querySelector("span");
+		const requirementName = item.dataset.signupRequirement;
+		const checkmark = item.querySelector(`[data-signup-checkmark="${requirementName}"]`);
+		const xmark = item.querySelector(`[data-signup-xmark="${requirementName}"]`);
+		const text = item.querySelector(`[data-signup-text="${requirementName}"]`);
 		
-		if (!box) return;
-
-		// Remove all state classes
-		box.classList.remove(
-			"border-emerald-500/50",
-			"border-rose-500/50",
-			"border-violet-300/50",
-			"bg-emerald-500/20",
-			"bg-rose-500/20",
-			"bg-violet-300/20",
-			"text-emerald-200",
-			"text-rose-200",
-			"text-violet-100"
-		);
+		if (!checkmark || !xmark || !text) return;
 
 		// Apply classes based on state
 		if (state === "valid") {
-			box.classList.add("border-emerald-500/50", "bg-emerald-500/20", "text-emerald-200");
-		} else if (state === "invalid") {
-			box.classList.add("border-rose-500/50", "bg-rose-500/20", "text-rose-200");
+			// Show checkmark, hide X mark
+			checkmark.classList.remove("opacity-0");
+			checkmark.classList.add("opacity-100");
+			xmark.classList.remove("opacity-100");
+			xmark.classList.add("opacity-0");
+			// Add strikethrough and dim text
+			text.classList.add("line-through", "opacity-60");
 		} else {
-			box.classList.add("border-violet-300/50", "bg-violet-300/20", "text-violet-100");
+			// Hide checkmark, show X mark
+			checkmark.classList.remove("opacity-100");
+			checkmark.classList.add("opacity-0");
+			xmark.classList.remove("opacity-0");
+			xmark.classList.add("opacity-100");
+			// Remove strikethrough and dim
+			text.classList.remove("line-through", "opacity-60");
 		}
 	}
 
