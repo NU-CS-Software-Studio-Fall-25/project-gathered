@@ -5,9 +5,14 @@
 
     <!-- Profile Edit Card -->
     <div class="relative rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6 w-full">
-      <div class="mb-4">
-        <h1 class="text-2xl font-semibold text-white">Edit Profile</h1>
-        <p class="text-sm text-slate-300">Update your account information</p>
+      <div class="mb-4 flex items-start justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold text-white">Edit Profile</h1>
+          <p class="text-sm text-slate-300">Update your account information</p>
+        </div>
+        <div class="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold text-2xl shadow-lg" style="background-color: <%= @student.avatar_color || '#9333ea' %>;" id="avatar-preview">
+          <%= @student.name[0].upcase %>
+        </div>
       </div>
 
       <%= form_with model: @student, local: true, class: "space-y-2" do |form| %>
@@ -32,6 +37,14 @@
         </div>
 
         <div class="space-y-1">
+          <%= form.label :avatar_color, "Avatar Color", class: "block text-sm font-medium text-slate-200" %>
+          <div class="flex gap-2 items-center">
+            <%= form.color_field :avatar_color, value: @student.avatar_color || '#9333ea', class: "h-10 w-20 rounded-md border border-white/20 bg-white/10 cursor-pointer", id: "avatar-color-input" %>
+            <span class="text-sm text-slate-300">Choose a color for your avatar</span>
+          </div>
+        </div>
+
+        <div class="space-y-1">
           <%= form.label :password, "New Password", class: "block text-sm font-medium text-slate-200" %>
           <%= form.password_field :password, class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm", placeholder: "Leave blank to keep current password" %>
         </div>
@@ -49,3 +62,16 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const colorInput = document.getElementById('avatar-color-input');
+    const avatarPreview = document.getElementById('avatar-preview');
+    
+    if (colorInput && avatarPreview) {
+      colorInput.addEventListener('input', function(e) {
+        avatarPreview.style.backgroundColor = e.target.value;
+      });
+    }
+  });
+</script>

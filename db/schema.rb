@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_28_001409) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_09_220134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_001409) do
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "email", null: false
     t.string "password_digest", null: false
+    t.string "avatar_color", default: "#9333ea"
     t.index ["email"], name: "index_students_on_email", unique: true
   end
 

@@ -46,7 +46,7 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(:name, :email, :password, :password_confirmation)
+    params.require(:student).permit(:name, :email, :password, :password_confirmation, :avatar_color)
   end
 
   def redirect_if_logged_in
