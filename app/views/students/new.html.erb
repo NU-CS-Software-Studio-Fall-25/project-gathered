@@ -3,91 +3,103 @@
     <!-- Subtle glow background -->
     <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-400/30 via-violet-500/20 to-indigo-400/30 blur-3xl opacity-60"></div>
 
-    <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-8 h-136 flex flex-col justify-between">
-      <div class="text-center flex flex-col items-center gap-2 flex-shrink-0 pt-4">
+    <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-8 flex flex-col">
+      <div class="text-center flex flex-col justify-center items-center gap-2 mb-6">
         <h1 class="text-3xl font-semibold text-white">Create Account</h1>
         <p class="text-sm text-slate-300">Join the study group community</p>
       </div>
 
-      <%= form_with model: @student, url: signup_path, local: true, 
-                class: "flex-1 flex flex-col justify-center items-center gap-3 py-4",
-                data: { controller: "validation" } do |form| %>
-        <div class="w-full max-w-sm space-y-3">
-          <div class="relative">
-            <%= form.label :name, class: "block text-sm font-medium text-slate-200" %>
-            <div class="relative">
-              <%= form.text_field :name,
-                    class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
-                    placeholder: "Enter your full name",
-                    required: true,
-                    data: { 
-                      validation_target: "name",
-                      action: "blur->validation#validateName"
-                    } %>
-            </div>
-          </div>
+      <%= form_with model: @student,
+            url: signup_path,
+            local: true,
+            data: { controller: "signup", signup_target: "form", action: "submit->signup#handleSubmit" },
+            class: "space-y-5 flex flex-col items-center" do |form| %>
 
-          <div class="relative">
-            <%= form.label :email, class: "block text-sm font-medium text-slate-200" %>
-            <div class="relative">
-              <%= form.email_field :email,
-                    class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
-                    placeholder: "Enter your email",
-                    required: true,
-                    data: { 
-                      validation_target: "email",
-                      action: "blur->validation#validateEmail"
-                    } %>
-            </div>
+        <% if @student.errors.any? %>
+          <div class="w-full max-w-sm bg-white/5 rounded-md border border-white/10 p-3 text-sm text-rose-200">
+            <ul>
+              <% @student.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
           </div>
+        <% end %>
 
-          <div class="relative">
-            <%= form.label :password, class: "block text-sm font-medium text-slate-200" %>
-            <div class="relative">
-              <%= form.password_field :password,
-                    class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
-                    placeholder: "Create a password (min 6 characters)",
-                    required: true,
-                    data: { 
-                      validation_target: "password",
-                      action: "blur->validation#validatePassword"
-                    } %>
-            </div>
-          </div>
+        <div class="w-full max-w-sm space-y-1.5">
+          <%= form.label :name, class: "block text-sm font-medium text-slate-200" %>
+          <%= form.text_field :name,
+                class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
+                placeholder: "Enter your full name",
+                required: true %>
+        </div>
 
-          <div class="relative">
-            <%= form.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-slate-200" %>
-            <div class="relative">
-              <%= form.password_field :password_confirmation,
-                    class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
-                    placeholder: "Confirm your password",
-                    required: true,
-                    data: { 
-                      validation_target: "passwordConfirmation",
-                      action: "blur->validation#validatePasswordConfirmation"
-                    } %>
-            </div>
-          </div>
+        <div class="w-full max-w-sm space-y-1.5">
+          <%= form.label :email, class: "block text-sm font-medium text-slate-200" %>
+          <%= form.email_field :email,
+                class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
+                placeholder: "Enter your email",
+                required: true %>
+        </div>
 
-          <div class="pt-2">
-            <%= form.submit "Create Account",
-                  class: "w-full inline-flex items-center justify-center rounded-lg bg-violet-600/90 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-violet-900/40 hover:bg-violet-500/90 active:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition" %>
+        <div class="w-full max-w-sm space-y-2">
+          <%= form.label :password, class: "block text-sm font-medium text-slate-200" %>
+          <%= form.password_field :password,
+                autocomplete: "new-password",
+                data: { action: "input->signup#validatePassword blur->signup#validatePassword keyup->signup#detectCapsLock", signup_target: "password" },
+                class: "block w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:border-transparent transition shadow-sm",
+                placeholder: "Create a password",
+                required: true %>
+          <div class="text-xs text-amber-200/90 min-h-[1rem]" data-signup-target="capsLockIndicator" aria-live="polite"></div>
+          <div class="bg-white/10 border border-white/15 rounded-xl p-4 text-xs text-violet-100/90 space-y-2 shadow-inner" data-signup-target="requirements">
+            <p class="font-medium text-violet-50">Password must include:</p>
+            <ul class="space-y-1.5">
+              <li data-signup-requirement="length" class="flex items-center gap-2">
+                <span class="inline-flex h-2 w-2 rounded-full bg-violet-300 transition-all" aria-hidden="true"></span>
+                <span>At least 8 characters</span>
+              </li>
+              <li data-signup-requirement="lowercase" class="flex items-center gap-2">
+                <span class="inline-flex h-2 w-2 rounded-full bg-violet-300 transition-all" aria-hidden="true"></span>
+                <span>One lowercase letter</span>
+              </li>
+              <li data-signup-requirement="uppercase" class="flex items-center gap-2">
+                <span class="inline-flex h-2 w-2 rounded-full bg-violet-300 transition-all" aria-hidden="true"></span>
+                <span>One uppercase letter</span>
+              </li>
+              <li data-signup-requirement="nonAlpha" class="flex items-center gap-2">
+                <span class="inline-flex h-2 w-2 rounded-full bg-violet-300 transition-all" aria-hidden="true"></span>
+                <span>One number or symbol</span>
+              </li>
+            </ul>
           </div>
+          <p class="text-xs text-violet-100 min-h-[1rem] transition" data-signup-target="passwordMessage" role="status"></p>
+        </div>
+
+        <div class="w-full max-w-sm space-y-2">
+          <%= form.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-slate-200" %>
+          <%= form.password_field :password_confirmation,
+                autocomplete: "new-password",
+                data: { action: "input->signup#validateConfirmation blur->signup#validateConfirmation", signup_target: "confirmation" },
+                class: "block w-full rounded-md border border-white/20 bg-white/20 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:border-transparent transition shadow-sm",
+                placeholder: "Confirm your password",
+                required: true %>
+          <p class="text-xs text-violet-100 min-h-[1rem] transition" data-signup-target="confirmationMessage" role="status"></p>
+        </div>
+
+        <div class="w-full max-w-sm pt-2 space-y-2">
+          <p class="text-sm text-violet-100 min-h-[1.25rem]" data-signup-target="formMessage" role="status" aria-live="polite"></p>
+          <%= form.submit "Create Account",
+                data: { signup_target: "submit" },
+                class: "w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-600/90 via-purple-600/90 to-indigo-600/90 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 hover:from-violet-500/90 hover:via-purple-500/90 hover:to-indigo-500/90 active:from-violet-600 active:via-purple-600 active:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition disabled:opacity-70 disabled:cursor-not-allowed" %>
         </div>
       <% end %>
 
-      <div class="flex-shrink-0 flex flex-col items-center gap-3 pb-2">
-        <div class="w-full max-w-sm">
-          <div class="w-full border-t border-white/15 opacity-70"></div>
-        </div>
-        <div class="text-center text-xs text-slate-300">
-          <p>
-            Already have an account?
-            <%= link_to "Sign in",
-                  login_path,
-                  class: "font-medium text-violet-300 hover:text-violet-200 hover:underline underline-offset-2 transition" %>
-          </p>
-        </div>
+      <div class="mt-6 text-center text-xs text-slate-300">
+        <p>
+          Already have an account?
+          <%= link_to "Sign in",
+                login_path,
+                class: "font-medium text-violet-300 hover:text-violet-200 hover:underline underline-offset-2 transition" %>
+        </p>
       </div>
     </div>
   </div>
