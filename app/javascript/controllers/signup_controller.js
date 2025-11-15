@@ -21,6 +21,12 @@ export default class extends Controller {
 		"requirements",
 		"requirementsList",
 		"requirementsCheck",
+		"toggleButton",
+		"eyeIcon",
+		"eyeSlashIcon",
+		"toggleConfirmationButton",
+		"eyeConfirmationIcon",
+		"eyeSlashConfirmationIcon",
 	];
 
 	connect() {
@@ -28,6 +34,8 @@ export default class extends Controller {
 		this.passwordValid = false;
 		this.confirmationValid = false;
 		this.passwordCheckShown = false; // Track if checkmark is already showing
+		this.passwordVisible = false; // Track password visibility state
+		this.confirmationVisible = false; // Track confirmation visibility state
 		this.formTarget.setAttribute("novalidate", "novalidate");
 		this.requirementItems = this.requirementsTarget.querySelectorAll(
 			"[data-signup-requirement]"
@@ -298,6 +306,56 @@ export default class extends Controller {
 			target.classList.add(neutralClass);
 		} else {
 			target.classList.remove(neutralClass);
+		}
+	}
+
+	togglePasswordVisibility(event) {
+		event.preventDefault();
+		
+		if (!this.hasPasswordTarget || !this.hasEyeIconTarget || !this.hasEyeSlashIconTarget) {
+			return;
+		}
+
+		this.passwordVisible = !this.passwordVisible;
+		
+		// Toggle input type
+		this.passwordTarget.type = this.passwordVisible ? "text" : "password";
+		
+		// Toggle icon visibility
+		this.eyeIconTarget.classList.toggle("hidden", this.passwordVisible);
+		this.eyeSlashIconTarget.classList.toggle("hidden", !this.passwordVisible);
+		
+		// Update aria-label for accessibility
+		if (this.hasToggleButtonTarget) {
+			this.toggleButtonTarget.setAttribute(
+				"aria-label",
+				this.passwordVisible ? "Hide password" : "Show password"
+			);
+		}
+	}
+
+	toggleConfirmationVisibility(event) {
+		event.preventDefault();
+		
+		if (!this.hasConfirmationTarget || !this.hasEyeConfirmationIconTarget || !this.hasEyeSlashConfirmationIconTarget) {
+			return;
+		}
+
+		this.confirmationVisible = !this.confirmationVisible;
+		
+		// Toggle input type
+		this.confirmationTarget.type = this.confirmationVisible ? "text" : "password";
+		
+		// Toggle icon visibility
+		this.eyeConfirmationIconTarget.classList.toggle("hidden", this.confirmationVisible);
+		this.eyeSlashConfirmationIconTarget.classList.toggle("hidden", !this.confirmationVisible);
+		
+		// Update aria-label for accessibility
+		if (this.hasToggleConfirmationButtonTarget) {
+			this.toggleConfirmationButtonTarget.setAttribute(
+				"aria-label",
+				this.confirmationVisible ? "Hide password" : "Show password"
+			);
 		}
 	}
 }

@@ -16,6 +16,8 @@ class Student < ApplicationRecord
   validates :name, presence: true, length: { maximum: 100 }
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
+  validates :uid, uniqueness: { scope: :provider }, allow_nil: true
+  validates :provider, presence: true, if: -> { uid.present? }
 
   # Methods
   def enrolled_in?(course)
@@ -28,6 +30,17 @@ class Student < ApplicationRecord
 
   def self.authenticate(email, password)
     find_by(email: email)&.authenticate(password)
+  end
+
+  def self.from_omniauth(auth)
+    student = find_or_initialize_by(email: auth.info.email)
+    student.name = auth.info.name.presence || student.name || auth.info.first_name || "Student"
+    student.provider = auth.provider
+    student.uid = auth.uid
+    student.password = SecureRandom.hex(32) if student.password_digest.blank?
+    student.avatar_color ||= Student.random_avatar_color
+    student.save!
+    student
   end
 
   def self.random_avatar_color

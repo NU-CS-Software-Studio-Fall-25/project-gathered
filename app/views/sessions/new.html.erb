@@ -10,7 +10,8 @@
       </div>
 
       <%= form_with model: @student, url: login_path, local: true,
-            class: "space-y-2 flex flex-col items-center" do |form| %>
+            data: { controller: "sessions" },
+            class: "space-y-2 flex flex-col items-center w-full max-w-sm self-center" do |form| %>
 
         <div class="w-full max-w-sm space-y-1">
           <%= form.label :email, class: "block text-xs font-medium text-slate-200" %>
@@ -22,10 +23,26 @@
 
         <div class="w-full max-w-sm space-y-1">
           <%= form.label :password, class: "block text-xs font-medium text-slate-200" %>
-          <%= form.password_field :password,
-                class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
-                placeholder: "Enter your password",
-                required: true %>
+          <div class="relative">
+            <%= form.password_field :password,
+                  data: { sessions_target: "password" },
+                  class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 pr-10 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
+                  placeholder: "Enter your password",
+                  required: true %>
+            <button type="button"
+                    data-action="click->sessions#togglePasswordVisibility"
+                    data-sessions-target="toggleButton"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-200 focus:outline-none focus:text-slate-200 transition"
+                    aria-label="Toggle password visibility">
+              <svg data-sessions-target="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg data-sessions-target="eyeSlashIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="w-full max-w-sm space-y-1">
@@ -33,10 +50,33 @@
                 class: "w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-600/90 via-purple-600/90 to-indigo-600/90 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 hover:from-violet-500/90 hover:via-purple-500/90 hover:to-indigo-500/90 active:from-violet-600 active:via-purple-600 active:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer" %>
         </div>
       <% end %>
-      
-      <% if flash.now[:alert] %>
-        <div class="mt-4 w-full max-w-sm rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
-          <%= flash.now[:alert] %>
+
+      <div class="w-full max-w-sm my-2 self-center">
+        <div class="relative flex items-center justify-center">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="px-3 text-xs uppercase text-slate-300 tracking-widest">or</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-sm self-center">
+        <%= button_to "/auth/google_oauth2",
+                      method: :post,
+                      data: { turbo: false },
+                      class: "w-full" do %>
+          <div class="inline-flex items-center justify-center gap-2 w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 488 512" fill="currentColor">
+              <path d="M488 261.8C488 403.3 391.1 512 248 512 110.8 512 0 401.2 0 264S110.8 16 248 16c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C310.3 108 281.4 96 248 96c-84.7 0-153.2 68.4-153.2 153s68.5 153 153.2 153c73.2 0 120.4-41.8 129.4-99.7H248v-79.5h240c2.3 12.7 3.7 29.6 3.7 44.9z"/>
+            </svg>
+            <span>Continue with Google</span>
+          </div>
+        <% end %>
+      </div>
+
+      <% alert_message = flash[:alert] || flash.now[:alert] %>
+      <% if alert_message.present? %>
+        <div class="mt-4 w-full max-w-sm self-center rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
+          <%= alert_message %>
         </div>
       <% end %>
       
