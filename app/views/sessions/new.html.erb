@@ -11,7 +11,7 @@
 
       <%= form_with model: @student, url: login_path, local: true,
             data: { controller: "sessions" },
-            class: "space-y-2 flex flex-col items-center" do |form| %>
+            class: "space-y-2 flex flex-col items-center w-full max-w-sm self-center" do |form| %>
 
         <div class="w-full max-w-sm space-y-1">
           <%= form.label :email, class: "block text-xs font-medium text-slate-200" %>
@@ -51,7 +51,7 @@
         </div>
       <% end %>
 
-      <div class="w-full max-w-sm my-2">
+      <div class="w-full max-w-sm my-2 self-center">
         <div class="relative flex items-center justify-center">
           <div class="flex-grow border-t border-white/10"></div>
           <span class="px-3 text-xs uppercase text-slate-300 tracking-widest">or</span>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <div class="w-full max-w-sm">
+      <div class="w-full max-w-sm self-center">
         <%= button_to "/auth/google_oauth2",
                       method: :post,
                       data: { turbo: false },
@@ -75,7 +75,7 @@
 
       <% alert_message = flash[:alert] || flash.now[:alert] %>
       <% if alert_message.present? %>
-        <div class="mt-4 w-full max-w-sm rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
+        <div class="mt-4 w-full max-w-sm self-center rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
           <%= alert_message %>
         </div>
       <% end %>
