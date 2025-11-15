@@ -50,10 +50,33 @@
                 class: "w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-600/90 via-purple-600/90 to-indigo-600/90 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 hover:from-violet-500/90 hover:via-purple-500/90 hover:to-indigo-500/90 active:from-violet-600 active:via-purple-600 active:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer" %>
         </div>
       <% end %>
-      
-      <% if flash.now[:alert] %>
+
+      <div class="w-full max-w-sm my-2">
+        <div class="relative flex items-center justify-center">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="px-3 text-xs uppercase text-slate-300 tracking-widest">or</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-sm">
+        <%= button_to "/auth/google_oauth2",
+                      method: :post,
+                      data: { turbo: false },
+                      class: "w-full" do %>
+          <div class="inline-flex items-center justify-center gap-2 w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 488 512" fill="currentColor">
+              <path d="M488 261.8C488 403.3 391.1 512 248 512 110.8 512 0 401.2 0 264S110.8 16 248 16c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C310.3 108 281.4 96 248 96c-84.7 0-153.2 68.4-153.2 153s68.5 153 153.2 153c73.2 0 120.4-41.8 129.4-99.7H248v-79.5h240c2.3 12.7 3.7 29.6 3.7 44.9z"/>
+            </svg>
+            <span>Continue with Google</span>
+          </div>
+        <% end %>
+      </div>
+
+      <% alert_message = flash[:alert] || flash.now[:alert] %>
+      <% if alert_message.present? %>
         <div class="mt-4 w-full max-w-sm rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
-          <%= flash.now[:alert] %>
+          <%= alert_message %>
         </div>
       <% end %>
       

@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_student!, only: [:new, :create]
+  skip_before_action :authenticate_student!, only: [:new, :create, :google_auth, :failure]
   before_action :redirect_if_logged_in, only: [:new, :create]
 
   def new
@@ -34,6 +34,28 @@ class SessionsController < ApplicationController
   def destroy
     session[:student_id] = nil
     redirect_to login_path, notice: "You have been logged out"
+  end
+
+  def google_auth
+    auth = request.env["omniauth.auth"]
+
+    unless auth
+      redirect_to login_path, alert: "Google authentication data was not provided. Please try again."
+      return
+    end
+
+    @student = Student.from_omniauth(auth)
+    session[:student_id] = @student.student_id
+
+    redirect_to dashboard_path, notice: "Signed in as #{@student.name}"
+  rescue StandardError => e
+    Rails.logger.error("Google OAuth sign in failed: #{e.class} - #{e.message}")
+    redirect_to login_path, alert: "We couldn't sign you in with Google. Please try again or use your password."
+  end
+
+  def failure
+    message = params[:message].presence || "Authentication failed"
+    redirect_to login_path, alert: "Google sign in failed: #{message.tr('_', ' ')}"
   end
 
   private
