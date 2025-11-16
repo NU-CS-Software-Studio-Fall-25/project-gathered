@@ -1,11 +1,12 @@
 class MapController < ApplicationController
   def index
+    # Disable caching for this page
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    
     @student = current_student
+    
     # Get all upcoming study groups the student is a member of
-    @study_groups = @student.study_groups
-                           .upcoming
-                           .includes(:course, :creator)
-                           .order(start_time: :asc)
+    @study_groups = @student.study_groups.upcoming.includes(:course, :creator).order(start_time: :asc)
     
     # Prepare locations data for the map
     @locations = @study_groups.map do |group|

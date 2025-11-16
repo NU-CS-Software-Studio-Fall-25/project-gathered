@@ -6,8 +6,18 @@
       <div id="flash_messages" class="flash-container"></div>
 
       <div class="mb-8 text-center">
-        <h1 class="text-2xl font-bold text-white mb-2"><%= @course.course_name %></h1>
-        <p class="text-lg text-slate-300 mb-1">👨‍🏫 <%= @course.professor %></p>
+        <h1 class="text-2xl font-bold text-white mb-4"><%= @course.course_name %></h1>
+        <div class="flex items-center justify-center gap-4 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">👨‍🏫</span>
+            <p class="text-lg text-slate-300"><%= @course.professor %></p>
+          </div>
+          <div class="h-8 w-px bg-white/20"></div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📅</span>
+            <p class="text-lg text-slate-300"><%= @course.start_date.strftime("%b %d") %> - <%= @course.end_date.strftime("%b %d") %></p>
+          </div>
+        </div>
         <p class="text-slate-400 mb-4"><%= @course.description %></p>
         
         <% if current_student.courses.include?(@course) %>

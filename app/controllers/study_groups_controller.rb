@@ -23,6 +23,9 @@ class StudyGroupsController < ApplicationController
 
     respond_to do |format|
       if @study_group.save
+        # Automatically add the creator as a member of the study group
+        GroupMembership.create!(student_id: current_student.student_id, group_id: @study_group.group_id)
+        
         format.html { redirect_to course_path(@course), notice: "Study group created successfully!" }
         format.turbo_stream
       else

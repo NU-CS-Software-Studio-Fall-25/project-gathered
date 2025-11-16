@@ -51,7 +51,7 @@
               <span class="text-xl">⏱️</span>
               <div class="flex-1">
                 <strong class="block text-xs font-medium text-slate-300">Duration</strong>
-                <p class="text-sm text-white"><%= study_group.duration_minutes %> minutes</p>
+                <p class="text-sm text-white"><%= format_duration(study_group.duration_minutes) %></p>
               </div>
             </div>
           <% end %>

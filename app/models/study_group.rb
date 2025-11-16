@@ -6,14 +6,18 @@ class StudyGroup < ApplicationRecord
   has_many :members, through: :group_memberships, source: :student
 
   # Validations
-  validates :topic, presence: true, length: { maximum: 150 }
-  validates :location, length: { maximum: 150 }
+  validates :topic, presence: { message: "Topic is required - please enter a topic" }, length: { minimum: 3, maximum: 100, message: "must be between 3 and 100 characters" }
+  validates :location, presence: { message: "Location is required - please select a building" }, length: { maximum: 150 }
   validates :start_time, presence: true
   validates :end_time, presence: true
   validate :end_time_after_start_time
+  validate :study_group_within_course_dates
+  validate :study_group_duration_reasonable
+  validate :study_group_duration_minimum
+  validate :creator_study_group_limit
 
   # Scopes
-  scope :upcoming, -> { where("start_time > ?", Time.current).order(start_time: :asc) }
+  scope :upcoming, -> { where("end_time > ?", Time.current).order(start_time: :asc) }
   scope :past, -> { where("end_time < ?", Time.current).order(start_time: :desc) }
 
   # Methods
@@ -52,6 +56,56 @@ class StudyGroup < ApplicationRecord
 
     if end_time <= start_time
       errors.add(:end_time, "must be after start time")
+    end
+  end
+
+  def topic_is_appropriate
+    # TODO: Implement comprehensive profanity filter in the future
+    # For now, assume topic is appropriate
+  end
+
+  def study_group_within_course_dates
+    return if start_time.blank? || end_time.blank? || course.blank?
+
+    if start_time < course.start_date
+      errors.add(:start_time, "must be on or after #{course.start_date.strftime('%b %d, %Y')}")
+    end
+
+    if end_time > course.end_date
+      errors.add(:end_time, "must be on or before #{course.end_date.strftime('%b %d, %Y')}")
+    end
+  end
+
+  def study_group_duration_reasonable
+    return if start_time.blank? || end_time.blank?
+
+    duration_hours = ((end_time - start_time) / 3600).to_i
+    max_duration_hours = 6
+
+    if duration_hours > max_duration_hours
+      errors.add(:end_time, "study group cannot last more than #{max_duration_hours} hours")
+    end
+  end
+
+  def study_group_duration_minimum
+    return if start_time.blank? || end_time.blank?
+
+    duration_minutes = ((end_time - start_time) / 60).to_i
+    min_duration_minutes = 15
+
+    if duration_minutes < min_duration_minutes
+      errors.add(:end_time, "study group must be at least #{min_duration_minutes} minutes long")
+    end
+  end
+
+  def creator_study_group_limit
+    return if creator_id.blank?
+
+    max_study_groups = 5
+    creator_study_groups = StudyGroup.where(creator_id: creator_id).count
+
+    if creator_study_groups >= max_study_groups
+      errors.add(:base, "You have reached the maximum of #{max_study_groups} study groups you can create")
     end
   end
 end

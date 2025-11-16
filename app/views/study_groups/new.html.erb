@@ -13,6 +13,14 @@
                   class: "space-y-3",
                   data: { turbo_frame: "new_group_form" } do |f| %>
       
+      <% if @study_group.errors[:base].any? %>
+        <div class="rounded-lg border border-red-500/30 bg-red-500/10 p-3">
+          <% @study_group.errors[:base].each do |error| %>
+            <p class="text-xs text-red-300"><%= error %></p>
+          <% end %>
+        </div>
+      <% end %>
+      
       <div>
         <%= f.label :topic, "Topic *", class: "block text-xs font-medium text-slate-300 mb-1" %>
         <%= f.text_field :topic, 
@@ -38,6 +46,9 @@
                      options_for_select(buildings_list, @study_group.location),
                      { include_blank: "Select a building..." },
                      { class: "w-full rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition" } %>
+        <% if @study_group.errors[:location].any? %>
+          <span class="text-xs text-red-300 mt-0.5 block"><%= @study_group.errors[:location].first %></span>
+        <% end %>
       </div>
 
       <div class="grid grid-cols-2 gap-2">
@@ -57,7 +68,9 @@
                               required: true,
                               class: "w-full rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition" %>
           <% if @study_group.errors[:end_time].any? %>
-            <span class="text-xs text-red-300 mt-0.5 block"><%= @study_group.errors[:end_time].first %></span>
+            <% @study_group.errors[:end_time].each do |error| %>
+              <span class="text-xs text-red-300 mt-0.5 block"><%= error %></span>
+            <% end %>
           <% end %>
         </div>
       </div>
