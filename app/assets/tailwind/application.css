@@ -87,8 +87,21 @@ body.turbo-loading main {
 }
 
 .simple-calendar .today {
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.3) !important;
+  border: 2px solid rgba(139, 92, 246, 0.8) !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+.simple-calendar .today .calendar-day-number {
+  background: rgba(139, 92, 246, 0.8);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
 }
 
 .simple-calendar .prev-month,

@@ -1,12 +1,12 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
   <div class="container mx-auto px-4 pt-20 pb-10">
     <div class="mb-8 text-center">
-      <h1 class="text-3xl font-bold text-white mb-2">📅 My Calendar</h1>
+      <h1 class="text-3xl font-bold text-white mb-2">My Calendar</h1>
       <p class="text-slate-300">View your upcoming study group sessions</p>
     </div>
 
     <div class="max-w-6xl mx-auto">
-      <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6">
+      <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6" data-controller="calendar">
         <%= month_calendar(events: @study_groups, attribute: :start_time) do |date, study_groups| %>
           <div class="calendar-day-number"><%= date.day %></div>
           <div class="calendar-events">
