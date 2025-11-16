@@ -3,7 +3,7 @@ class CalendarController < ApplicationController
     # Get the start date from params or use today
     @start_date = params.fetch(:start_date, Date.today).to_date
 
-    # Get all study groups that the current user has joined
+    # Get ALL study groups that the current user has joined (including past ones)
     # We need to load groups within the calendar view range for better performance
     start_of_calendar = @start_date.beginning_of_month.beginning_of_week
     end_of_calendar = @start_date.end_of_month.end_of_week
