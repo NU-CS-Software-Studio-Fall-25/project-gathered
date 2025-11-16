@@ -1,0 +1,408 @@
+<% content_for :head do %>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+  <style>
+    .map-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    #map {
+      height: 650px;
+      min-height: 650px;
+      width: 60%;
+      flex: 0 0 60%;
+      border-radius: 0.5rem;
+      z-index: 1;
+      background-color: #e5e7eb;
+    }
+    .map-container {
+      position: relative;
+      height: 650px;
+      min-height: 650px;
+      width: 60%;
+      flex: 0 0 60%;
+    }
+    @media (min-height: 800px) {
+      #map {
+        height: 700px;
+        min-height: 700px;
+      }
+      .map-container {
+        height: 700px;
+        min-height: 700px;
+      }
+    }
+    @media (max-width: 1024px) {
+      .map-wrapper {
+        flex-direction: column;
+      }
+      #map {
+        width: 100%;
+        flex: 1 1 100%;
+      }
+      .map-container {
+        width: 100%;
+        flex: 1 1 100%;
+      }
+      .map-sidebar {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    .map-sidebar {
+      width: 40%;
+      flex: 0 0 40%;
+      background: rgba(139, 92, 246, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      max-height: 650px;
+      overflow-y: auto;
+      position: sticky;
+      top: 1rem;
+      align-self: flex-start;
+    }
+    @media (min-height: 800px) {
+      .map-sidebar {
+        max-height: 700px;
+      }
+    }
+    .map-sidebar h3 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .map-location-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .map-location-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-2px);
+    }
+    .map-location-item h4 {
+      color: white;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .map-location-item p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8125rem;
+      margin: 0.25rem 0;
+      line-height: 1.4;
+    }
+    .leaflet-popup-content-wrapper {
+      background: rgba(30, 27, 75, 0.95);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(139, 92, 246, 0.5);
+      border-radius: 0.75rem;
+      color: white;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      min-width: 250px;
+    }
+    .leaflet-popup-tip {
+      background: rgba(30, 27, 75, 0.95);
+      border: 2px solid rgba(139, 92, 246, 0.5);
+    }
+    .leaflet-popup-content {
+      margin: 1.25rem;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .leaflet-popup-content h4 {
+      color: white;
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .leaflet-popup-content p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+    .leaflet-popup-content strong {
+      color: rgba(196, 181, 253, 1);
+      font-weight: 600;
+    }
+    .leaflet-popup-content a {
+      color: rgba(196, 181, 253, 1);
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .leaflet-popup-content a:hover {
+      color: rgba(221, 214, 254, 1);
+    }
+  </style>
+<% end %>
+
+<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4 pt-20 pb-10">
+  <div class="relative w-full max-w-[1600px]">
+    <div class="mb-6">
+      <h1 class="text-3xl font-semibold text-white mb-2">Study Group Locations</h1>
+      <p class="text-sm text-slate-300">View locations of your upcoming study sessions in Evanston, IL</p>
+    </div>
+
+    <div class="map-wrapper">
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
+      
+      <% if @locations.any? %>
+        <div class="map-sidebar">
+          <h3 class="text-lg font-semibold text-white mb-4">Your Study Sessions</h3>
+          <div class="space-y-3">
+            <% @locations.each do |location| %>
+              <div class="map-location-item" data-location-id="<%= location[:id] %>" 
+                   data-lat="<%= location[:coordinates][0] %>" 
+                   data-lon="<%= location[:coordinates][1] %>">
+                <h4 class="font-semibold"><%= location[:topic] %></h4>
+                <p class="text-violet-300 text-sm"><%= location[:course] %></p>
+                <p class="text-xs mt-1">📍 <%= location[:location] %></p>
+                <p class="text-xs mt-1">📅 <%= location[:formatted_time] %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="w-full flex items-center justify-center bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg p-8 text-center">
+          <div>
+            <div class="text-4xl mb-4">🗺️</div>
+            <h3 class="text-xl font-semibold text-white mb-2">No Study Groups Found</h3>
+            <p class="text-slate-300 mb-4">You don't have any upcoming study groups with locations yet.</p>
+            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-violet-600/90 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/90 transition" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+        onload="window.leafletLoaded = true;"></script>
+
+<script>
+  (function() {
+    let mapInstance = null;
+    
+    // Utility function to escape HTML
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Function to initialize the map
+    function initializeMap() {
+      try {
+        // Ensure Leaflet is loaded
+        if (!window.L || !window.L.map) {
+          console.error('Leaflet library not loaded');
+          return;
+        }
+        
+        // Check if map element exists
+        const mapElement = document.getElementById('map');
+        if (!mapElement) {
+          console.error('Map element not found');
+          return;
+        }
+
+        // Remove existing map if it exists (for Turbo navigation)
+        if (mapInstance) {
+          try {
+            mapInstance.remove();
+          } catch (e) {
+            console.log('Error removing existing map:', e);
+          }
+          mapInstance = null;
+        }
+        
+        if (mapElement._leaflet_id) {
+          mapElement.innerHTML = '';
+          mapElement._leaflet_id = null;
+        }
+
+        // Ensure map container has height
+        if (mapElement.offsetHeight === 0) {
+          mapElement.style.height = '650px';
+          mapElement.style.minHeight = '650px';
+        }
+
+        // Initialize map centered on Evanston, IL (Northwestern University area)
+        const evanstonCenter = [42.0565, -87.6753];
+        const defaultZoom = 13;
+
+        mapInstance = L.map('map', {
+          preferCanvas: false
+        }).setView(evanstonCenter, defaultZoom);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 19,
+        }).addTo(mapInstance);
+
+        // Study group locations data from Rails
+        const locations = <%= @locations.to_json.html_safe %> || [];
+
+        // Create custom marker icon
+        function createMarkerIcon(color = '#8b5cf6') {
+          return L.divIcon({
+            className: 'custom-marker',
+            html: `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" width="32" height="32">
+                <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+              </svg>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+          });
+        }
+
+        // Add markers for each location
+        const markers = [];
+        if (Array.isArray(locations)) {
+          locations.forEach((location) => {
+            if (location && location.coordinates && Array.isArray(location.coordinates) && location.coordinates.length === 2) {
+              const marker = L.marker(location.coordinates, {
+                icon: createMarkerIcon('#8b5cf6')
+              }).addTo(mapInstance);
+
+              // Create popup content with better readability
+              const popupContent = `
+                <div style="min-width: 220px;">
+                  <h4 style="margin-bottom: 0.75rem; font-size: 1.125rem; font-weight: 700; line-height: 1.3;">${escapeHtml(location.topic || 'Study Group')}</h4>
+                  <div style="margin-bottom: 0.5rem;">
+                    <strong style="color: rgba(196, 181, 253, 1); display: block; margin-bottom: 0.25rem;">Course:</strong>
+                    <span style="color: rgba(255, 255, 255, 0.9);">${escapeHtml(location.course || 'N/A')}</span>
+                  </div>
+                  <div style="margin-bottom: 0.5rem;">
+                    <strong style="color: rgba(196, 181, 253, 1); display: block; margin-bottom: 0.25rem;">Location:</strong>
+                    <span style="color: rgba(255, 255, 255, 0.9);">${escapeHtml(location.location || 'N/A')}</span>
+                  </div>
+                  <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: rgba(196, 181, 253, 1); display: block; margin-bottom: 0.25rem;">Time:</strong>
+                    <span style="color: rgba(255, 255, 255, 0.9);">${escapeHtml(location.formatted_time || 'N/A')}</span>
+                  </div>
+                  ${location.url ? `<a href="${location.url}" style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background: rgba(139, 92, 246, 0.3); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 0.375rem; color: rgba(196, 181, 253, 1); text-decoration: none; font-weight: 500; transition: all 0.2s;">View Details →</a>` : ''}
+                </div>
+              `;
+
+              marker.bindPopup(popupContent);
+              markers.push({ marker, location });
+            }
+          });
+        }
+
+        // Handle sidebar item clicks to fly to location
+        document.querySelectorAll('.map-location-item').forEach((item) => {
+          item.addEventListener('click', function() {
+            const lat = parseFloat(this.dataset.lat);
+            const lon = parseFloat(this.dataset.lon);
+            
+            if (!isNaN(lat) && !isNaN(lon)) {
+              // Fly to location
+              mapInstance.flyTo([lat, lon], 17, {
+                duration: 0.5
+              });
+
+              // Open popup for corresponding marker
+              const locationId = parseInt(this.dataset.locationId);
+              const markerData = markers.find(m => m.location.id === locationId);
+              if (markerData) {
+                setTimeout(() => {
+                  markerData.marker.openPopup();
+                }, 500);
+              }
+            }
+          });
+        });
+
+        // Fit map to show all markers if there are multiple
+        if (locations.length > 1 && markers.length > 1) {
+          const bounds = L.latLngBounds(markers.map(m => m.location.coordinates));
+          mapInstance.fitBounds(bounds, { padding: [50, 50] });
+        } else if (locations.length === 1 && markers.length === 1) {
+          mapInstance.setView(markers[0].location.coordinates, 15);
+        } else {
+          // No locations - keep default Evanston view
+          mapInstance.setView(evanstonCenter, defaultZoom);
+        }
+
+        // Invalidate map size after a short delay to ensure proper rendering
+        setTimeout(function() {
+          if (mapInstance) {
+            mapInstance.invalidateSize();
+          }
+        }, 200);
+        
+        console.log('Map initialized successfully');
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
+    }
+
+    // Initialize function that waits for everything to be ready
+    function tryInitialize() {
+      const mapElement = document.getElementById('map');
+      if (!mapElement) {
+        console.log('Map element not found, retrying...');
+        setTimeout(tryInitialize, 100);
+        return;
+      }
+      
+      if (window.L && window.L.map) {
+        console.log('Leaflet loaded, initializing map...');
+        initializeMap();
+      } else {
+        console.log('Waiting for Leaflet to load...');
+        setTimeout(tryInitialize, 100);
+      }
+    }
+
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(tryInitialize, 100);
+      });
+    } else {
+      setTimeout(tryInitialize, 100);
+    }
+
+    // Re-initialize on Turbo navigation (for Hotwire/Turbo)
+    document.addEventListener('turbo:load', function() {
+      console.log('Turbo load event, reinitializing map...');
+      setTimeout(tryInitialize, 200);
+    });
+    
+    document.addEventListener('turbo:render', function() {
+      console.log('Turbo render event, reinitializing map...');
+      setTimeout(tryInitialize, 200);
+    });
+    
+    // Also listen for when Leaflet script loads
+    if (window.leafletLoaded) {
+      setTimeout(tryInitialize, 100);
+    }
+  })();
+</script>
+

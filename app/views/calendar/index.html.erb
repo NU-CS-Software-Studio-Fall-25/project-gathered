@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
+  <div class="container mx-auto px-4 pt-20 pb-10">
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-white mb-2">My Calendar</h1>
+      <p class="text-slate-300">View all your study group sessions</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative">
+      <!-- Popup for study group details -->
+      <div id="calendar-popup" class="hidden absolute w-80 bg-gradient-to-br from-purple-900/95 via-indigo-900/95 to-violet-800/95 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl p-4 z-50 transition-all duration-200">
+        <button id="close-popup" class="absolute top-2 right-2 text-white/70 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+        <div id="popup-content"></div>
+      </div>
+
+      <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6" data-controller="calendar">
+        <%= month_calendar(events: @study_groups, attribute: :start_time) do |date, study_groups| %>
+          <div class="calendar-day-number"><%= date.day %></div>
+          <div class="calendar-events">
+            <% study_groups.each do |study_group| %>
+              <a href="#" 
+                 class="calendar-event" 
+                 data-study-group-id="<%= study_group.group_id %>"
+                 data-study-group-topic="<%= study_group.topic %>"
+                 data-study-group-course="<%= study_group.course.course_name %>"
+                 data-study-group-location="<%= study_group.location %>"
+                 data-study-group-start="<%= study_group.start_time.strftime('%B %d, %Y at %l:%M %p') %>"
+                 data-study-group-end="<%= study_group.end_time.strftime('%l:%M %p') %>"
+                 data-study-group-description="<%= study_group.description %>"
+                 data-study-group-creator="<%= study_group.creator.name %>"
+                 data-study-group-url="<%= study_group_path(study_group) %>"
+                 data-action="click->calendar#showDetails">
+                <span class="event-time"><%= study_group.start_time.strftime("%l:%M%p").strip %></span>
+                <span class="event-title"><%= study_group.topic %></span>
+              </a>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <% if @study_groups.empty? %>
+        <div class="mt-6 text-center">
+          <div class="rounded-lg border border-white/10 bg-white/5 p-8">
+            <div class="text-4xl mb-2">📆</div>
+            <p class="text-slate-300 mb-4">No study groups scheduled this month.</p>
+            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center justify-center rounded-md bg-violet-600/90 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/90 transition" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

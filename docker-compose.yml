@@ -17,6 +17,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    entrypoint: ["/rails/bin/docker-entrypoint"]
     #command: bin/dev
     command: bundle exec rails server -b 0.0.0.0 -p 3000
     ports:
