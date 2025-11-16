@@ -20,6 +20,9 @@ Rails.application.routes.draw do
   root "dashboard#index"
   get "dashboard", to: "dashboard#index"
 
+  # Calendar route
+  get "calendar", to: "calendar#index", as: :calendar
+
   # Map route
   get "map", to: "map#index", as: :map
 

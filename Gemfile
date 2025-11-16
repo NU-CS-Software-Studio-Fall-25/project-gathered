@@ -70,3 +70,5 @@ end
 
 
 gem "tailwindcss-rails", "~> 4.4"
+
+gem "simple_calendar", "~> 3.0"
