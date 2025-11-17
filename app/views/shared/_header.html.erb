@@ -19,6 +19,12 @@
           <li>
             <%= link_to "My Groups", student_path, class: "text-base transform transition-all duration-150 #{current_page?(student_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
           </li>
+          <li>
+            <%= link_to "Calendar", calendar_path, class: "text-base transform transition-all duration-150 #{current_page?(calendar_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
+          </li>
+          <li>
+            <%= link_to "Map", map_path, class: "text-base transform transition-all duration-150 #{current_page?(map_path) ? 'bg-violet-600/70 text-white rounded-md px-4 py-2 font-semibold ring-1 ring-violet-700/20' : 'text-slate-300 hover:text-white hover:bg-violet-700/30 rounded-md px-4 py-2 hover:ring-1 ring-violet-700/20'}" %>
+          </li>
         </ul>
       </nav>
 
@@ -34,7 +40,7 @@
 
           <div class="absolute right-0 mt-1 w-44 bg-violet-700/20 backdrop-blur-lg rounded-md border border-white/10 shadow-md py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible transform translate-y-1 group-hover:translate-y-0 transition-all duration-150 ease-out z-20 pointer-events-auto">
             <%= link_to "Profile", edit_student_path, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
-            <%= link_to "Logout", logout_path, method: :delete, data: { turbo_method: :delete }, class: "block px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer" %>
+            <%= button_to "Logout", logout_path, method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-slate-100 hover:bg-white/5 cursor-pointer border-0 bg-transparent" %>
           </div>
         </div>
       </div>

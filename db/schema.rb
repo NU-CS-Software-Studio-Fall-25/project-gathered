@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_15_014107) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_16_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_15_014107) do
     t.text "description"
     t.string "professor", limit: 100
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   create_table "group_memberships", id: false, force: :cascade do |t|
