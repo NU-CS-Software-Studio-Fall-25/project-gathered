@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+  match "/auth/:provider/callback", to: "sessions#google_auth", via: [:get, :post]
+  match "/auth/failure", to: "sessions#failure", via: [:get, :post]
   get "signup", to: "students#new"
   post "signup", to: "students#create"
 
@@ -39,6 +41,7 @@ Rails.application.routes.draw do
     member do
       post :join
       delete :leave
+      get :export_ics
     end
   end
 

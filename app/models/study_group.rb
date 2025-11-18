@@ -5,6 +5,8 @@ class StudyGroup < ApplicationRecord
   has_many :group_memberships, primary_key: :group_id, foreign_key: :group_id, dependent: :destroy
   has_many :members, through: :group_memberships, source: :student
 
+  after_create_commit :add_creator_membership
+
   # Validations
   validates :topic, presence: { message: "Topic is required - please enter a topic" }, length: { minimum: 3, maximum: 100, message: "must be between 3 and 100 characters" }
   validates :location, presence: { message: "Location is required - please select a building" }, length: { maximum: 150 }
@@ -50,6 +52,12 @@ class StudyGroup < ApplicationRecord
   end
 
   private
+
+  def add_creator_membership
+    return unless creator_id.present?
+
+    GroupMembership.find_or_create_by(student_id: creator_id, group_id: group_id)
+  end
 
   def end_time_after_start_time
     return if end_time.blank? || start_time.blank?

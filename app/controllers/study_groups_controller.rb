@@ -1,9 +1,25 @@
+require "icalendar"
+
 class StudyGroupsController < ApplicationController
-  before_action :set_study_group, only: [ :show, :edit, :update, :destroy, :join, :leave ]
+  before_action :set_study_group, only: [ :show, :edit, :update, :destroy, :join, :leave, :export_ics ]
   before_action :set_course, only: [ :index, :new, :create ]
 
   def index
     @study_groups = @course.study_groups.includes(:creator, :group_memberships).order(start_time: :asc)
+  end
+
+  def export_ics
+    authorize_group_export!
+
+    respond_to do |format|
+      format.ics do
+        send_data build_ics_calendar,
+                  type: "text/calendar; charset=utf-8",
+                  disposition: "attachment",
+                  filename: sanitized_filename
+      end
+      format.html { redirect_to study_group_path(@study_group) }
+    end
   end
 
   def show
@@ -180,5 +196,32 @@ class StudyGroupsController < ApplicationController
 
   def study_group_params
     params.require(:study_group).permit(:creator_id, :topic, :description, :location, :start_time, :end_time)
+  end
+
+  def build_ics_calendar
+    cal = Icalendar::Calendar.new
+    event = Icalendar::Event.new
+    event.dtstart = @study_group.start_time.utc
+    event.dtend = @study_group.end_time.utc
+    event.summary = @study_group.topic
+    event.description = @study_group.description.presence || "Study group for #{@study_group.course.course_name}"
+    event.location = @study_group.location if @study_group.location.present?
+    event.url = study_group_url(@study_group)
+    event.uid = "study_group-#{@study_group.group_id}@gathered"
+    cal.add_event(event)
+    cal.publish
+    cal.to_ical
+  end
+
+  def sanitized_filename
+    base = @study_group.topic.presence || "study-group-#{@study_group.group_id}"
+    normalized = base.parameterize(separator: "-")
+    "#{normalized.presence || "study-group"}-#{@study_group.group_id}.ics"
+  end
+
+  def authorize_group_export!
+    return if logged_in? && @study_group
+
+    redirect_to login_path, alert: "Please sign in to download this event."
   end
 end
