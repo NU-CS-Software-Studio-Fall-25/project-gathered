@@ -4,7 +4,7 @@
     <div class="flex-1">
       <div class="mb-2 flex items-center justify-between">
         <h4 class="text-lg font-semibold text-white"><%= study_group.topic %></h4>
-        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'active' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
+        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'ongoing' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
           <%= study_group.status.titleize %>
         </span>
       </div>

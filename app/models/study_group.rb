@@ -15,7 +15,7 @@ class StudyGroup < ApplicationRecord
   validates :start_time, presence: true
   validates :end_time, presence: true
   validate :end_time_after_start_time
-  validate :study_group_within_course_dates
+
   validate :study_group_duration_reasonable
   validate :study_group_duration_minimum
   validate :creator_study_group_limit
@@ -74,17 +74,7 @@ class StudyGroup < ApplicationRecord
     # For now, assume topic is appropriate
   end
 
-  def study_group_within_course_dates
-    return if start_time.blank? || end_time.blank? || course.blank?
 
-    if course.start_date.present? && start_time < course.start_date
-      errors.add(:start_time, "must be on or after #{course.start_date.strftime('%b %d, %Y')}")
-    end
-
-    if course.end_date.present? && end_time > course.end_date
-      errors.add(:end_time, "must be on or before #{course.end_date.strftime('%b %d, %Y')}")
-    end
-  end
 
   def study_group_duration_reasonable
     return if start_time.blank? || end_time.blank?
