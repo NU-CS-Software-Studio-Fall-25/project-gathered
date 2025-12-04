@@ -1,7 +1,7 @@
 <div id="study_group_<%= study_group.group_id %>" 
      class="rounded-lg border border-white/10 bg-white/5 p-4 transition hover:bg-white/8">
   <div class="flex items-start justify-between gap-4">
-    <div class="flex-1">
+    <div class="flex-1 min-w-0">
       <div class="mb-2 flex items-center justify-between">
         <h4 class="text-lg font-semibold text-white"><%= study_group.topic %></h4>
         <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'ongoing' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
@@ -10,22 +10,22 @@
       </div>
 
       <div class="space-y-2">
-        <div class="flex items-center gap-2 text-sm text-slate-300">
-          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📅</span>
-          <span><%= study_group.formatted_time_range %></span>
+        <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
+          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📅</span>
+          <span class="min-w-0 flex-1"><%= study_group.formatted_time_range %></span>
         </div>
 
         <% if study_group.location.present? %>
-          <div class="flex items-center gap-2 text-sm text-slate-300">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📍</span>
-            <span><%= study_group.location %></span>
+          <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📍</span>
+            <span class="min-w-0 flex-1"><%= study_group.location %></span>
           </div>
         <% end %>
 
         <% if study_group.description.present? %>
-          <div class="flex items-start gap-2 text-sm text-slate-300">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📝</span>
-            <span><%= study_group.description %></span>
+          <div class="flex items-start gap-2 text-sm text-slate-300 min-w-0">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📝</span>
+            <span class="min-w-0 flex-1"><%= study_group.description %></span>
           </div>
         <% end %>
 
