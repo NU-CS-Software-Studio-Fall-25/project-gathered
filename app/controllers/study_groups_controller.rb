@@ -139,6 +139,38 @@ class StudyGroupsController < ApplicationController
       GroupMembership.where(student_id: student_id, group_id: @study_group.group_id).delete_all
       @study_group.reload
 
+      if @study_group.members.count == 0
+        course = @study_group.course
+        @study_group.destroy
+        
+        redirect_path = course_path(course)
+        if params[:return_to].present?
+          # Prevent redirect loop if return_to is the deleted group page
+          redirect_path = params[:return_to] unless params[:return_to].include?(study_group_path(@study_group))
+        end
+
+        respond_to do |format|
+          format.html { redirect_to redirect_path, notice: "Study group deleted as it has no members." }
+          format.turbo_stream do
+            if params[:source] == 'detail'
+              # If we are on the detail page, we MUST redirect away
+              redirect_to redirect_path, notice: "Study group deleted as it has no members."
+            else
+              # If we are on the list page, we can just remove the element
+              render turbo_stream: [
+                turbo_stream.remove("study_group_#{@study_group.group_id}"),
+                turbo_stream.prepend(
+                  "flash_messages",
+                  partial: "shared/flash",
+                  locals: { message: "Study group deleted as it has no members.", type: "info" }
+                )
+              ]
+            end
+          end
+        end
+        return
+      end
+
       respond_to do |format|
         format.html { 
           redirect_back fallback_location: course_path(@study_group.course), notice: "You left the study group." 
