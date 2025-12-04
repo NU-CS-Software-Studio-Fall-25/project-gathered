@@ -7,7 +7,7 @@ class Course < ApplicationRecord
   # Validations
   validates :course_name, presence: true, length: { maximum: 100 }
   validates :professor, length: { maximum: 100 }
-  validates :start_date, :end_date, presence: true
+
 
   # Methods
   def enrolled_student_count

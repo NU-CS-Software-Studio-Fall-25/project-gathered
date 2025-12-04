@@ -65,10 +65,10 @@
             Leave
           <% end %>
         <% else %>
-          <%= button_to "Join Group", 
+          <%= button_to study_group.status == 'past' ? "Passed" : "Join Group", 
                       join_study_group_path(study_group, student_id: active_student_id || current_student_id),
                       method: :post,
-                      class: "cursor-pointer inline-flex items-center justify-center rounded-md bg-violet-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500/90 transition #{study_group.status == 'past' ? 'opacity-50 cursor-not-allowed' : ''}",
+                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition #{study_group.status == 'past' ? 'bg-slate-600/90 opacity-50 cursor-not-allowed pointer-events-none' : 'bg-violet-600/90 hover:bg-violet-500/90'}",
                       data: { turbo_stream: true },
                       disabled: study_group.status == "past" %>
         <% end %>
