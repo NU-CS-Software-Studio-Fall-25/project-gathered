@@ -13,12 +13,6 @@
             <div class="flex items-center justify-between mb-1">
               <h3 class="text-lg font-semibold text-white"><%= course.course_name %></h3>
               <div class="flex items-center gap-2">
-                <span class="hidden group-data-[selected=true]:flex items-center gap-1 text-xs font-medium text-violet-300">
-                  <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                  </svg>
-                  Selected
-                </span>
                 <%= button_to student_course_path(course.course_id), 
                               method: :delete,
                               class: "opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-150 inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-500/20 text-slate-400 hover:text-red-300 cursor-pointer",

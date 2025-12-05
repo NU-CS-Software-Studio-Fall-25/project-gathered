@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_16_000002) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_04_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,8 +19,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_000002) do
     t.text "description"
     t.string "professor", limit: 100
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "start_date"
-    t.datetime "end_date"
   end
 
   create_table "group_memberships", id: false, force: :cascade do |t|
@@ -41,12 +39,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_16_000002) do
     t.string "name", limit: 100
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "email", null: false
-    t.string "password_digest", null: false
+    t.string "password_digest"
     t.string "avatar_color"
     t.string "provider"
     t.string "uid"
     t.index ["email"], name: "index_students_on_email", unique: true
-    t.index ["provider", "uid"], name: "index_students_on_provider_and_uid", unique: true
+    t.index ["provider", "uid"], name: "index_students_on_provider_and_uid", unique: true, where: "(provider IS NOT NULL)"
   end
 
   create_table "study_groups", primary_key: "group_id", force: :cascade do |t|

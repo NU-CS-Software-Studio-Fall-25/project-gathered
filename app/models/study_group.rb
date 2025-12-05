@@ -8,12 +8,14 @@ class StudyGroup < ApplicationRecord
   after_create_commit :add_creator_membership
 
   # Validations
-  validates :topic, presence: { message: "Topic is required - please enter a topic" }, length: { minimum: 3, maximum: 100, message: "must be between 3 and 100 characters" }
+  validates :topic, presence: { message: "Topic is required - please enter a topic" }, 
+                    length: { minimum: 3, maximum: 100, message: "must be between 3 and 100 characters" },
+                    uniqueness: { scope: :course_id, message: "already exists for this course" }
   validates :location, presence: { message: "Location is required - please select a building" }, length: { maximum: 150 }
   validates :start_time, presence: true
   validates :end_time, presence: true
   validate :end_time_after_start_time
-  validate :study_group_within_course_dates
+
   validate :study_group_duration_reasonable
   validate :study_group_duration_minimum
   validate :creator_study_group_limit
@@ -72,17 +74,7 @@ class StudyGroup < ApplicationRecord
     # For now, assume topic is appropriate
   end
 
-  def study_group_within_course_dates
-    return if start_time.blank? || end_time.blank? || course.blank?
 
-    if start_time < course.start_date
-      errors.add(:start_time, "must be on or after #{course.start_date.strftime('%b %d, %Y')}")
-    end
-
-    if end_time > course.end_date
-      errors.add(:end_time, "must be on or before #{course.end_date.strftime('%b %d, %Y')}")
-    end
-  end
 
   def study_group_duration_reasonable
     return if start_time.blank? || end_time.blank?

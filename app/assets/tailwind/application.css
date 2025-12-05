@@ -5,6 +5,32 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Proper text wrapping for long strings */
+p, div, h1, h2, h3, h4, h5, h6, a, button, input, textarea, label {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Span elements: single line with ellipsis on overflow */
+span {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  min-width: 0; /* Critical for truncation in flex containers */
+}
+
+/* Ensure spans in flex containers can truncate */
+.flex span,
+[class*="flex"] span {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
 /* Turbo page transitions */
 @keyframes fadeIn {
   from {

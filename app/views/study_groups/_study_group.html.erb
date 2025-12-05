@@ -1,31 +1,31 @@
 <div id="study_group_<%= study_group.group_id %>" 
      class="rounded-lg border border-white/10 bg-white/5 p-4 transition hover:bg-white/8">
   <div class="flex items-start justify-between gap-4">
-    <div class="flex-1">
+    <div class="flex-1 min-w-0">
       <div class="mb-2 flex items-center justify-between">
         <h4 class="text-lg font-semibold text-white"><%= study_group.topic %></h4>
-        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'active' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
+        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'ongoing' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
           <%= study_group.status.titleize %>
         </span>
       </div>
 
       <div class="space-y-2">
-        <div class="flex items-center gap-2 text-sm text-slate-300">
-          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📅</span>
-          <span><%= study_group.formatted_time_range %></span>
+        <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
+          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📅</span>
+          <span class="min-w-0 flex-1"><%= study_group.formatted_time_range %></span>
         </div>
 
         <% if study_group.location.present? %>
-          <div class="flex items-center gap-2 text-sm text-slate-300">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📍</span>
-            <span><%= study_group.location %></span>
+          <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📍</span>
+            <span class="min-w-0 flex-1"><%= study_group.location %></span>
           </div>
         <% end %>
 
         <% if study_group.description.present? %>
-          <div class="flex items-start gap-2 text-sm text-slate-300">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">📝</span>
-            <span><%= study_group.description %></span>
+          <div class="flex items-start gap-2 text-sm text-slate-300 min-w-0">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📝</span>
+            <span class="min-w-0 flex-1"><%= study_group.description %></span>
           </div>
         <% end %>
 
@@ -55,7 +55,7 @@
       <div class="mt-4 flex items-center gap-2" id="join_button_<%= study_group.group_id %>">
         <% active_student_id = local_assigns.fetch(:current_student_id, nil) %>
         <% if active_student_id && study_group.member_ids.include?(active_student_id) %>
-          <%= button_to leave_study_group_path(study_group, student_id: active_student_id),
+          <%= button_to leave_study_group_path(study_group, student_id: active_student_id, source: 'list'),
                       method: :delete,
                       class: "cursor-pointer group/leave relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
                       data: { turbo_stream: true } do %>
@@ -65,10 +65,10 @@
             Leave
           <% end %>
         <% else %>
-          <%= button_to "Join Group", 
+          <%= button_to study_group.status == 'past' ? "Passed" : "Join Group", 
                       join_study_group_path(study_group, student_id: active_student_id || current_student_id),
                       method: :post,
-                      class: "cursor-pointer inline-flex items-center justify-center rounded-md bg-violet-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500/90 transition #{study_group.status == 'past' ? 'opacity-50 cursor-not-allowed' : ''}",
+                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition #{study_group.status == 'past' ? 'bg-slate-600/90 opacity-50 cursor-not-allowed pointer-events-none' : 'bg-violet-600/90 hover:bg-violet-500/90'}",
                       data: { turbo_stream: true },
                       disabled: study_group.status == "past" %>
         <% end %>
