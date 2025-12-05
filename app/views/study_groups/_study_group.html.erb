@@ -54,7 +54,11 @@
 
       <div class="mt-4 flex items-center gap-2" id="join_button_<%= study_group.group_id %>">
         <% active_student_id = local_assigns.fetch(:current_student_id, nil) %>
-        <% if active_student_id && study_group.member_ids.include?(active_student_id) %>
+        <% if study_group.status == 'past' %>
+          <span class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white bg-slate-600/90 opacity-50 cursor-not-allowed">
+            Passed
+          </span>
+        <% elsif active_student_id && study_group.member_ids.include?(active_student_id) %>
           <%= button_to leave_study_group_path(study_group, student_id: active_student_id, source: 'list'),
                       method: :delete,
                       class: "cursor-pointer group/leave relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
@@ -65,12 +69,11 @@
             Leave
           <% end %>
         <% else %>
-          <%= button_to study_group.status == 'past' ? "Passed" : "Join Group", 
+          <%= button_to "Join Group", 
                       join_study_group_path(study_group, student_id: active_student_id || current_student_id),
                       method: :post,
-                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition #{study_group.status == 'past' ? 'bg-slate-600/90 opacity-50 cursor-not-allowed pointer-events-none' : 'bg-violet-600/90 hover:bg-violet-500/90'}",
-                      data: { turbo_stream: true },
-                      disabled: study_group.status == "past" %>
+                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition bg-violet-600/90 hover:bg-violet-500/90",
+                      data: { turbo_stream: true } %>
         <% end %>
 
         <%= link_to "View Details →", 
