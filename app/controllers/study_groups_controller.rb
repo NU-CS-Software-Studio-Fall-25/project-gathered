@@ -232,8 +232,8 @@ class StudyGroupsController < ApplicationController
   def build_ics_calendar
     cal = Icalendar::Calendar.new
     event = Icalendar::Event.new
-    event.dtstart = @study_group.start_time.utc
-    event.dtend = @study_group.end_time.utc
+    event.dtstart = Icalendar::Values::DateTime.new(@study_group.start_time.in_time_zone("America/Chicago"), 'tzid' => "America/Chicago")
+    event.dtend = Icalendar::Values::DateTime.new(@study_group.end_time.in_time_zone("America/Chicago"), 'tzid' => "America/Chicago")
     event.summary = @study_group.topic
     event.description = @study_group.description.presence || "Study group for #{@study_group.course.course_name}"
     event.location = @study_group.location if @study_group.location.present?

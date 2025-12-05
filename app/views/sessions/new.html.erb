@@ -1,14 +1,31 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4">
   <div class="relative w-full max-w-md flex flex-col justify-center">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+      <div class="relative w-32 h-32 mx-auto mb-4">
+        <!-- Outer glow layer -->
+        <div class="absolute -inset-8 rounded-full bg-gradient-radial from-white/60 via-violet-400/30 to-transparent blur-2xl"></div>
+        <!-- Middle glow layer -->
+        <div class="absolute -inset-4 rounded-full bg-gradient-to-b from-white/90 via-purple-300/40 to-transparent blur-xl"></div>
+        <!-- Inner glow layer -->
+        <div class="absolute -inset-2 rounded-full bg-white/50 blur-md"></div>
+        <!-- White background container -->
+        <div class="relative w-full h-full rounded-full bg-white p-2 shadow-2xl shadow-purple-500/50 ring-2 ring-white/30">
+          <%= image_tag "logo.png", alt: "GatherEd Logo", class: "w-full h-full object-contain" %>
+        </div>
+      </div>
+      <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-violet-200 to-purple-200 bg-clip-text text-transparent tracking-tight drop-shadow-lg" style="font-family: 'Poppins', sans-serif;">
+        GatherEd
+      </h1>
+      <p class="mt-2 text-lg text-violet-200/80 font-light tracking-wide" style="font-family: 'Poppins', sans-serif;">
+        Northwestern's Study Group Finder
+      </p>
+    </div>
+
     <!-- Subtle glow background -->
     <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-400/30 via-violet-500/20 to-indigo-400/30 blur-3xl opacity-60"></div>
 
     <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6 flex flex-col">
-      <div class="text-center flex flex-col justify-center items-center gap-1 mb-4">
-        <h1 class="text-2xl font-semibold text-white">Welcome back</h1>
-        <p class="text-xs text-slate-300">Sign in to your account</p>
-      </div>
-
       <%= form_with model: @student, url: login_path, local: true,
             data: { controller: "sessions" },
             class: "space-y-2 flex flex-col items-center w-full max-w-sm self-center" do |form| %>

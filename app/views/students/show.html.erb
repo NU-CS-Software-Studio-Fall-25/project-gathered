@@ -21,7 +21,9 @@
                 </div>
 
                 <div class="mb-3 pb-3 border-b border-white/5">
-                  <p class="text-sm text-slate-300"><%= study_group.description %></p>
+                  <div class="flex min-w-0">
+                    <span class="min-w-0 flex-1 truncate text-sm text-slate-300"><%= study_group.description %></span>
+                  </div>
                   <div class="text-xs text-slate-400 mt-2 space-y-1">
                     <div>📅 <%= study_group.formatted_time_range %></div>
                     <div>📍 <%= study_group.location %></div>
