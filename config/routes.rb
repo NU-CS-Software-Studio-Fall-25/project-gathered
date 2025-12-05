@@ -29,7 +29,9 @@ Rails.application.routes.draw do
   get "map", to: "map#index", as: :map
 
   # Student profile
-  resource :student, only: [:show, :edit, :update]
+  resource :student, only: [:show, :edit, :update] do
+    post :verify_password, on: :collection
+  end
 
   # Courses and their study groups
   resources :courses, only: [ :index, :show ] do
