@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <%= form_with model: @student, local: true, class: "space-y-2" do |form| %>
+      <%= form_with model: @student, url: student_path, method: :patch, data: { turbo: false }, class: "space-y-2" do |form| %>
         <% if @student.errors.any? %>
           <div class="bg-white/5 rounded-md border border-white/10 p-3 text-sm text-danger-200">
             <ul>
@@ -36,11 +36,30 @@
           <%= form.email_field :email, class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-400/70 focus:border-transparent transition shadow-sm", required: true %>
         </div>
 
-        <div class="space-y-1">
-          <%= form.label :avatar_color, "Avatar Color", class: "block text-sm font-medium text-slate-200" %>
+        <div class="space-y-1" data-controller="avatar-color">
+          <label class="block text-sm font-medium text-slate-200">Avatar Color</label>
           <div class="flex gap-2 items-center">
-            <%= form.color_field :avatar_color, value: @student.avatar_color || '#9333ea', class: "h-10 w-20 rounded-md border border-white/20 bg-white/10 cursor-pointer", id: "avatar-color-input" %>
+            <input type="color" 
+                   value="<%= @student.avatar_color || '#9333ea' %>" 
+                   class="h-10 w-20 rounded-md border border-white/20 bg-white/10 cursor-pointer" 
+                   id="avatar-color-input"
+                   data-avatar-color-target="input"
+                   data-action="input->avatar-color#preview change->avatar-color#save" />
             <span class="text-sm text-slate-300">Choose a color for your avatar</span>
+          </div>
+        </div>
+
+        <div class="space-y-1" data-controller="high-contrast">
+          <label class="block text-sm font-medium text-slate-200">Accessibility</label>
+          <div class="flex items-center gap-3 p-3 rounded-md border-2 border-[#7c3aed] bg-[#1a0a30]">
+            <%= check_box_tag :high_contrast, "1", @student.high_contrast?, 
+                class: "h-5 w-5 rounded border-2 border-[#c084fc] bg-[#0f0520] text-[#a855f7] focus:ring-[#fcd34d] focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a0a30] cursor-pointer", 
+                id: "high_contrast",
+                data: { action: "change->high-contrast#toggle" } %>
+            <span class="text-sm text-white">
+              <span class="font-medium">High Contrast Mode</span>
+              <p class="text-xs text-[#e9d5ff] mt-0.5">Increases color contrast for better visibility</p>
+            </span>
           </div>
         </div>
 
@@ -55,23 +74,10 @@
         </div>
 
         <div class="flex gap-3 pt-3">
-          <%= form.submit "Update Profile", class: "flex-1 inline-flex items-center justify-center rounded-md bg-tertiary-600/90 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-tertiary-500/90 transition" %>
+          <%= form.submit "Update Profile", class: "flex-1 inline-flex items-center justify-center rounded-md bg-tertiary-600/90 px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-tertiary-500/90 transition cursor-pointer" %>
           <%= link_to "Cancel", student_path, class: "flex-1 inline-flex items-center justify-center rounded-md border border-white/20 px-4 py-2.5 text-sm text-slate-100 hover:bg-white/5 transition" %>
         </div>
       <% end %>
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const colorInput = document.getElementById('avatar-color-input');
-    const avatarPreview = document.getElementById('avatar-preview');
-    
-    if (colorInput && avatarPreview) {
-      colorInput.addEventListener('input', function(e) {
-        avatarPreview.style.backgroundColor = e.target.value;
-      });
-    }
-  });
-</script>

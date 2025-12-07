@@ -29,7 +29,12 @@ Rails.application.routes.draw do
   get "map", to: "map#index", as: :map
 
   # Student profile
-  resource :student, only: [:show, :edit, :update]
+  resource :student, only: [:show, :edit, :update] do
+    member do
+      patch :toggle_high_contrast
+      patch :update_avatar_color
+    end
+  end
 
   # Courses and their study groups
   resources :courses, only: [ :index, :show ] do
@@ -50,4 +55,7 @@ Rails.application.routes.draw do
 
   # Legacy route for backward compatibility
   resource :student_session, only: :create
+
+  # Catch-all route for 404s - must be last
+  match '*unmatched', to: 'application#not_found', via: :all
 end

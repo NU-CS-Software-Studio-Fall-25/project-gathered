@@ -43,10 +43,20 @@ class StudentsController < ApplicationController
     end
   end
 
+  def toggle_high_contrast
+    current_student.update(high_contrast: params[:high_contrast])
+    head :ok
+  end
+
+  def update_avatar_color
+    current_student.update(avatar_color: params[:avatar_color])
+    head :ok
+  end
+
   private
 
   def student_params
-    params.require(:student).permit(:name, :email, :password, :password_confirmation, :avatar_color)
+    params.require(:student).permit(:name, :email, :password, :password_confirmation, :avatar_color, :high_contrast)
   end
 
   def redirect_if_logged_in
