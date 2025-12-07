@@ -45,6 +45,8 @@ ActiveRecord::Base.transaction do
   groups = []
   creator_study_group_counts = {}
 
+  topics = [ "Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review" ]
+
   courses.each do |course|
     2.times do |i|
       creator = students.sample
@@ -56,8 +58,8 @@ ActiveRecord::Base.transaction do
         next unless creator
       end
 
-      topics = [ "Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review" ]
-      topic = topics.sample
+      # Use index to ensure unique topics per course
+      topic = topics[i]
 
       start = Time.current + (i + 1).days + 14.hours
       finish = start + 2.hours
