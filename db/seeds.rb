@@ -32,33 +32,34 @@ ActiveRecord::Base.transaction do
 
   # 2) Courses
   courses = [
-    Course.create!(course_name: "COMP_SCI 110 – Intro to CS", description: "Programming fundamentals", professor: "Prof. Lee", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "COMP_SCI 211 – Fund. II", description: "Data structures & recursion", professor: "Prof. Chen", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "COMP_SCI 214 – Data Structures", description: "Abstract data types & analysis", professor: "Prof. Patel", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "COMP_SCI 340 – Networking", description: "Computer networks & Wireshark", professor: "Prof. Ghena", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "IEMS 341 – Social Networks", description: "Network models & inference", professor: "Prof. Hammond", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "MATH 240 – Linear Algebra", description: "Matrices, eigenvalues, eigvecs", professor: "Prof. Nguyen", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13)),
-    Course.create!(course_name: "STAT 350 – Regression", description: "Applied linear models", professor: "Prof. Kim", start_date: Time.new(2025, 9, 16), end_date: Time.new(2025, 12, 13))
+    Course.create!(course_name: "COMP_SCI 110 – Intro to CS", description: "Programming fundamentals", professor: "Prof. Lee"),
+    Course.create!(course_name: "COMP_SCI 211 – Fund. II", description: "Data structures & recursion", professor: "Prof. Chen"),
+    Course.create!(course_name: "COMP_SCI 214 – Data Structures", description: "Abstract data types & analysis", professor: "Prof. Patel"),
+    Course.create!(course_name: "COMP_SCI 340 – Networking", description: "Computer networks & Wireshark", professor: "Prof. Ghena"),
+    Course.create!(course_name: "IEMS 341 – Social Networks", description: "Network models & inference", professor: "Prof. Hammond"),
+    Course.create!(course_name: "MATH 240 – Linear Algebra", description: "Matrices, eigenvalues, eigvecs", professor: "Prof. Nguyen"),
+    Course.create!(course_name: "STAT 350 – Regression", description: "Applied linear models", professor: "Prof. Kim")
   ]
 
   # 3) Study groups per course (respecting the 5 study groups per creator limit)
   groups = []
-  study_group_count = 0
   creator_study_group_counts = {}
-  
+
+  topics = [ "Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review" ]
+
   courses.each do |course|
     2.times do |i|
       creator = students.sample
-      
+
       # Ensure creator hasn't exceeded the 5 study group limit
       creator_study_group_counts[creator.student_id] ||= 0
       if creator_study_group_counts[creator.student_id] >= 5
         creator = students.find { |s| (creator_study_group_counts[s.student_id] || 0) < 5 }
         next unless creator
       end
-      
-      topics = ["Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review"]
-      topic = topics.sample
+
+      # Use index to ensure unique topics per course
+      topic = topics[i]
 
       start = Time.current + (i + 1).days + 14.hours
       finish = start + 2.hours
@@ -72,7 +73,7 @@ ActiveRecord::Base.transaction do
         start_time:  start,
         end_time:    finish
       )
-      
+
       creator_study_group_counts[creator.student_id] += 1
     end
   end
@@ -90,7 +91,7 @@ ActiveRecord::Base.transaction do
     enrolled_ids = StudentCourse.where(course_id: grp.course_id).pluck(:student_id)
     next if enrolled_ids.empty?
 
-    member_ids = enrolled_ids.sample([3, enrolled_ids.size].min)
+    member_ids = enrolled_ids.sample([ 3, enrolled_ids.size ].min)
     member_ids.each do |sid|
       GroupMembership.create!(student_id: sid, group_id: grp.group_id)
     end

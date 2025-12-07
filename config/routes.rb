@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
-  match "/auth/:provider/callback", to: "sessions#google_auth", via: [:get, :post]
-  match "/auth/failure", to: "sessions#failure", via: [:get, :post]
+  match "/auth/:provider/callback", to: "sessions#google_auth", via: [ :get, :post ]
+  match "/auth/failure", to: "sessions#failure", via: [ :get, :post ]
   get "signup", to: "students#new"
   post "signup", to: "students#create"
 
@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   get "map", to: "map#index", as: :map
 
   # Student profile
-  resource :student, only: [:show, :edit, :update] do
+  resource :student, only: [ :show, :edit, :update ] do
     member do
       patch :toggle_high_contrast
       patch :update_avatar_color
@@ -51,11 +51,11 @@ Rails.application.routes.draw do
   end
 
   # Student course enrollment
-  resources :student_courses, only: [:create, :destroy]
+  resources :student_courses, only: [ :create, :destroy ]
 
   # Legacy route for backward compatibility
   resource :student_session, only: :create
 
   # Catch-all route for 404s - must be last
-  match '*unmatched', to: 'application#not_found', via: :all
+  match "*unmatched", to: "application#not_found", via: :all
 end

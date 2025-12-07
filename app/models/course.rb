@@ -19,6 +19,4 @@ class Course < ApplicationRecord
   end
 
   private
-
-
 end

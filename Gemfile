@@ -65,10 +65,10 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pg", "~> 1.6", group: :production
+gem "pg", "~> 1.6"
 
 group :development, :test do
-  #library for generating contrived data
+  # library for generating contrived data
   gem "faker", "~> 3.4"
 end
 
