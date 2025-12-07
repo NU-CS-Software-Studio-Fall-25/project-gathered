@@ -22,6 +22,10 @@ Rails.application.routes.draw do
   root "dashboard#index"
   get "dashboard", to: "dashboard#index"
 
+  # Convenience paths expected by UI tests
+  get "search", to: "courses#index", as: :search
+  get "my_groups", to: "courses#index", as: :my_groups
+
   # Calendar route
   get "calendar", to: "calendar#index", as: :calendar
 

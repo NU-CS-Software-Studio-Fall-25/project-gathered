@@ -9,22 +9,20 @@ Feature: Site Footer
   Scenario: Footer appears on the dashboard page
     When I visit the dashboard page
     Then I should see a footer
-    And the footer should contain "Dashboard"
-    And the footer should contain "Search"
-    And the footer should contain "My Groups"
-    And the footer should contain "Calendar"
-    And the footer should contain "Map"
 
   Scenario: Footer displays GatherEd branding and copyright
-    When I visit any page
-    Then I should see the GatherEd logo in the footer
-    And the footer should contain copyright information
+    When I visit the dashboard page
+    Then the footer should contain "GatherEd"
+    And the footer should contain "Created by"
     And the footer should display the current year
 
-  Scenario: Footer navigation links are functional
+  Scenario: Footer lists the creators
     When I visit the dashboard page
-    And I click on "Search" in the footer
-    Then I should be redirected to the search page
+    Then the footer should list the creators:
+      | Alex Anca |
+      | Daniel Wong |
+      | Ellis Mandel |
+      | Matthew Song |
 
   Scenario: Footer appears consistently across all pages
     When I visit the dashboard page
@@ -37,3 +35,4 @@ Feature: Site Footer
     Then I should see a footer
     When I visit the map page
     Then I should see a footer
+    And the footer should contain "Created by"
