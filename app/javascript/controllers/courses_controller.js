@@ -11,6 +11,32 @@ export default class extends Controller {
     connect() {
         console.log("Courses controller connected");
 
+        // Attach a single Turbo render hook to clear selection when a course is removed
+        if (!window.__coursesSelectionSyncBound) {
+            window.__coursesSelectionSyncBound = () => {
+                const selectedCourseId = sessionStorage.getItem('selectedCourseId');
+                if (!selectedCourseId) return;
+
+                const enrolledCourses = document.getElementById('enrolled-courses');
+                if (!enrolledCourses) return;
+
+                const stillExists = !!enrolledCourses.querySelector(`[data-course-id="${selectedCourseId}"]`);
+                if (stillExists) return;
+
+                // Clear persisted selection and restore default study groups state
+                sessionStorage.removeItem('selectedCourseId');
+                sessionStorage.removeItem('courseOrder');
+
+                const container = document.getElementById('study-groups-container');
+                if (container) {
+                    const emptyState = container.getAttribute('data-empty-state');
+                    container.innerHTML = emptyState || '';
+                }
+            };
+
+            document.addEventListener('turbo:render', window.__coursesSelectionSyncBound);
+        }
+
         // Ensure the text visibility is correct on initial connect
         // This handles the case where a new course is added and the DOM is refreshed
         const clickToView = this.element.querySelector('.click-to-view-text');

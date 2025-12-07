@@ -4,6 +4,7 @@ class Student < ApplicationRecord
 
   # Callbacks
   before_create :set_random_avatar_color
+  before_create :ensure_default_preferences
 
   # Associations
   has_many :student_courses, primary_key: :student_id, foreign_key: :student_id, dependent: :destroy
@@ -73,6 +74,10 @@ class Student < ApplicationRecord
 
   def set_random_avatar_color
     self.avatar_color ||= Student.random_avatar_color
+  end
+
+  def ensure_default_preferences
+    self.high_contrast = false if high_contrast.nil?
   end
 
   def acceptable_avatar

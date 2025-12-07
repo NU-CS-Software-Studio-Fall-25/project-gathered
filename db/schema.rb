@@ -67,13 +67,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_07_022019) do
     t.string "name", limit: 100
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "email", null: false
-    t.string "password_digest"
+    t.string "password_digest", null: false
     t.string "avatar_color"
     t.string "provider"
     t.string "uid"
     t.boolean "high_contrast", default: false, null: false
     t.index ["email"], name: "index_students_on_email", unique: true
-    t.index ["provider", "uid"], name: "index_students_on_provider_and_uid", unique: true, where: "(provider IS NOT NULL)"
+    t.index ["provider", "uid"], name: "index_students_on_provider_and_uid", unique: true
   end
 
   create_table "study_groups", primary_key: "group_id", force: :cascade do |t|

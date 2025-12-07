@@ -34,11 +34,8 @@
     }
   </style>
   <div class="mx-auto max-w-2xl min-w-xl">
-    <!-- Subtle glow background -->
-    <div class="pointer-events-none fixed inset-0 bg-gradient-to-r from-primary-400/30 via-tertiary-500/20 to-secondary-400/30 blur-3xl opacity-60"></div>
-
     <!-- Profile Edit Card -->
-    <div class="relative rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6 w-full" data-controller="profile">
+    <div class="relative rounded-2xl border border-white/15 bg-white/10 shadow-md p-6 w-full" data-controller="profile">
       <div class="mb-4 flex items-start justify-between">
         <div>
           <h1 class="text-2xl font-semibold text-white">Edit Profile</h1>
@@ -188,6 +185,22 @@
 
           <!-- Hidden field to track avatar removal -->
           <%= form.hidden_field :remove_avatar, value: "0", id: "remove-avatar-field", data: { profile_target: "removeAvatarField" } %>
+        </div>
+
+        <div class="pt-2" data-controller="high-contrast">
+          <div class="flex items-center justify-between rounded-lg border border-white/15 bg-white/10 px-3 py-2 gap-3 shadow-sm">
+            <div class="text-left">
+              <p class="text-sm font-semibold text-white">High contrast mode</p>
+              <p class="text-xs text-slate-200">Improve readability with stronger contrast.</p>
+            </div>
+            <label class="flex items-center gap-2 text-xs text-slate-100 cursor-pointer">
+              <input type="checkbox"
+                     class="h-4 w-4 rounded border-white/40 bg-white/10 text-slate-100 focus:ring-white/60"
+                     data-action="change->high-contrast#toggle"
+                     <%= 'checked' if @student.high_contrast? %>>
+              <span class="hidden sm:inline">Enable</span>
+            </label>
+          </div>
         </div>
 
         <%# Only show Change Password section for non-OAuth users %>

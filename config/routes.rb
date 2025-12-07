@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   root "dashboard#index"
   get "dashboard", to: "dashboard#index"
 
-  # Convenience paths expected by UI tests
+  # Convenience paths used by tests and footer navigation
   get "search", to: "courses#index", as: :search
   get "my_groups", to: "courses#index", as: :my_groups
 
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   get "map", to: "map#index", as: :map
 
   # Student profile
-  resource :student, only: [:show, :edit, :update] do
+  resource :student, only: [ :show, :edit, :update ] do
     post :verify_password, on: :collection
     member do
       patch :toggle_high_contrast
