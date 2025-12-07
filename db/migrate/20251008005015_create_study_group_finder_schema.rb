@@ -34,7 +34,7 @@ class CreateStudyGroupFinderSchema < ActiveRecord::Migration[7.1]
       t.integer :course_id,  null: false
       t.timestamp :joined_at, null: false, default: -> { "CURRENT_TIMESTAMP" }
     end
-    add_index :student_courses, [:student_id, :course_id], unique: true, name: "idx_student_courses_unique"
+    add_index :student_courses, [ :student_id, :course_id ], unique: true, name: "idx_student_courses_unique"
     add_foreign_key :student_courses, :students, column: :student_id, primary_key: :student_id, on_delete: :cascade
     add_foreign_key :student_courses, :courses, column: :course_id,  primary_key: :course_id,  on_delete: :cascade
 
@@ -44,7 +44,7 @@ class CreateStudyGroupFinderSchema < ActiveRecord::Migration[7.1]
       t.integer :group_id,   null: false
       t.timestamp :joined_at, null: false, default: -> { "CURRENT_TIMESTAMP" }
     end
-    add_index :group_memberships, [:group_id, :student_id], unique: true, name: "idx_group_memberships_unique"
+    add_index :group_memberships, [ :group_id, :student_id ], unique: true, name: "idx_group_memberships_unique"
     add_foreign_key :group_memberships, :students, column: :student_id, primary_key: :student_id, on_delete: :cascade
     add_foreign_key :group_memberships, :study_groups, column: :group_id,   primary_key: :group_id,   on_delete: :cascade
   end

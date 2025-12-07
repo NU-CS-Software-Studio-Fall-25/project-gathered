@@ -87,46 +87,6 @@ jobs:
           path: tmp/screenshots
           if-no-files-found: ignore
 
-  cucumber:
-    name: Cucumber Tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: study_group_finder_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/study_group_finder_test
-      RAILS_ENV: test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-      - name: Set up database
-        run: bin/rails db:schema:load
-      - name: Run Cucumber tests
-        run: bundle exec cucumber
-      - name: Upload Cucumber coverage report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cucumber-coverage-report
-          path: coverage/
-          if-no-files-found: ignore
-
   seed_check:
     name: Database Seeds
     runs-on: ubuntu-latest

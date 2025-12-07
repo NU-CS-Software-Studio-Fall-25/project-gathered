@@ -24,20 +24,20 @@ class StudentCoursesController < ApplicationController
 
   def destroy
     @course = Course.find(params[:id])
-    
+
     # First, remove student from all study groups for this course
     study_group_ids = @course.study_groups.pluck(:group_id)
     GroupMembership.where(
       student_id: current_student.student_id,
       group_id: study_group_ids
     ).delete_all
-    
+
     # Then, unenroll from the course
     deleted_count = StudentCourse.where(
       student_id: current_student.student_id,
       course_id: @course.course_id
     ).delete_all
-    
+
     if deleted_count > 0
       respond_to do |format|
         format.html { redirect_to courses_path, notice: "Successfully unenrolled from #{@course.course_name}" }

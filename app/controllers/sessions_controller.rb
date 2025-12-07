@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_student!, only: [:new, :create, :google_auth, :failure]
-  before_action :redirect_if_logged_in, only: [:new, :create]
+  skip_before_action :authenticate_student!, only: [ :new, :create, :google_auth, :failure ]
+  before_action :redirect_if_logged_in, only: [ :new, :create ]
 
   def new
     @student = Student.new
@@ -10,14 +10,14 @@ class SessionsController < ApplicationController
 
   def create
     @student = Student.authenticate(session_params[:email], session_params[:password])
-    
+
     if @student
       session[:student_id] = @student.student_id
       redirect_to dashboard_path, notice: "Welcome back, #{@student.name}!"
     else
       # Check if email exists in database
       existing_student = Student.find_by(email: session_params[:email])
-      
+
       if existing_student
         @student = Student.new(email: session_params[:email])
         flash.now[:alert] = "Invalid password for this email"
