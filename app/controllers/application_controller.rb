@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  before_action :authenticate_student!, unless: -> { action_name == 'not_found' }
+  before_action :authenticate_student!, unless: -> { action_name == "not_found" }
 
   helper_method :current_student, :current_student_id, :logged_in?
 
@@ -30,8 +30,8 @@ class ApplicationController < ActionController::Base
 
   def not_found
     respond_to do |format|
-      format.html { render file: Rails.public_path.join('404.html'), status: :not_found, layout: false }
-      format.json { render json: { error: 'Not found' }, status: :not_found }
+      format.html { render file: Rails.public_path.join("404.html"), status: :not_found, layout: false }
+      format.json { render json: { error: "Not found" }, status: :not_found }
       format.any { head :not_found }
     end
   end

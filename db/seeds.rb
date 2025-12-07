@@ -33,7 +33,7 @@ courses_data = [
   { course_name: "STAT 350 – Regression", description: "Applied linear models", professor: "Prof. Kim" }
 ]
 
-topics = ["Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review"]
+topics = [ "Homework review", "Midterm prep", "Project kickoff", "Lab session", "Exam review" ]
 
 ActiveRecord::Base.transaction do
   # Only wipe data in dev/test to keep prod safe
@@ -87,7 +87,7 @@ ActiveRecord::Base.transaction do
     enrolled_ids = StudentCourse.where(course_id: grp.course_id).pluck(:student_id)
     next if enrolled_ids.empty?
 
-    member_ids = enrolled_ids.first([3, enrolled_ids.size].min)
+    member_ids = enrolled_ids.first([ 3, enrolled_ids.size ].min)
     member_ids.each do |sid|
       GroupMembership.find_or_create_by!(student_id: sid, group_id: grp.group_id)
     end
