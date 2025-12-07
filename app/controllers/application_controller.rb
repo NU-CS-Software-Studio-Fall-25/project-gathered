@@ -6,6 +6,15 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_student, :current_student_id, :logged_in?
 
+  # 404 handler for catch-all routes
+  def not_found
+    respond_to do |format|
+      format.html { render file: Rails.public_path.join("404.html"), status: :not_found, layout: false }
+      format.json { render json: { error: "Not found" }, status: :not_found }
+      format.any { head :not_found }
+    end
+  end
+
   private
 
   def authenticate_student!
@@ -26,14 +35,6 @@ class ApplicationController < ActionController::Base
 
   def logged_in?
     current_student.present?
-  end
-
-  def not_found
-    respond_to do |format|
-      format.html { render file: Rails.public_path.join("404.html"), status: :not_found, layout: false }
-      format.json { render json: { error: "Not found" }, status: :not_found }
-      format.any { head :not_found }
-    end
   end
 
   def normalize_student_id(value)
