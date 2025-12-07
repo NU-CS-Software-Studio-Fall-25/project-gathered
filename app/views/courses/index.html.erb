@@ -1,15 +1,14 @@
-<div class="h-screen overflow-hidden bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 text-slate-100">
-  <div class="mx-auto max-w-[90rem] px-6 pt-16 pb-6 flex flex-col h-full">
-    <div class="relative flex-shrink-0">
-      <div id="flash_messages" class="mb-4"></div>
-    </div>
+<div class="mx-auto max-w-[90rem] px-6 pt-20 pb-6 flex flex-col h-full text-slate-100">
+  <div class="relative flex-shrink-0">
+    <div id="flash_messages" class="mb-4"></div>
+  </div>
 
-      <!-- Three Column Layout -->
+    <!-- Three Column Layout -->
       <div class="flex flex-col lg:flex-row lg:justify-center gap-4 flex-1 min-h-0">
         
         <!-- Left Column: Course Search -->
         <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-[27%] flex-shrink-0">
-          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 11rem);">
             <h2 class="text-xl font-semibold text-white mb-4">Find Courses</h2>
             <!-- Search Input -->
             <div class="relative mb-3">
@@ -72,7 +71,7 @@
 
         <!-- Middle Column: My Courses -->
         <div class="flex flex-col min-h-[400px] lg:min-h-0 lg:w-[42%] flex-shrink-0">
-          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 11rem);">
             <h2 class="text-xl font-semibold text-white mb-4">My Courses</h2>
             
             <div class="space-y-3 overflow-y-auto flex-1 scrollbar-hide" id="enrolled-courses">
@@ -142,7 +141,7 @@
 
         <!-- Right Column: Study Groups -->
         <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-[31%] flex-shrink-0">
-          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+          <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 11rem);">
             <h2 class="text-xl font-semibold text-white mb-4">Study Groups</h2>
             
             <div id="study-groups-container" 
@@ -151,8 +150,7 @@
                 <%= render "courses/empty_study_groups" %>
             </div>
           </div>
-        </div>
-      </div>
+    </div>
   </div>
 </div>
 
