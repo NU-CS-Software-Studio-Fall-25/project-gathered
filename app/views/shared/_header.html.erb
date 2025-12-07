@@ -35,9 +35,7 @@
         <div class="relative inline-block text-left group">
           <button type="button" class="flex justify-center items-center gap-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none cursor-pointer transition">
             <span><%= current_student&.name&.split&.first || "Student" %></span>
-            <div id="navbar-avatar" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background-color: <%= current_student&.avatar_color || '#9333ea' %>;">
-              <%= (current_student&.name || "S")[0].upcase %>
-            </div>
+            <%= student_avatar(current_student, size: "w-8 h-8", text_size: "text-sm") %>
           </button>
 
           <div class="absolute right-0 mt-1 w-44 bg-primary-700/20 backdrop-blur-lg rounded-md border border-white/10 shadow-md py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus:opacity-100 group-focus:visible transform translate-y-1 group-hover:translate-y-0 transition-all duration-150 ease-out z-20 pointer-events-auto">

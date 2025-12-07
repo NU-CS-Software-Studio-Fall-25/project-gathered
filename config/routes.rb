@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   get "map", to: "map#index", as: :map
 
   # Student profile
-  resource :student, only: [ :show, :edit, :update ] do
+  resource :student, only: [:show, :edit, :update] do
+    post :verify_password, on: :collection
     member do
       patch :toggle_high_contrast
       patch :update_avatar_color

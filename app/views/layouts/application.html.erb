@@ -27,12 +27,12 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="transition-opacity duration-300 bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 <%= 'high-contrast' if current_student&.high_contrast? %>">
+  <body class="h-screen flex flex-col overflow-hidden transition-opacity duration-300 bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 <%= 'high-contrast' if current_student&.high_contrast? %>">
     <% if controller_name != 'sessions' && controller_name != 'students' || (controller_name == 'students' && !['new', 'create'].include?(action_name)) %>
       <%= render "shared/header" %>
     <% end %>
     
-    <main class="main-content" data-turbo-transition>
+    <main class="flex-grow overflow-hidden main-content" data-turbo-transition>
       <%= yield %>
     </main>
     <%= render "layouts/footer" %>
