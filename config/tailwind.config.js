@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+// NOTE: Tailwind CSS 4.x uses @theme in CSS files for custom colors.
+// See app/assets/tailwind/application.css for primary, success, danger, accent colors.
 module.exports = {
   content: [
     './app/views/**/*.{erb,html}',
@@ -17,8 +19,6 @@ module.exports = {
           '30%, 50%, 70%': { transform: 'translate3d(-2px, 0, 0)' },
           '40%, 60%': { transform: 'translate3d(2px, 0, 0)' },
         },
-      },
-      keyframes: {
         'bounce-short': {
           '0%, 100%': {
             transform: 'translateY(-25%)',

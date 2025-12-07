@@ -149,7 +149,7 @@
   </style>
 <% end %>
 
-<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4 pt-20 pb-10">
+<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 text-slate-100 px-4 pt-20 pb-10">
   <div class="relative w-full max-w-[1600px]">
     <div class="mb-6">
       <h1 class="text-3xl font-semibold text-white mb-2">Study Group Locations</h1>
@@ -170,7 +170,7 @@
                    data-lat="<%= location[:coordinates][0] %>" 
                    data-lon="<%= location[:coordinates][1] %>">
                 <h4 class="font-semibold"><%= location[:topic] %></h4>
-                <p class="text-violet-300 text-sm"><%= location[:course] %></p>
+                <p class="text-primary-300 text-sm"><%= location[:course] %></p>
                 <p class="text-xs mt-1">📍 <%= location[:location] %></p>
                 <p class="text-xs mt-1">📅 <%= location[:formatted_time] %></p>
               </div>
@@ -183,7 +183,7 @@
             <div class="text-4xl mb-4">🗺️</div>
             <h3 class="text-xl font-semibold text-white mb-2">No Study Groups Found</h3>
             <p class="text-slate-300 mb-4">You don't have any upcoming study groups with locations yet.</p>
-            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-violet-600/90 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500/90 transition" %>
+            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-tertiary-600/90 px-4 py-2 text-sm font-medium text-white hover:bg-tertiary-500/90 transition" %>
           </div>
         </div>
       <% end %>

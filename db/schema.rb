@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_05_044659) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_07_022019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,6 +71,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_05_044659) do
     t.string "avatar_color"
     t.string "provider"
     t.string "uid"
+    t.boolean "high_contrast", default: false, null: false
     t.index ["email"], name: "index_students_on_email", unique: true
     t.index ["provider", "uid"], name: "index_students_on_provider_and_uid", unique: true, where: "(provider IS NOT NULL)"
   end

@@ -1,14 +1,14 @@
-<div class="h-screen overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100">
+<div class="h-screen overflow-hidden bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 text-slate-100">
   <div class="mx-auto max-w-[90rem] px-6 pt-16 pb-6 flex flex-col h-full">
     <div class="relative flex-shrink-0">
       <div id="flash_messages" class="mb-4"></div>
     </div>
 
       <!-- Three Column Layout -->
-      <div class="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+      <div class="flex flex-col lg:flex-row lg:justify-center gap-4 flex-1 min-h-0">
         
         <!-- Left Column: Course Search -->
-        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/4">
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-[27%] flex-shrink-0">
           <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
             <h2 class="text-xl font-semibold text-white mb-4">Find Courses</h2>
             <!-- Search Input -->
@@ -16,7 +16,7 @@
               <input type="text" 
                      id="course-search" 
                      placeholder="Search courses..." 
-                     class="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm" />
+                     class="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-400/70 focus:border-transparent transition shadow-sm" />
               <svg class="absolute right-3 top-2 h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
               </svg>
@@ -27,7 +27,8 @@
               <div class="space-y-2 overflow-y-auto scrollbar-hide h-full" id="course-list">
                 <% @courses.each do |course| %>
                 <% enrolled = current_student.courses.include?(course) %>
-                <div class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer group"
+                <div id="search-course-<%= course.course_id %>"
+                     class="course-item select-none bg-white/5 border border-white/10 rounded-lg hover:bg-white/8 transition cursor-pointer group"
                      data-courses-expanded-value="false"
                      data-courses-course-id-value="<%= course.course_id %>"
                      data-search-text="<%= "#{course.course_name} #{course.professor} #{course.description}".downcase %>"
@@ -49,10 +50,10 @@
                                     class: "shrink-0" do |f| %>
                         <%= f.hidden_field :course_id, value: course.course_id %>
                         <%= f.button type: "submit",
-                                    class: "group/btn relative inline-flex items-center justify-center w-7 h-7 rounded-md bg-white/5 hover:bg-violet-500/20 cursor-pointer transition-all duration-150",
+                                    class: "group/btn relative inline-flex items-center justify-center w-7 h-7 rounded-md bg-white/5 hover:bg-primary-500/20 cursor-pointer transition-all duration-150",
                                     data: { turbo_frame: "_top" } do %>
                           <div class="icon-container transition-transform duration-150 ease-out group-hover/btn:scale-110 group-active/btn:scale-90">
-                            <svg class="plus-icon w-5 h-5 text-violet-300 group-hover/btn:text-violet-200 transform transition-transform duration-150 ease-out group-hover/btn:rotate-180" 
+                            <svg class="plus-icon w-5 h-5 text-primary-300 group-hover/btn:text-primary-200 transform transition-transform duration-150 ease-out group-hover/btn:rotate-180" 
                                  viewBox="0 0 20 20" 
                                  fill="currentColor">
                               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
@@ -70,13 +71,13 @@
         </div>
 
         <!-- Middle Column: My Courses -->
-        <div class="flex flex-col min-h-[400px] lg:min-h-0 lg:w-5/12">
-          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 pb-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
+        <div class="flex flex-col min-h-[400px] lg:min-h-0 lg:w-[42%] flex-shrink-0">
+          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-2xl p-4 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
             <h2 class="text-xl font-semibold text-white mb-4">My Courses</h2>
             
             <div class="space-y-3 overflow-y-auto flex-1 scrollbar-hide" id="enrolled-courses">
               <% current_student.courses.each do |course| %>
-                <div class="course-item group select-none cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition duration-150 ring-violet-500/50 data-[selected=true]:bg-white/15 data-[selected=true]:ring-2"
+                <div class="course-item group select-none cursor-pointer rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/8 transition duration-150 ring-primary-500/50 data-[selected=true]:bg-white/15 data-[selected=true]:ring-2"
                      data-controller="courses"
                      data-courses-course-id-value="<%= course.course_id %>"
                      data-action="click->courses#selectCourse"
@@ -88,7 +89,7 @@
                         <div class="flex items-center gap-2">
                           <%= button_to student_course_path(course.course_id), 
                                         method: :delete,
-                                        class: "opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-150 inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-500/20 text-slate-400 hover:text-red-300 cursor-pointer",
+                                        class: "opacity-0 group-hover:opacity-100 group-data-[selected=true]:opacity-100 transition-opacity duration-150 inline-flex items-center justify-center w-6 h-6 rounded-md hover:bg-danger-500/20 text-slate-400 hover:text-danger-300 cursor-pointer",
                                         data: { turbo_frame: "_top" },
                                         onclick: "event.stopPropagation();" do %>
                             <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
@@ -102,11 +103,11 @@
 
                       <div class="mt-3 flex gap-4 text-sm">
                         <div>
-                          <div class="font-semibold text-violet-300"><%= course.study_group_count %></div>
+                          <div class="font-semibold text-primary-300"><%= course.study_group_count %></div>
                           <div class="text-xs text-slate-400">Groups</div>
                         </div>
                         <div>
-                          <div class="font-semibold text-violet-300"><%= course.enrolled_student_count %></div>
+                          <div class="font-semibold text-primary-300"><%= course.enrolled_student_count %></div>
                           <div class="text-xs text-slate-400">Students</div>
                         </div>
                       </div>
@@ -116,11 +117,9 @@
                   <div class="mt-3 pt-3 border-t border-white/5">
                     <div class="flex items-center justify-between gap-2">
                       <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400 group-data-[selected=true]:text-violet-300">
-                          <span class="group-data-[selected=true]:hidden">Click to view study groups</span>
-                          <span class="hidden group-data-[selected=true]:inline">Showing study groups</span>
-                        </span>
-                        <svg class="w-4 h-4 text-slate-400 group-data-[selected=true]:text-violet-300 transition-transform duration-200 group-data-[selected=true]:rotate-90" viewBox="0 0 20 20" fill="currentColor">
+                        <span class="text-xs text-slate-400 click-to-view-text">Click to view study groups</span>
+                        <span class="text-xs text-primary-300 showing-groups-text" style="display: none;">Showing study groups</span>
+                        <svg class="w-4 h-4 text-slate-400 group-data-[selected=true]:text-primary-300 transition-transform duration-200 group-data-[selected=true]:rotate-90" viewBox="0 0 20 20" fill="currentColor">
                           <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                         </svg>
                       </div>
@@ -135,24 +134,20 @@
               <% end %>
 
               <% if current_student.courses.empty? %>
-                <div class="text-center rounded-lg border border-white/10 bg-white/5 p-8">
-                  <div class="text-4xl mb-2">📚</div>
-                  <h3 class="text-lg font-semibold text-white mb-1">No Courses Yet</h3>
-                  <p class="text-sm text-slate-300">Search and add courses from the left panel</p>
-                </div>
+                <%= render "courses/empty_courses" %>
               <% end %>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Study Groups -->
-        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-1/3">
+        <div class="flex flex-col min-h-[300px] lg:min-h-0 lg:w-[31%] flex-shrink-0">
           <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-4 sticky top-6 mb-8 flex flex-col min-h-0 overflow-hidden" style="max-height: calc(100vh - 7rem);">
             <h2 class="text-xl font-semibold text-white mb-4">Study Groups</h2>
             
             <div id="study-groups-container" 
-                 class="select-none transition-all duration-300 ease-out overflow-y-auto scrollbar-hide flex-1 min-h-0" 
-                   data-empty-state='<div class="text-center rounded-lg border border-white/10 bg-white/5 p-8"><div class="text-4xl mb-2">👥</div><h3 class="text-lg font-semibold text-white mb-1">Study Groups</h3><p class="text-sm text-slate-300">Click on a course to view its study groups</p></div>'>
+                 class="select-none transition-all duration-300 ease-out overflow-y-auto overflow-x-hidden scrollbar-hide flex-1 min-h-0" 
+                   data-empty-state='<%= render("courses/empty_study_groups").squish.html_safe %>'>
                 <%= render "courses/empty_study_groups" %>
             </div>
           </div>

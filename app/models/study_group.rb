@@ -8,7 +8,7 @@ class StudyGroup < ApplicationRecord
   after_create_commit :add_creator_membership
 
   # Validations
-  validates :topic, presence: { message: "Topic is required - please enter a topic" }, 
+  validates :topic, presence: { message: "Topic is required - please enter a topic" },
                     length: { minimum: 3, maximum: 100, message: "must be between 3 and 100 characters" },
                     uniqueness: { scope: :course_id, message: "already exists for this course" }
   validates :location, presence: { message: "Location is required - please select a building" }, length: { maximum: 150 }

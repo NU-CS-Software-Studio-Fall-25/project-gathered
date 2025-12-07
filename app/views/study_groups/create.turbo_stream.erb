@@ -1,5 +1,5 @@
 <%# Prepend the new study group %>
-<%= turbo_stream.prepend "study_groups_list" do %>
+<%= turbo_stream.prepend "study_groups_items" do %>
   <%= render partial: "study_groups/study_group", locals: { study_group: @study_group, current_student_id: current_student_id } %>
 <% end %>
 

@@ -40,7 +40,7 @@ class StudyGroupsController < ApplicationController
     respond_to do |format|
       if @study_group.save
         # Creator is automatically added as a member via after_create_commit callback in StudyGroup model
-        
+
         format.html { redirect_to course_path(@course), notice: "Study group created successfully!" }
         format.turbo_stream
       else
@@ -142,7 +142,7 @@ class StudyGroupsController < ApplicationController
       if @study_group.members.count == 0
         course = @study_group.course
         @study_group.destroy
-        
+
         redirect_path = course_path(course)
         if params[:return_to].present?
           # Prevent redirect loop if return_to is the deleted group page
@@ -152,7 +152,7 @@ class StudyGroupsController < ApplicationController
         respond_to do |format|
           format.html { redirect_to redirect_path, notice: "Study group deleted as it has no members." }
           format.turbo_stream do
-            if params[:source] == 'detail'
+            if params[:source] == "detail"
               # If we are on the detail page, we MUST redirect away
               redirect_to redirect_path, notice: "Study group deleted as it has no members."
             else
@@ -172,8 +172,8 @@ class StudyGroupsController < ApplicationController
       end
 
       respond_to do |format|
-        format.html { 
-          redirect_back fallback_location: course_path(@study_group.course), notice: "You left the study group." 
+        format.html {
+          redirect_back fallback_location: course_path(@study_group.course), notice: "You left the study group."
         }
         format.turbo_stream do
           render turbo_stream: [
@@ -197,8 +197,8 @@ class StudyGroupsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { 
-          redirect_back fallback_location: course_path(@study_group.course), alert: "Could not leave group." 
+        format.html {
+          redirect_back fallback_location: course_path(@study_group.course), alert: "Could not leave group."
         }
         format.turbo_stream do
           render turbo_stream: turbo_stream.prepend(
@@ -232,8 +232,8 @@ class StudyGroupsController < ApplicationController
   def build_ics_calendar
     cal = Icalendar::Calendar.new
     event = Icalendar::Event.new
-    event.dtstart = Icalendar::Values::DateTime.new(@study_group.start_time.in_time_zone("America/Chicago"), 'tzid' => "America/Chicago")
-    event.dtend = Icalendar::Values::DateTime.new(@study_group.end_time.in_time_zone("America/Chicago"), 'tzid' => "America/Chicago")
+    event.dtstart = Icalendar::Values::DateTime.new(@study_group.start_time.in_time_zone("America/Chicago"), "tzid" => "America/Chicago")
+    event.dtend = Icalendar::Values::DateTime.new(@study_group.end_time.in_time_zone("America/Chicago"), "tzid" => "America/Chicago")
     event.summary = @study_group.topic
     event.description = @study_group.description.presence || "Study group for #{@study_group.course.course_name}"
     event.location = @study_group.location if @study_group.location.present?

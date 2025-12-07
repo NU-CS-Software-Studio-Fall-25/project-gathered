@@ -23,7 +23,7 @@
     <% if current_student.enrolled_in?(course) %>
       <%= button_to student_course_path(course),
                     method: :delete,
-                    class: "group/unenroll relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
+                    class: "group/unenroll relative inline-flex items-center justify-center gap-1.5 rounded-md border border-danger-500/30 bg-danger-500/10 px-3 py-1.5 text-sm font-medium text-danger-300 hover:bg-danger-500/20 transition-all duration-150",
                     data: { 
                       action: "click->courses#confirmUnenroll",
                       course_name: course.course_name,
@@ -43,7 +43,7 @@
       </button>
     <% else %>
       <%= button_to student_courses_path(student_course: { course_id: course.course_id }),
-                    class: "inline-flex items-center justify-center rounded-md bg-violet-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-500/90 transition",
+                    class: "inline-flex items-center justify-center rounded-md bg-tertiary-600/90 px-3 py-1.5 text-sm font-medium text-white hover:bg-tertiary-500/90 transition",
                     data: { turbo_stream: true } do %>
         Enroll Now
       <% end %>

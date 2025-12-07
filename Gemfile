@@ -52,6 +52,12 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Testing frameworks
+  gem "rspec-rails", "~> 6.1"
+  gem "cucumber-rails", "~> 3.0", require: false
+  gem "database_cleaner-active_record", "~> 2.1"
+  gem "factory_bot_rails", "~> 6.4"
 end
 
 group :development do
@@ -65,10 +71,10 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pg", "~> 1.6", group: :production
+gem "pg", "~> 1.6"
 
 group :development, :test do
-  #library for generating contrived data
+  # library for generating contrived data
   gem "faker", "~> 3.4"
 end
 

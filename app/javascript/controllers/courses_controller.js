@@ -11,6 +11,11 @@ export default class extends Controller {
     connect() {
         console.log("Courses controller connected");
 
+        // Ensure the text visibility is correct on initial connect
+        // This handles the case where a new course is added and the DOM is refreshed
+        const clickToView = this.element.querySelector('.click-to-view-text');
+        const showingGroups = this.element.querySelector('.showing-groups-text');
+        
         // Handle initial state on page load
         const selectedCourseId = sessionStorage.getItem('selectedCourseId');
         
@@ -27,16 +32,25 @@ export default class extends Controller {
         if (selectedCourseId && !selectedCourseExists) {
             sessionStorage.removeItem('selectedCourseId');
             sessionStorage.removeItem('courseOrder');
-            // Make sure all courses are visible
+            // Make sure all courses are visible and text is reset
             this.element.style.display = '';
             this.element.style.opacity = '1';
             this.element.style.transform = 'translateX(0)';
+            if (clickToView) clickToView.style.display = '';
+            if (showingGroups) showingGroups.style.display = 'none';
+            this.toggleCourseListCompact(false);
             return;
         }
         
         if (selectedCourseId === this.courseIdValue?.toString()) {
             // This is the selected course
             this.element.setAttribute('data-selected', 'true');
+            
+            // Toggle the text visibility for selected state
+            if (clickToView) clickToView.style.display = 'none';
+            if (showingGroups) showingGroups.style.display = '';
+            this.toggleCourseListCompact(true);
+            
             this.loadStudyGroups();
             
             // Scroll to top immediately on page load (no smooth animation)
@@ -51,11 +65,17 @@ export default class extends Controller {
         } else if (selectedCourseId) {
             // Another course is selected, hide this one immediately
             this.element.style.display = 'none';
+            // Ensure text is in default state
+            if (clickToView) clickToView.style.display = '';
+            if (showingGroups) showingGroups.style.display = 'none';
         } else {
-            // No course is selected, make sure this one is visible
+            // No course is selected, make sure this one is visible and text is reset
             this.element.style.display = '';
             this.element.style.opacity = '1';
             this.element.style.transform = 'translateX(0)';
+            if (clickToView) clickToView.style.display = '';
+            if (showingGroups) showingGroups.style.display = 'none';
+            this.toggleCourseListCompact(false);
         }
     }
 
@@ -78,17 +98,25 @@ export default class extends Controller {
             // Hide all other courses with a fade out animation
             courseItems.forEach(item => {
                 if (item !== this.element) {
-                    item.style.transition = 'opacity 150ms ease-out, transform 150ms ease-out';
+                    item.style.transition = 'opacity 220ms cubic-bezier(0.4, 0, 0.2, 1), transform 220ms cubic-bezier(0.4, 0, 0.2, 1)';
                     item.style.opacity = '0';
-                    item.style.transform = 'translateX(-1rem)';
+                    item.style.transform = 'translateY(0.5rem) scale(0.98)';
                     setTimeout(() => {
                         item.style.display = 'none';
-                    }, 150);
+                        item.style.transition = '';
+                    }, 220);
                 }
             });
 
             // Add selected state to this course
             this.element.setAttribute('data-selected', 'true');
+            
+            // Toggle the text visibility
+            const clickToView = this.element.querySelector('.click-to-view-text');
+            const showingGroups = this.element.querySelector('.showing-groups-text');
+            if (clickToView) clickToView.style.display = 'none';
+            if (showingGroups) showingGroups.style.display = '';
+            this.toggleCourseListCompact(true);
             
             // Save selected course ID
             sessionStorage.setItem('selectedCourseId', this.courseIdValue);
@@ -100,6 +128,13 @@ export default class extends Controller {
             // Remove selected state
             this.element.setAttribute('data-selected', 'false');
             sessionStorage.removeItem('selectedCourseId');
+            this.toggleCourseListCompact(false);
+            
+            // Toggle the text visibility back
+            const clickToView = this.element.querySelector('.click-to-view-text');
+            const showingGroups = this.element.querySelector('.showing-groups-text');
+            if (clickToView) clickToView.style.display = '';
+            if (showingGroups) showingGroups.style.display = 'none';
             
             // Get the stored course order
             const courseOrder = JSON.parse(sessionStorage.getItem('courseOrder') || '[]');
@@ -107,11 +142,14 @@ export default class extends Controller {
             // Show all courses with a fade in animation
             courseItems.forEach(item => {
                 item.style.display = ''; // Reset display first
-                // Use setTimeout to ensure display change has taken effect
-                setTimeout(() => {
+                requestAnimationFrame(() => {
+                    item.style.transition = 'opacity 260ms cubic-bezier(0.4, 0, 0.2, 1), transform 260ms cubic-bezier(0.4, 0, 0.2, 1)';
                     item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                }, 0);
+                    item.style.transform = 'translateY(0) scale(1)';
+                    item.addEventListener('transitionend', () => {
+                        item.style.transition = '';
+                    }, { once: true });
+                });
             });
 
             // Restore the original order
@@ -142,16 +180,36 @@ export default class extends Controller {
         event.preventDefault();
     }
 
+    toggleCourseListCompact(compact) {
+        const enrolledCourses = document.getElementById('enrolled-courses');
+        if (!enrolledCourses) return;
+
+        if (compact) {
+            enrolledCourses.dataset.compact = 'true';
+        } else {
+            delete enrolledCourses.dataset.compact;
+        }
+    }
+
     loadStudyGroups() {
         const container = document.getElementById('study-groups-container');
         if (!container) return;
 
         // Store current height for smooth transition
         const currentHeight = container.offsetHeight;
+        const previousOverflow = container.style.overflow || '';
+        const transitionClasses = ['transition-all', 'duration-300', 'ease-out'];
+        transitionClasses.forEach(cls => container.classList.add(cls));
+        let cleanedUp = false;
+        const cleanup = () => {
+            if (cleanedUp) return;
+            cleanedUp = true;
+            container.style.height = '';
+            container.style.overflow = previousOverflow;
+            transitionClasses.forEach(cls => container.classList.remove(cls));
+        };
         container.style.height = `${currentHeight}px`;
-        
-        // Add transitions for both opacity and height
-        container.classList.add('transition-all', 'duration-300', 'ease-out');
+        container.style.overflow = 'hidden';
         
         // Fade out current content
         container.style.opacity = '0';
@@ -202,7 +260,7 @@ export default class extends Controller {
                     
                     // Remove fixed height after animation
                     setTimeout(() => {
-                        container.style.height = '';
+                        cleanup();
                     }, 300);
                 }, 150);
             })
@@ -232,7 +290,7 @@ export default class extends Controller {
                     
                     // Remove fixed height after animation
                     setTimeout(() => {
-                        container.style.height = '';
+                        cleanup();
                     }, 300);
                 }, 150);
             });

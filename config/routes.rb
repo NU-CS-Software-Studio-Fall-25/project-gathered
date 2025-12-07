@@ -13,14 +13,18 @@ Rails.application.routes.draw do
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
-  match "/auth/:provider/callback", to: "sessions#google_auth", via: [:get, :post]
-  match "/auth/failure", to: "sessions#failure", via: [:get, :post]
+  match "/auth/:provider/callback", to: "sessions#google_auth", via: [ :get, :post ]
+  match "/auth/failure", to: "sessions#failure", via: [ :get, :post ]
   get "signup", to: "students#new"
   post "signup", to: "students#create"
 
   # Dashboard route (root path)
   root "dashboard#index"
   get "dashboard", to: "dashboard#index"
+
+  # Convenience paths expected by UI tests
+  get "search", to: "courses#index", as: :search
+  get "my_groups", to: "courses#index", as: :my_groups
 
   # Calendar route
   get "calendar", to: "calendar#index", as: :calendar
@@ -31,6 +35,10 @@ Rails.application.routes.draw do
   # Student profile
   resource :student, only: [:show, :edit, :update] do
     post :verify_password, on: :collection
+    member do
+      patch :toggle_high_contrast
+      patch :update_avatar_color
+    end
   end
 
   # Courses and their study groups
@@ -48,8 +56,11 @@ Rails.application.routes.draw do
   end
 
   # Student course enrollment
-  resources :student_courses, only: [:create, :destroy]
+  resources :student_courses, only: [ :create, :destroy ]
 
   # Legacy route for backward compatibility
   resource :student_session, only: :create
+
+  # Catch-all route for 404s - must be last
+  match "*unmatched", to: "application#not_found", via: :all
 end

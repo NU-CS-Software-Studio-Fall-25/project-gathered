@@ -1,6 +1,6 @@
 class StudentsController < ApplicationController
-  skip_before_action :authenticate_student!, only: [:new, :create]
-  before_action :redirect_if_logged_in, only: [:new, :create]
+  skip_before_action :authenticate_student!, only: [ :new, :create ]
+  before_action :redirect_if_logged_in, only: [ :new, :create ]
 
   def new
     @student = Student.new
@@ -16,9 +16,9 @@ class StudentsController < ApplicationController
       render :new, status: :unprocessable_entity
       return
     end
-    
+
     @student = Student.new(student_params)
-    
+
     if @student.save
       session[:student_id] = @student.student_id
       redirect_to dashboard_path, notice: "Account created successfully! Welcome, #{@student.name}!"
@@ -68,10 +68,20 @@ class StudentsController < ApplicationController
     end
   end
 
+  def toggle_high_contrast
+    current_student.update(high_contrast: params[:high_contrast])
+    head :ok
+  end
+
+  def update_avatar_color
+    current_student.update(avatar_color: params[:avatar_color])
+    head :ok
+  end
+
   private
 
   def student_params
-    params.require(:student).permit(:name, :email, :password, :password_confirmation, :avatar_color)
+    params.require(:student).permit(:name, :email, :password, :password_confirmation, :avatar_color, :high_contrast)
   end
 
   def update_params

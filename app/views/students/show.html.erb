@@ -1,7 +1,7 @@
-<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4 pt-20 pb-10">
+<div class="min-h-screen flex items-start justify-center bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 text-slate-100 px-4 pt-20 pb-10">
   <div class="relative w-full max-w-7xl">
     <!-- Subtle glow background -->
-    <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-400/30 via-violet-500/20 to-indigo-400/30 blur-3xl opacity-60"></div>
+    <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-primary-400/30 via-tertiary-500/20 to-secondary-400/30 blur-3xl opacity-60"></div>
 
     <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-8">
       <div class="mb-8">
@@ -35,7 +35,7 @@
                   <%= button_to "Leave",
                                 leave_study_group_path(study_group, student_id: current_student.student_id),
                                 method: :delete,
-                                class: "flex-1 inline-flex items-center justify-center rounded-md bg-red-600/80 px-3 py-1.5 text-sm text-white hover:bg-red-500/80 transition cursor-pointer",
+                                class: "flex-1 inline-flex items-center justify-center rounded-md bg-danger-600/80 px-3 py-1.5 text-sm text-white hover:bg-danger-500/80 transition cursor-pointer",
                                 form: { data: { turbo: false } } %>
                 </div>
               </div>
@@ -46,7 +46,7 @@
             <div class="text-4xl mb-2">📚</div>
             <h3 class="text-lg font-semibold text-white mb-1">No Study Groups Yet</h3>
             <p class="text-sm text-slate-300 mb-4">You haven't joined any study groups. Browse courses to find study groups that interest you!</p>
-            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-violet-600/90 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-violet-500/90 transition cursor-pointer" %>
+            <%= link_to "Browse Courses", courses_path, class: "inline-flex items-center rounded-md bg-tertiary-600/90 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-tertiary-500/90 transition cursor-pointer" %>
           </div>
         <% end %>
       </div>
