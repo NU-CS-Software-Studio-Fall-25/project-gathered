@@ -46,13 +46,29 @@
         </div>
         <div id="avatar-preview-container" class="relative">
           <% if @student.avatar.attached? %>
-            <img src="<%= url_for(@student.avatar) %>" alt="Avatar" class="flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg" id="avatar-image-preview">
-            <div class="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold text-2xl shadow-lg hidden" style="background-color: <%= @student.avatar_color || '#9333ea' %>;" id="avatar-color-preview" data-profile-target="avatarColorPreview">
+            <img src="<%= url_for(@student.avatar) %>" 
+                 alt="<%= @student.name %>'s avatar" 
+                 class="flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg" 
+                 id="avatar-image-preview"
+                 data-existing-avatar="true"
+                 data-original-src="<%= url_for(@student.avatar) %>">
+            <div class="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold text-2xl shadow-lg hidden" 
+                 style="background-color: <%= @student.avatar_color || '#9333ea' %>;" 
+                 id="avatar-color-preview" 
+                 data-profile-target="avatarColorPreview">
               <%= @student.name[0].upcase %>
             </div>
           <% else %>
-            <img src="" alt="Avatar" class="flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg hidden" id="avatar-image-preview">
-            <div class="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold text-2xl shadow-lg" style="background-color: <%= @student.avatar_color || '#9333ea' %>;" id="avatar-color-preview" data-profile-target="avatarColorPreview">
+            <%# No avatar attached - hide image element, show color avatar %>
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                 alt="" 
+                 class="flex-shrink-0 w-16 h-16 rounded-full object-cover shadow-lg hidden" 
+                 id="avatar-image-preview"
+                 data-existing-avatar="false">
+            <div class="flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-semibold text-2xl shadow-lg" 
+                 style="background-color: <%= @student.avatar_color || '#9333ea' %>;" 
+                 id="avatar-color-preview" 
+                 data-profile-target="avatarColorPreview">
               <%= @student.name[0].upcase %>
             </div>
           <% end %>
