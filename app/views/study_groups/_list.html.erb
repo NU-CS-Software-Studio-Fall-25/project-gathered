@@ -1,22 +1,21 @@
-<div class="pr-2 space-y-3">
-  <div>
-    <turbo-frame id="new_group_form">
-      <%= render "study_groups/create_button", course: course %>
-    </turbo-frame>
-  </div>
+<div class="space-y-3">
+  <turbo-frame id="new_group_form" class="block">
+    <%= render "study_groups/create_button", course: course %>
+  </turbo-frame>
 
-  <div id="study_groups_list" class="space-y-3">
-    <% study_groups.each do |study_group| %>
-      <%= render partial: "study_groups/study_group", locals: { study_group: study_group, current_student_id: local_assigns[:current_student_id] } %>
-    <% end %>
-    
-    <% if study_groups.empty? %>
-      <div id="empty_state" class="flex items-center justify-center" style="min-height: 200px;">
-        <div class="rounded-lg border border-white/10 bg-white/5 p-8 text-center">
-          <div class="text-4xl mb-2">👥</div>
-          <p class="text-sm text-slate-300">Create your first study group!</p>
-        </div>
-      </div>
+  <div id="study_groups_items" class="space-y-3">
+    <% study_groups.each_with_index do |study_group, index| %>
+      <%= render partial: "study_groups/study_group", locals: { study_group: study_group, current_student_id: local_assigns[:current_student_id], index: index } %>
     <% end %>
   </div>
+  
+  <% if study_groups.empty? %>
+    <div id="empty_state" class="flex items-center justify-center min-h-[208px]">
+      <div class="animate-stack-pop rounded-lg border border-white/10 bg-white/5 p-4 text-center flex flex-col items-center justify-center gap-2 min-h-[208px]">
+        <div class="text-4xl">👥</div>
+        <h3 class="text-lg font-semibold text-white">Study Groups</h3>
+        <p class="text-sm text-slate-300">Create your first study group!</p>
+      </div>
+    </div>
+  <% end %>
 </div>

@@ -44,11 +44,7 @@
         <% end %>
       </div>
 
-      <turbo-frame id="new_group_form" class="new-group-form">
-        <!-- Form will load here -->
-      </turbo-frame>
-
-      <div id="study_groups_list" class="study-groups-list overflow-y-auto scrollbar-hide" data-controller="study-groups" style="max-height: calc(100vh - 20rem);">
+      <div id="study_groups_container" class="study-groups-list overflow-y-auto scrollbar-hide" data-controller="study-groups" style="max-height: calc(100vh - 20rem);">
         <%= render partial: "study_groups/list", locals: { course: @course, study_groups: @study_groups, current_student_id: current_student_id } %>
       </div>
     </div>

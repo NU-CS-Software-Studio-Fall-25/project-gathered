@@ -29,5 +29,7 @@ class CoursesController < ApplicationController
       end
       format.turbo_stream
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to courses_path, alert: "Course not found"
   end
 end

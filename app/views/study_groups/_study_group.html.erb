@@ -1,5 +1,8 @@
+<% card_index = local_assigns.fetch(:index, 0) %>
 <div id="study_group_<%= study_group.group_id %>" 
-     class="rounded-lg border border-white/10 bg-white/5 p-4 transition hover:bg-white/8">
+  class="study-group-card rounded-lg border border-white/10 bg-white/5 p-4 transition hover:bg-white/8"
+  data-study-group-card="true"
+  style="--card-index: <%= card_index %>;">
   <div class="flex items-start justify-between gap-4">
     <div class="flex-1 min-w-0">
       <div class="mb-2 flex items-center justify-between">
