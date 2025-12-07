@@ -4,48 +4,48 @@
     <div class="flex-1 min-w-0">
       <div class="mb-2 flex items-center justify-between">
         <h4 class="text-lg font-semibold text-white"><%= study_group.topic %></h4>
-        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'ongoing' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-500/20 text-slate-300' %>">
+        <span class="rounded-full px-2 py-0.5 text-xs font-medium <%= study_group.status == 'ongoing' ? 'bg-green-500/20 text-green-300' : study_group.status == 'upcoming' ? 'bg-primary-600/20 text-primary-400' : 'bg-slate-500/20 text-slate-300' %>">
           <%= study_group.status.titleize %>
         </span>
       </div>
 
       <div class="space-y-2">
         <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
-          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📅</span>
+          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10 flex-shrink-0">📅</span>
           <span class="min-w-0 flex-1"><%= study_group.formatted_time_range %></span>
         </div>
 
         <% if study_group.location.present? %>
           <div class="flex items-center gap-2 text-sm text-slate-300 min-w-0">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📍</span>
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10 flex-shrink-0">📍</span>
             <span class="min-w-0 flex-1"><%= study_group.location %></span>
           </div>
         <% end %>
 
         <% if study_group.description.present? %>
           <div class="flex items-start gap-2 text-sm text-slate-300 min-w-0">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10 flex-shrink-0">📝</span>
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10 flex-shrink-0">📝</span>
             <span class="min-w-0 flex-1 truncate"><%= study_group.description %></span>
           </div>
         <% end %>
 
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 text-sm text-slate-400">
           <div class="flex items-center gap-1.5">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">👤</span>
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10">👤</span>
             <span>Created by <%= study_group.creator.name %></span>
           </div>
 
           <div class="flex items-center gap-1.5">
-            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">👥</span>
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10">👥</span>
             <span id="member_count_<%= study_group.group_id %>">
-              <strong class="font-medium text-violet-300"><%= study_group.member_count %></strong> 
+              <strong class="font-medium text-primary-300"><%= study_group.member_count %></strong> 
               <%= "member".pluralize(study_group.member_count) %>
             </span>
           </div>
 
           <% if study_group.duration_minutes %>
             <div class="flex items-center gap-1.5">
-              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500/10">⏱️</span>
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500/10">⏱️</span>
               <span><%= format_duration(study_group.duration_minutes) %></span>
             </div>
           <% end %>
@@ -61,7 +61,7 @@
         <% elsif active_student_id && study_group.member_ids.include?(active_student_id) %>
           <%= button_to leave_study_group_path(study_group, student_id: active_student_id, source: 'list'),
                       method: :delete,
-                      class: "cursor-pointer group/leave relative inline-flex items-center justify-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-300 hover:bg-red-500/20 transition-all duration-150",
+                      class: "cursor-pointer group/leave relative inline-flex items-center justify-center gap-1.5 rounded-md border border-danger-500/30 bg-danger-500/10 px-3 py-1.5 text-sm font-medium text-danger-300 hover:bg-danger-500/20 transition-all duration-150",
                       data: { turbo_stream: true } do %>
             <svg class="w-4 h-4 transition-transform duration-150 ease-out group-hover/leave:scale-110" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -72,7 +72,7 @@
           <%= button_to "Join Group", 
                       join_study_group_path(study_group, student_id: active_student_id || current_student_id),
                       method: :post,
-                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition bg-violet-600/90 hover:bg-violet-500/90",
+                      class: "cursor-pointer inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-white transition bg-tertiary-600/90 hover:bg-tertiary-500/90",
                       data: { turbo_stream: true } %>
         <% end %>
 

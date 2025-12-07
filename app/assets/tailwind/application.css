@@ -1,5 +1,77 @@
 @import "tailwindcss";
 
+/* Custom color palette - Change these to switch themes */
+@theme {
+  /* Primary palette (currently purple - used for main brand color) */
+  --color-primary-50: #faf5ff;
+  --color-primary-100: #f3e8ff;
+  --color-primary-200: #e9d5ff;
+  --color-primary-300: #d8b4fe;
+  --color-primary-400: #c084fc;
+  --color-primary-500: #a855f7;
+  --color-primary-600: #9333ea;
+  --color-primary-700: #7e22ce;
+  --color-primary-800: #6b21a8;
+  --color-primary-900: #581c87;
+  --color-primary-950: #3b0764;
+
+  /* Secondary palette (currently indigo - used in gradients) */
+  --color-secondary-50: #eef2ff;
+  --color-secondary-100: #e0e7ff;
+  --color-secondary-200: #c7d2fe;
+  --color-secondary-300: #a5b4fc;
+  --color-secondary-400: #818cf8;
+  --color-secondary-500: #6366f1;
+  --color-secondary-600: #4f46e5;
+  --color-secondary-700: #4338ca;
+  --color-secondary-800: #3730a3;
+  --color-secondary-900: #312e81;
+  --color-secondary-950: #1e1b4b;
+
+  /* Tertiary palette (currently violet - used in gradients) */
+  --color-tertiary-50: #f5f3ff;
+  --color-tertiary-100: #ede9fe;
+  --color-tertiary-200: #ddd6fe;
+  --color-tertiary-300: #c4b5fd;
+  --color-tertiary-400: #a78bfa;
+  --color-tertiary-500: #8b5cf6;
+  --color-tertiary-600: #7c3aed;
+  --color-tertiary-700: #6d28d9;
+  --color-tertiary-800: #5b21b6;
+  --color-tertiary-900: #4c1d95;
+  --color-tertiary-950: #2e1065;
+
+  /* Success colors (green) */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+
+  /* Danger colors (red) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-950: #450a0a;
+
+  /* Accent colors (amber) */
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fef3c7;
+  --color-accent-200: #fde68a;
+  --color-accent-300: #fcd34d;
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
+}
+
 /* Prevent scrollbar during transitions */
 html, body {
   overflow-x: hidden;
@@ -51,11 +123,11 @@ span {
 }
 
 html.turbo-progress-bar::before {
-  background-color: #8b5cf6;
+  background-color: #9333ea; /* primary-600 */
 }
 
 .turbo-progress-bar {
-  background-color: #8b5cf6;
+  background-color: #9333ea; /* primary-600 */
 }
 
 /* Apply transitions to main content */
@@ -77,49 +149,37 @@ body.turbo-loading main {
   display: none;  /* Safari and Chrome */
 }
 
-/* Simple Calendar Styles */
-.simple-calendar {
-  width: 100%;
-  border-collapse: collapse;
+/* Thin scrollbar utility for calendar events */
+.scrollbar-thin {
+  scrollbar-width: thin;
 }
 
-.simple-calendar table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed; /* Force equal column widths */
+.scrollbar-thumb-primary-600\/50 {
+  scrollbar-color: rgba(147, 51, 234, 0.5) transparent;
 }
 
-.simple-calendar thead {
-  background: rgba(139, 92, 246, 0.2);
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
 }
 
-.simple-calendar thead th {
-  padding: 0.75rem;
-  text-align: center;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.simple-calendar td {
-  height: 120px;
-  width: 14.28%; /* Force equal width for all columns (100% / 7 days) */
-  padding: 0.5rem;
-  vertical-align: top;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.02);
-  position: relative;
-  overflow: hidden; /* Prevent content from stretching cell */
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.5);
+  border-radius: 2px;
 }
 
-.simple-calendar .today {
-  background: rgba(139, 92, 246, 0.3) !important;
-  border: 2px solid rgba(139, 92, 246, 0.8) !important;
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+/* Calendar today highlight - applied via JavaScript */
+td[data-today="true"] {
+  background: rgba(147, 51, 234, 0.3) !important;
+  border: 2px solid rgba(147, 51, 234, 0.8) !important;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
 }
 
-.simple-calendar .today .calendar-day-number {
-  background: rgba(139, 92, 246, 0.8);
+td[data-today="true"] [data-calendar-target="dayNumber"] {
+  background: rgba(147, 51, 234, 0.8);
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -130,118 +190,4 @@ body.turbo-loading main {
   color: white;
 }
 
-.simple-calendar .prev-month,
-.simple-calendar .next-month {
-  opacity: 0.4;
-  background: rgba(0, 0, 0, 0.1);
-}
-
-/* Calendar day number */
-.calendar-day-number {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.25rem;
-  padding: 0.25rem;
-}
-
-/* Calendar events container */
-.calendar-events {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  overflow-y: auto;
-  max-height: 85px; /* Fixed max height to prevent cell stretching */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
-}
-
-.calendar-events::-webkit-scrollbar {
-  width: 4px;
-}
-
-.calendar-events::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.calendar-events::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.5);
-  border-radius: 2px;
-}
-
-/* Individual event card - Google Calendar style */
-.calendar-event {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  background: rgba(139, 92, 246, 0.7);
-  border-left: 3px solid rgba(139, 92, 246, 1);
-  border-radius: 3px;
-  font-size: 0.75rem;
-  color: white;
-  text-decoration: none;
-  transition: all 0.15s;
-  height: 20px; /* Fixed height for all event tabs */
-  min-height: 20px;
-  max-height: 20px;
-  flex-shrink: 0; /* Prevent shrinking */
-  overflow: hidden;
-}
-
-.calendar-event:hover {
-  background: rgba(139, 92, 246, 0.9);
-  transform: translateX(2px);
-}
-
-.event-time {
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.event-title {
-  color: rgba(255, 255, 255, 0.9);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0; /* Allow text to shrink */
-}
-
-.simple-calendar .calendar-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.simple-calendar .calendar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-}
-
-.simple-calendar .calendar-heading a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  background: rgba(139, 92, 246, 0.3);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  border-radius: 0.375rem;
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.15s;
-}
-
-.simple-calendar .calendar-heading a:hover {
-  background: rgba(139, 92, 246, 0.5);
-  border-color: rgba(139, 92, 246, 0.6);
-}
+/* Calendar heading styles are now inline Tailwind */

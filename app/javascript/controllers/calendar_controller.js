@@ -21,7 +21,7 @@ export default class extends Controller {
     
     // Close popup when clicking outside
     document.addEventListener('click', (e) => {
-      if (this.popup && !this.popup.contains(e.target) && !e.target.closest('.calendar-event')) {
+      if (this.popup && !this.popup.contains(e.target) && !e.target.closest('[data-action*="calendar#showDetails"]')) {
         this.closePopup();
       }
     });
@@ -141,8 +141,8 @@ export default class extends Controller {
       console.log('Checking cell with data-date:', dateAttr);
 
       if (dateAttr && this.isToday(dateAttr, todayYear, todayMonth, todayDay)) {
-        console.log('Adding today class to:', dateAttr);
-        cell.classList.add('today');
+        console.log('Adding today highlight to:', dateAttr);
+        cell.setAttribute('data-today', 'true');
       }
     });
   }

@@ -1,29 +1,29 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800 text-slate-100 px-4">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800 text-slate-100 px-4">
   <div class="relative w-full max-w-md flex flex-col justify-center">
     <!-- Header Section -->
     <div class="text-center mb-8">
       <div class="relative w-32 h-32 mx-auto mb-4">
         <!-- Outer glow layer -->
-        <div class="absolute -inset-8 rounded-full bg-gradient-radial from-white/60 via-violet-400/30 to-transparent blur-2xl"></div>
+        <div class="absolute -inset-8 rounded-full bg-gradient-radial from-white/60 via-primary-400/30 to-transparent blur-2xl"></div>
         <!-- Middle glow layer -->
-        <div class="absolute -inset-4 rounded-full bg-gradient-to-b from-white/90 via-purple-300/40 to-transparent blur-xl"></div>
+        <div class="absolute -inset-4 rounded-full bg-gradient-to-b from-white/90 via-primary-300/40 to-transparent blur-xl"></div>
         <!-- Inner glow layer -->
         <div class="absolute -inset-2 rounded-full bg-white/50 blur-md"></div>
         <!-- White background container -->
-        <div class="relative w-full h-full rounded-full bg-white p-2 shadow-2xl shadow-purple-500/50 ring-2 ring-white/30">
+        <div class="relative w-full h-full rounded-full bg-white p-2 shadow-2xl shadow-primary-500/50 ring-2 ring-white/30">
           <%= image_tag "logo.png", alt: "GatherEd Logo", class: "w-full h-full object-contain" %>
         </div>
       </div>
-      <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-violet-200 to-purple-200 bg-clip-text text-transparent tracking-tight drop-shadow-lg" style="font-family: 'Poppins', sans-serif;">
+      <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-primary-200 to-primary-200 bg-clip-text text-transparent tracking-tight drop-shadow-lg" style="font-family: 'Poppins', sans-serif;">
         GatherEd
       </h1>
-      <p class="mt-2 text-lg text-violet-200/80 font-light tracking-wide" style="font-family: 'Poppins', sans-serif;">
+      <p class="mt-2 text-lg text-primary-200/80 font-light tracking-wide" style="font-family: 'Poppins', sans-serif;">
         Northwestern's Study Group Finder
       </p>
     </div>
 
     <!-- Subtle glow background -->
-    <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-400/30 via-violet-500/20 to-indigo-400/30 blur-3xl opacity-60"></div>
+    <div class="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-r from-primary-400/30 via-tertiary-500/20 to-secondary-400/30 blur-3xl opacity-60"></div>
 
     <div class="relative rounded-3xl border border-white/15 bg-white/10 backdrop-blur-2xl shadow-2xl p-6 flex flex-col">
       <%= form_with model: @student, url: login_path, local: true,
@@ -33,7 +33,7 @@
         <div class="w-full max-w-sm space-y-1">
           <%= form.label :email, class: "block text-xs font-medium text-slate-200" %>
           <%= form.email_field :email,
-                class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
+                class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-400/70 focus:border-transparent transition shadow-sm",
                 placeholder: "Enter your email",
                 required: true %>
         </div>
@@ -43,7 +43,7 @@
           <div class="relative">
             <%= form.password_field :password,
                   data: { sessions_target: "password" },
-                  class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 pr-10 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-400/70 focus:border-transparent transition shadow-sm",
+                  class: "block w-full rounded-md border border-white/20 bg-white/10 px-3 py-1.5 pr-10 text-sm text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-400/70 focus:border-transparent transition shadow-sm",
                   placeholder: "Enter your password",
                   required: true %>
             <button type="button"
@@ -64,7 +64,7 @@
 
         <div class="w-full max-w-sm space-y-1">
           <%= form.submit "Sign In",
-                class: "w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-violet-600/90 via-purple-600/90 to-indigo-600/90 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 hover:from-violet-500/90 hover:via-purple-500/90 hover:to-indigo-500/90 active:from-violet-600 active:via-purple-600 active:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer" %>
+                class: "w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-primary-600/90 via-primary-600/90 to-primary-600/90 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-primary-900/40 hover:from-primary-500/90 hover:via-primary-500/90 hover:to-primary-500/90 active:from-primary-600 active:via-primary-600 active:to-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-300/70 focus:ring-offset-2 focus:ring-offset-primary-950 transition cursor-pointer" %>
         </div>
       <% end %>
 
@@ -81,7 +81,7 @@
                       method: :post,
                       data: { turbo: false },
                       class: "w-full" do %>
-          <div class="inline-flex items-center justify-center gap-2 w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-violet-300/70 focus:ring-offset-2 focus:ring-offset-purple-950 transition cursor-pointer">
+          <div class="inline-flex items-center justify-center gap-2 w-full rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-primary-900/20 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-primary-300/70 focus:ring-offset-2 focus:ring-offset-primary-950 transition cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 488 512" fill="currentColor">
               <path d="M488 261.8C488 403.3 391.1 512 248 512 110.8 512 0 401.2 0 264S110.8 16 248 16c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C310.3 108 281.4 96 248 96c-84.7 0-153.2 68.4-153.2 153s68.5 153 153.2 153c73.2 0 120.4-41.8 129.4-99.7H248v-79.5h240c2.3 12.7 3.7 29.6 3.7 44.9z"/>
             </svg>
@@ -92,7 +92,7 @@
 
       <% alert_message = flash[:alert] || flash.now[:alert] %>
       <% if alert_message.present? %>
-        <div class="mt-4 w-full max-w-sm self-center rounded-lg border border-red-500/30 bg-red-950/30 p-3 text-sm text-red-200 text-center">
+        <div class="mt-4 w-full max-w-sm self-center rounded-lg border border-danger-500/30 bg-danger-950/30 p-3 text-sm text-danger-200 text-center">
           <%= alert_message %>
         </div>
       <% end %>
@@ -102,7 +102,7 @@
           Don't have an account?
           <%= link_to "Sign up",
                 signup_path,
-                class: "font-medium text-violet-300 hover:text-violet-200 hover:underline underline-offset-2 transition" %>
+                class: "font-medium text-primary-300 hover:text-primary-200 hover:underline underline-offset-2 transition" %>
         </p>
       </div>
     </div>

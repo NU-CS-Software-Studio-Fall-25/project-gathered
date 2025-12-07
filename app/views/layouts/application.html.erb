@@ -27,7 +27,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="transition-opacity duration-300 bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-800">
+  <body class="transition-opacity duration-300 bg-gradient-to-br from-primary-900 via-secondary-900 to-tertiary-800">
     <% if controller_name != 'sessions' && controller_name != 'students' || (controller_name == 'students' && !['new', 'create'].include?(action_name)) %>
       <%= render "shared/header" %>
     <% end %>

@@ -1,18 +1,18 @@
-<div class="simple-calendar">
-  <div class="calendar-heading">
-    <time datetime="<%= start_date.strftime('%Y-%m') %>" class="calendar-title"><%= t('date.month_names')[start_date.month] %> <%= start_date.year %></time>
+<div class="w-full">
+  <div class="flex items-center justify-between mb-6 p-4 bg-white/5 rounded-lg border border-white/10">
+    <time datetime="<%= start_date.strftime('%Y-%m') %>" class="text-2xl font-bold text-white"><%= t('date.month_names')[start_date.month] %> <%= start_date.year %></time>
 
-    <nav>
-      <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view %>
-      <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
+    <nav class="flex gap-2">
+      <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view, class: "inline-flex items-center justify-center px-4 py-2 bg-primary-600/30 border border-primary-600/40 rounded-md text-white font-medium transition hover:bg-primary-600/50 hover:border-primary-600/60" %>
+      <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view, class: "inline-flex items-center justify-center px-4 py-2 bg-primary-600/30 border border-primary-600/40 rounded-md text-white font-medium transition hover:bg-primary-600/50 hover:border-primary-600/60" %>
     </nav>
   </div>
 
-  <table class="table table-striped">
-    <thead>
+  <table class="w-full border-collapse table-fixed">
+    <thead class="bg-primary-600/20">
       <tr>
         <% date_range.slice(0, 7).each do |day| %>
-          <th><%= t('date.abbr_day_names')[day.wday] %></th>
+          <th class="p-3 text-center font-semibold text-white/90 border border-white/10"><%= t('date.abbr_day_names')[day.wday] %></th>
         <% end %>
       </tr>
     </thead>
@@ -22,8 +22,11 @@
         <tr>
           <% week.each do |day| %>
             <% # Remove 'today' class from td_classes_for since it uses server time, JavaScript will add it based on client time %>
-            <% classes = calendar.td_classes_for(day).reject { |c| c == 'today' } %>
-            <%= content_tag :td, class: classes, data: { date: day.to_date.iso8601 } do %>
+            <% raw_classes = calendar.td_classes_for(day).reject { |c| c == 'today' } %>
+            <% is_other_month = raw_classes.include?('prev-month') || raw_classes.include?('next-month') %>
+            <% cell_classes = "h-[120px] w-[14.28%] p-2 align-top border border-white/10 bg-white/[0.02] relative overflow-hidden" %>
+            <% cell_classes += " opacity-40 bg-black/10" if is_other_month %>
+            <%= content_tag :td, class: cell_classes, data: { date: day.to_date.iso8601, calendar_target: "day" } do %>
               <% instance_exec(day, calendar.sorted_events_for(day), &passed_block) %>
             <% end %>
           <% end %>
