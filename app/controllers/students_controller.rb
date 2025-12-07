@@ -46,7 +46,7 @@ class StudentsController < ApplicationController
 
   def update
     @student = current_student
-    
+
     # If user is trying to change password, verify current password first
     if params[:student][:password].present?
       unless @student.authenticate(params[:student][:current_password])
@@ -60,7 +60,7 @@ class StudentsController < ApplicationController
     if params[:student][:remove_avatar] == "1"
       @student.avatar.purge if @student.avatar.attached?
     end
-    
+
     if @student.update(update_params)
       redirect_to student_path(@student), notice: "Profile updated successfully!"
     else
