@@ -18,91 +18,35 @@ RSpec.describe "Footer", type: :system do
       expect(page).to have_css('footer')
       expect(page).to have_content('GatherEd')
       expect(page).to have_content("© #{Time.current.year}")
-      expect(page).to have_link('Dashboard')
-      expect(page).to have_link('Search')
-      expect(page).to have_link('My Groups')
-      expect(page).to have_link('Calendar')
-      expect(page).to have_link('Map')
+      expect(page).to have_content('Created by')
     end
 
     it "displays footer on search page" do
       visit search_path
 
       expect(page).to have_css('footer')
-      expect(page).to have_link('Dashboard')
+      expect(page).to have_content('Created by')
     end
 
     it "displays footer on my groups page" do
       visit my_groups_path
 
       expect(page).to have_css('footer')
-      expect(page).to have_link('Search')
+      expect(page).to have_content('Created by')
     end
 
     it "displays footer on calendar page" do
       visit calendar_path
 
       expect(page).to have_css('footer')
-      expect(page).to have_link('Calendar')
+      expect(page).to have_content('Created by')
     end
 
     it "displays footer on map page" do
       visit map_path
 
       expect(page).to have_css('footer')
-      expect(page).to have_link('Map')
-    end
-  end
-
-  context "footer navigation" do
-    it "navigates to dashboard when clicking Dashboard link" do
-      visit search_path
-
-      within('footer') do
-        click_link 'Dashboard'
-      end
-
-      expect(current_path).to eq(dashboard_path)
-    end
-
-    it "navigates to search page when clicking Search link" do
-      visit dashboard_path
-
-      within('footer') do
-        click_link 'Search'
-      end
-
-      expect(current_path).to eq(search_path)
-    end
-
-    it "navigates to my groups page when clicking My Groups link" do
-      visit dashboard_path
-
-      within('footer') do
-        click_link 'My Groups'
-      end
-
-      expect(current_path).to eq(my_groups_path)
-    end
-
-    it "navigates to calendar page when clicking Calendar link" do
-      visit dashboard_path
-
-      within('footer') do
-        click_link 'Calendar'
-      end
-
-      expect(current_path).to eq(calendar_path)
-    end
-
-    it "navigates to map page when clicking Map link" do
-      visit dashboard_path
-
-      within('footer') do
-        click_link 'Map'
-      end
-
-      expect(current_path).to eq(map_path)
+      expect(page).to have_content('Created by')
     end
   end
 
@@ -119,6 +63,17 @@ RSpec.describe "Footer", type: :system do
 
       within('footer') do
         expect(page).to have_content(Time.current.year.to_s)
+      end
+    end
+
+    it "lists the creators" do
+      visit dashboard_path
+
+      within('footer') do
+        expect(page).to have_content('Created by')
+        %w[Alex Anca Daniel Wong Ellis Mandel Matthew Song].each do |name|
+          expect(page).to have_content(name)
+        end
       end
     end
   end
