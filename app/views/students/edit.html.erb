@@ -72,7 +72,13 @@
         </div>
       </div>
 
-      <%= form_with model: @student, local: true, multipart: true, class: "space-y-2" do |form| %>
+      <%= form_with model: @student,
+                    url: student_path,
+                    method: :patch,
+                    local: true,
+                    multipart: true,
+                    data: { turbo: false },
+                    class: "space-y-2" do |form| %>
         <% if @student.errors.any? %>
           <div class="bg-white/5 rounded-md border border-white/10 p-3 text-sm text-danger-200">
             <ul>

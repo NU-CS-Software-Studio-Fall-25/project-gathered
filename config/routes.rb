@@ -61,6 +61,12 @@ Rails.application.routes.draw do
   # Legacy route for backward compatibility
   resource :student_session, only: :create
 
-  # Catch-all route for 404s - must be last
-  match "*unmatched", to: "application#not_found", via: :all
+  # Active Storage routes (must be before the catch-all)
+  mount ActiveStorage::Engine => "/rails/active_storage"
+
+  # Catch-all route for 404s - must be last (exclude Active Storage paths)
+  match "*unmatched",
+        to: "application#not_found",
+        via: :all,
+        constraints: ->(req) { !req.path.start_with?("/rails/active_storage") }
 end

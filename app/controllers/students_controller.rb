@@ -62,7 +62,7 @@ class StudentsController < ApplicationController
     end
 
     if @student.update(update_params)
-      redirect_to student_path(@student), notice: "Profile updated successfully!"
+      redirect_to student_path, notice: "Profile updated successfully!"
     else
       render :edit, status: :unprocessable_entity
     end
