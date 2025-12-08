@@ -34,8 +34,8 @@
         <!-- High contrast toggle -->
         <!-- Profile dropdown: opens on hover or focus -->
         <div class="relative inline-block text-left group">
-          <button type="button" class="flex justify-center items-center gap-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none cursor-pointer transition">
-            <span><%= current_student&.name&.split&.first || "Student" %></span>
+          <button type="button" class="flex justify-center items-center gap-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none cursor-pointer transition min-w-max">
+            <span class="whitespace-nowrap"><%= current_student&.name&.split&.first || "Student" %></span>
             <%= student_avatar(current_student, size: "w-8 h-8", text_size: "text-sm") %>
           </button>
 
