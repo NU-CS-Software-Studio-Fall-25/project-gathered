@@ -5,10 +5,8 @@ Feature: Display dates with day of the week
 
   Background:
     Given I am logged in as a student
-    And there is a course "COMP_SCI 110" with code "COMP_SCI_110"
 
-  Scenario: Study group dates include day of week in search results
-    Given there is a study group for "COMP_SCI 110" on "2025-12-15" at "8:10" with topic "Lecture Group Review"
-    When I go to the search page
-    And I select the course "COMP_SCI 110"
-    Then I should see "Monday, Dec 15, 2025" as part of the study group date
+  Scenario: Study group dates include day of week in course view
+    When I visit the course page for "STAT 350 – Regression" at "/courses/7"
+    Then I should see a study group called "Midterm prep"
+    And I should see "Tuesday, Dec 09, 2025 at 02:00 PM - 04:00 PM" as the study group date
