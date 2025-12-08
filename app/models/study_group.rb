@@ -47,9 +47,9 @@ class StudyGroup < ApplicationRecord
   def formatted_time_range
     return "" unless start_time && end_time
     if start_time.to_date == end_time.to_date
-      "#{start_time.strftime('%b %d, %Y at %I:%M %p')} - #{end_time.strftime('%I:%M %p')}"
+      "#{start_time.strftime('%A, %b %d, %Y at %I:%M %p')} - #{end_time.strftime('%I:%M %p')}"
     else
-      "#{start_time.strftime('%b %d at %I:%M %p')} - #{end_time.strftime('%b %d at %I:%M %p')}"
+      "#{start_time.strftime('%A, %b %d at %I:%M %p')} - #{end_time.strftime('%A, %b %d at %I:%M %p')}"
     end
   end
 
