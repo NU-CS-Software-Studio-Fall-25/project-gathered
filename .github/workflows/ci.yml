@@ -73,14 +73,14 @@ jobs:
       - name: Run tests
         run: bin/rails test test:system
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: coverage-report
           path: coverage/
           if-no-files-found: ignore
       - name: Upload screenshots (if tests fail)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: screenshots
